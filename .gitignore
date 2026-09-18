@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+*.log
+.env
+.env.local
+
+# Source videos and working files — frames are committed, sources are not.
+# Keep the MP4s locally; they are large and the extracted frames are what ship.
+**/source/
+*.mp4
+*.mov

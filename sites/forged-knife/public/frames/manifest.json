@@ -1,20 +1,20 @@
 {
   "desktop": {
     "pattern": "/frames/desktop/frame-%04d.webp",
-    "count": 0,
+    "count": 435,
     "width": 1280,
     "height": 720,
     "fps": 15,
-    "poster": "/posters/placeholder-desktop.svg",
-    "bytes": 0
+    "poster": "/posters/desktop.webp",
+    "bytes": 15688344
   },
   "mobile": {
     "pattern": "/frames/mobile/frame-%04d.webp",
-    "count": 0,
-    "width": 720,
-    "height": 1280,
-    "fps": 15,
-    "poster": "/posters/placeholder-mobile.svg",
-    "bytes": 0
+    "count": 348,
+    "width": 640,
+    "height": 1138,
+    "fps": 12,
+    "poster": "/posters/mobile.webp",
+    "bytes": 12726098
   }
 }

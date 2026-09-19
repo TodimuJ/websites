@@ -106,6 +106,19 @@ const hasSequence = manifest.desktop.count > 0 && manifest.mobile.count > 0;
       rgba(10, 10, 11, 0) 76%
     );
   }
+  /* Bottom-up, for the honing scene: a full-frame macro with no clean third, where
+     the copy sits low over the anvil rather than beside the blade. Deliberately
+     lighter than the mobile ramp — it has to darken the anvil enough to read type
+     while leaving the blade and the damascus pattern above it clearly visible. */
+  .pin[data-scrim="up"] .scrim {
+    background: linear-gradient(
+      0deg,
+      rgba(10, 10, 11, 0.92) 0%,
+      rgba(10, 10, 11, 0.78) 26%,
+      rgba(10, 10, 11, 0.30) 52%,
+      rgba(10, 10, 11, 0) 72%
+    );
+  }
   /* No chapter showing — let the footage carry the frame alone. */
   .pin[data-scrim="none"] .scrim { opacity: 0; }
 
@@ -113,6 +126,7 @@ const hasSequence = manifest.desktop.count > 0 && manifest.mobile.count > 0;
     /* Portrait copy sits over the lit subject, not beside it, so the scrim goes
        bottom-up in every chapter regardless of desktop alignment. */
     .scrim,
+    .pin[data-scrim="up"] .scrim,
     .pin[data-scrim="right"] .scrim {
       background: linear-gradient(
         0deg,
@@ -214,15 +228,15 @@ const hasSequence = manifest.desktop.count > 0 && manifest.mobile.count > 0;
       beats: site.beats,
       onProgress(p) {
         if (reduced) return;
-        let activeAlign = "none";
+        let activeScrim = "none";
         for (const el of chapters) {
           const [a, b] = JSON.parse(el.dataset.at!) as [number, number];
           const on = p >= a && p <= b;
-          if (on) activeAlign = el.dataset.align === "right" ? "right" : "left";
+          if (on) activeScrim = el.dataset.scrim ?? "left";
           el.classList.toggle("is-on", on);
           el.inert = !on;
         }
-        if (pin && pin.dataset.scrim !== activeAlign) pin.dataset.scrim = activeAlign;
+        if (pin && pin.dataset.scrim !== activeScrim) pin.dataset.scrim = activeScrim;
         cue?.classList.toggle("is-gone", p > 0.04);
       },
     });

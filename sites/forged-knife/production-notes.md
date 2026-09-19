@@ -46,7 +46,7 @@ No `--cap` set.
 **Superseded at Gate 2** — see §5. Generation moved off Higgsfield onto the user's
 Google AI Pro plan, which removes the credit constraint from the generation axes while
 delivery fps and width still govern page weight. Scene duration accordingly rises from
-5s to Veo's 8s cap. Delivery targets to be measured in §6 once footage lands.
+5s to Veo's 8s cap. Delivery targets measured in §7.
 
 ## 3 — Visual Story (approved at Gate 2, verbatim)
 
@@ -72,8 +72,8 @@ the tomato arrive as the lens retreats.
 ## 4 — Scroll pacing (approved at Gate 2, verbatim)
 
 Container `700vh`, stage `100vh` pinned → **600vh active travel**. Frame numbers assumed
-4 × 5s at 15fps = 300 at the time of approval; they are restated in §6 against the
-measured footage.
+4 × 5s at 15fps = 300 at the time of approval; the delivered footage is 435 desktop
+frames and 348 portrait frames, restated in §7 and in `site.ts`.
 
 ```
 hold                                   frames   0–  0    0.6 vh — read the hero
@@ -103,10 +103,10 @@ hold                                   frames 299–299    0.24 vh — read the 
 ```
 
 **Chapter alignment follows the footage, not layout preference.** Scenes 01 and 04 hold
-their negative space upper-left, so those chapters sit on a left rail. Scene 03 runs the
-blade lower-left to upper-right, so its clean third is on the **right** and that chapter
-is right-aligned — and the stage scrim rakes from whichever side the active chapter is
-on. A fixed left scrim would have darkened the wrong half for a third of the story.
+their negative space upper-left, so those chapters sit on a left rail, and the stage
+scrim rakes from whichever side the active chapter is on rather than always from the
+left. Scene 03 was planned right-aligned on the assumption of a clean right third;
+**the delivered footage has none, and that chapter moved to bottom-left — see §8.**
 
 ## 5 — Cost ledger
 
@@ -155,52 +155,169 @@ Consequences, disclosed rather than absorbed silently:
 - **Scene duration rises** from 5s to Veo's 8s cap, which raises frame counts and so page
   weight. Measured in §6 on delivery.
 
-## 6 — Assets and delivery settings
+## 6 — Assets received (2026-09-19)
 
-**Not yet measured — the footage has not been generated.** This section is filled in from
-real extractions on disk, never from prediction.
-
-### Awaiting delivery into `_incoming/`
+All 13 requested assets present in `_incoming/`; **none missing**. Delivered as `.jpeg`
+rather than `.png` — harmless, since the symbol is redrawn as SVG and the stills are
+re-encoded for delivery anyway.
 
 | Asset | Status |
 |---|---|
-| `symbol-01..04.png` | pending |
-| `keyframe-landscape.png`, `keyframe-portrait.png` | pending |
-| `desktop.mp4` (Path A) or `desktop-01..04.mp4` (Path B) | pending |
-| `portrait.mp4` (Path A) or `portrait-01..04.mp4` (Path B) | pending |
-| 5 product stills | pending |
+| `symbol-01..04.jpeg` | 4/4 present |
+| `keyframe-landscape.jpeg` 1376×768, `keyframe-portrait.jpeg` 768×1376 | present |
+| `desktop.mp4` | h264, 1280×720, 24fps, 696 frames, 29.01s, 7.54 Mbps, 27.3MB |
+| `portrait.mp4` | h264, 720×1280, 24fps, 696 frames, 29.01s, 7.33 Mbps, 26.6MB |
+| 5 product stills, 1024×1024 | 5/5 present |
 
-### Placeholders currently shipping, and what replaces each
+Path used: **Flow Extend** (Path A) for both orientations — one continuous file each,
+8s + 3×7s. No seams to inspect; continuity is model-native. Both masters carry an AAC
+track, stripped at extraction with `-an`.
 
-Everything below is deliberately a placeholder, resolves with a 200, and is named so it
-cannot be mistaken for finished work.
+**The masters were not trimmed, cropped, resized or re-encoded, and must not be.** Their
+file size never reaches a visitor: `*.mp4` is gitignored, nothing in `public/` references
+them, and only the extracted WebP frames are served. Page weight is set entirely by the
+extraction's fps, width and WebP quality. Re-encoding the source lower would permanently
+degrade every frame to fix a problem that does not exist, and would destroy the
+provenance record needed to re-extract at different delivery settings.
 
-| Placeholder | Replaced by |
-|---|---|
-| `public/posters/placeholder-desktop.svg` | `public/posters/desktop.webp` (frame 0 of `desktop.mp4`) |
-| `public/posters/placeholder-mobile.svg` | `public/posters/mobile.webp` (frame 0 of `portrait.mp4`) |
-| `public/products/{gyuto,santoku,petty,whetstone,roll}.svg` | the `.webp` product stills; `image:` paths in `site.ts` change extension |
-| `public/frames/manifest.json` with `count: 0` | the real manifest, written from files on disk |
-| `public/logo-symbol.svg` | nothing — this is the real hand-drawn vector master. The generated symbol concepts are reference only and are never shipped. |
+**Letterboxing check.** Desktop `cropdetect` returns `1280:720:0:0` in 49 of 51 samples —
+clean, full frame. Portrait returns `720:1280:0:0` in 39 of 57 samples with the remainder
+scattered across `720:1118` and `720:1116` at varying offsets; an actual pillarbox would
+be constant, so that variation is dark content, not a border. **No crop applied to
+either.**
 
-**The `count: 0` manifest is load-bearing.** While it holds, `ScrollStage.astro` never
-constructs the engine, never requests a frame, collapses the stage to zero height and
-serves the composed-still path — the same path reduced-motion visitors always get. The
-site is complete and usable in that state; it simply has no film yet. Nothing anywhere
-claims a sequence exists.
+**Motion analysis** at 1-second granularity found no dead footage in either orientation —
+every second carries real motion, the quietest being 14s (mid-quench, dense slow vapour)
+and 25s. Nothing to trim without costing story.
 
-### Delivery targets (economy tier, to be confirmed by measurement)
+## 7 — Delivery settings (measured, not estimated)
 
-Desktop 15fps / 1280 wide, portrait 15fps / 1080 wide, `cwebp -q 85` / `-q 82`.
-Ceilings: **≤ 18MB desktop, ≤ 10MB portrait.** If the forge footage exceeds them, drop
-fps before quality and record both the measured alternatives and the reason for the
-choice here, as `sites/espresso` §8 does.
+Every figure below is a real extraction measured on disk.
 
-Note for extraction: local `ffmpeg` (homebrew) is built **without `libwebp`**, so the
-single-pass `-c:v libwebp` command in `references/generation.md` fails. Use the
-PNG-intermediate path: `ffmpeg` → PNG → `cwebp -m 6 -q N`.
+**Desktop — 15fps, 1280 wide, `cwebp -q 85 -m 6`, 435 frames, 15,688,344 bytes
+(14.96MB).** Under the 18MB ceiling, at the economy tier's own fps and width, with the
+source's native resolution preserved 1:1 (no upscale, no downscale). Measured
+alternatives: q82 = 13.3MB, q78 = 12.0MB. Neither was needed.
 
-## 7 — Build
+**Portrait — 12fps, 640 wide, `cwebp -q 76 -m 6`, 348 frames, 12,726,098 bytes
+(12.13MB).** This is **21% over the 10MB portrait guideline** and is a deliberate,
+disclosed choice. Everything measured:
+
+| fps | width | q | frames | size |
+|---|---|---|---|---|
+| 15 | 720 | 82 | 435 | 24.17MB |
+| 15 | 640 | 82 | 435 | 19.55MB |
+| 15 | 640 | 78 | 435 | 16.95MB |
+| 15 | 600 | 76 | 435 | 14.96MB |
+| 12 | 720 | 80 | 348 | 18.24MB |
+| 12 | 640 | 80 | 348 | 14.76MB |
+| **12** | **640** | **76** | **348** | **12.13MB ← shipped** |
+| 12 | 600 | 74 | 348 | 11.60MB |
+| 10 | 640 | 76 | 290 | 10.66MB |
+| 10 | 600 | 74 | 290 | 9.57MB |
+
+Only the last row clears 10MB, and it costs 58 frames and 40px of width. For a *scrubbed*
+sequence temporal density matters more than spatial resolution — stepping is far more
+visible than softness — and 348 frames over 460vh of mobile travel is 76 frames per
+viewport height against 63 at 10fps. The engine streams frames around the playhead rather
+than blocking on the whole sequence, so the practical cost of the extra 2.1MB is small.
+Mobile is also the experience most visitors will see.
+
+The portrait sequence is expensive because it carries nearly the same pixel count as
+desktop (728,320 vs 921,600) but far more bytes per pixel: the tall crop is filled edge to
+edge with high-frequency detail — boiling vapour, sparks, and a wet stone covered in gold
+swarf — for most of its length.
+
+**To switch to the under-ceiling option**, re-encode from the PNG intermediates at
+10fps/600/q74 and remap `beats.portrait` to 290 frames (boundaries 80 / 150 / 220,
+last 289).
+
+**Toolchain.** Local `ffmpeg` (homebrew) is built **without `libwebp`**, so the
+single-pass `-c:v libwebp` command in `references/generation.md` fails with
+`Unknown encoder 'libwebp'`. Pipeline used instead: `ffmpeg` → PNG intermediates →
+`cwebp -m 6 -q N`. Same fallback as `sites/espresso`; worth folding into the reference.
+
+### Manifest, verified against files on disk
+
+```
+desktop  435 frames  1280×720  15fps  /posters/desktop.webp  15,688,344 bytes
+mobile   348 frames   640×1138 12fps  /posters/mobile.webp   12,726,098 bytes
+```
+
+Numbering confirmed contiguous `0000`–`0434` and `0000`–`0347` with no gaps, and `count`
+matches `ls | wc -l` in both directories.
+
+**Posters** are frame 0 of each master at that sequence's own delivery width
+(`desktop.webp` 29KB, `mobile.webp` 61KB). **Product stills** are the 1024² masters at
+900² `q82`, 14–38KB each. All five placeholder SVGs and both placeholder posters were
+deleted in the same commit that added the real assets.
+
+**Logo.** Generated concept `symbol-03` was the strongest — a filled lens with a
+knocked-out bevel hairline and three folded-layer ticks. It was **redrawn by hand** as
+`public/logo-symbol.svg`, tightened to its proportions. The generated files stay in
+`_incoming/` as reference and are never shipped, so the shipped mark is a true vector
+master and the wordmark remains HTML type.
+
+## 8 — QA findings on the received footage
+
+Read as frames, not assumed from the prompts. Three deviations from the approved
+storyboard, none of them silent:
+
+1. **Hands are fully lit, not backlit silhouettes.** The brief's gotcha — "keep hands out
+   except as a backlit silhouette; no fingers near the edge" — was written into every
+   prompt and was **not obeyed** by the model. The smith's hands appear clearly in scenes
+   01, 03 and 04, including alongside the edge during honing and beside the tomato during
+   the cut. Judged acceptable and kept: it reads as ordinary knife-making documentary
+   footage and it reinforces the solo-smith story. It is a deviation from the approved
+   direction all the same. Regenerating scenes 01, 03 and 04 is the fix if you want the
+   silhouette. Product stills are unaffected — object only.
+2. **Scene 03's "emergence" beat is compressed.** The storyboard called for the vapour to
+   clear onto a dark, oxidised, unfinished blade which the whetstone then transforms. The
+   footage clears from vapour onto an already-finished, mirror-polished damascus blade,
+   and the honing plays over that. The material-state story is weaker than planned; the
+   shot is better-looking than planned. Kept.
+3. **The portrait knife is not geometrically identical to the desktop knife** — shorter
+   and deeper in the blade, with a differently proportioned collar. Both are plausibly
+   the same maker's work and no visitor sees both orientations, but they are not the same
+   object. Passing `keyframe-landscape` as a reference did not fully lock geometry.
+
+What the brief warned about and the footage got **right**: the hammer renders as a real
+arc → contact → rebound with sparks, not a static blur; the quench bloom fills the frame
+and is still in motion at the last frame of the beat; the damascus is a genuine flowing
+watery layered pattern rather than generic brushed metal; and the ending frame is the two
+tomato halves separating with the blade still moving, as specified.
+
+### Copy space — the planned negative space did not survive, and the layout changed
+
+Mean 8-bit luminance was measured in each chapter's own frame range rather than eyeballed:
+
+| Chapter | Frames | mid-left | right third | bottom-left |
+|---|---|---|---|---|
+| hero | 0–49 | 4–50 | 0–13 | 0–47 |
+| edge | 242–320 | 28–114 | 59–63 | 55–75 |
+| reveal | 347–434 | 1–18 | 77–91 | 102–118 |
+
+- **hero** and **reveal** keep their planned mid-left rail; the reveal's is excellent
+  (luma 1–18, the dark apron behind the board).
+- **edge** was planned right-aligned on the assumption that the blade would run
+  lower-left to upper-right leaving a clean right third. It does not. Scene 03 is a
+  full-frame macro with the pale ho wood handle and a bright brass collar occupying the
+  upper right, and **no third of the frame is clean**. The chapter was moved to
+  **bottom-left over the dark anvil** — not the darkest candidate but the most *stable*
+  (spread of 20 across the range versus 86 for mid-left), because a scrim can compensate
+  for brightness but not for flicker. The stage scrim now rakes per-chapter (`left` or
+  `up`) instead of always from the left, and `Chapter.astro` gained a vertical
+  `position` prop for it.
+
+### Mobile trim
+
+Per `references/mobile.md` §2 the opening screen carries the nav, one headline, one
+action and the scroll cue. At 375px the hero's eyebrow wrapped to two lines and the
+secondary button added a second full-width control, so **the eyebrow and the secondary
+CTA are hidden below 767px** on any chapter that has a primary CTA. Both remain on
+desktop.
+
+## 9 — Build
 
 Astro static, vanilla TS scrubber, shared `@sites/scroll-engine` (no per-site fork).
 
@@ -217,27 +334,46 @@ Astro static, vanilla TS scrubber, shared `@sites/scroll-engine` (no per-site fo
 - Hidden chapters are `inert` and `pointer-events: none`, so no off-screen CTA sits in
   the tab order.
 
-### Verified in the browser (dev server, not just compilation)
+### Final `beats`, measured
+
+Desktop 435 frames @15fps, portrait 348 @12fps. Both masters are 29.01s of 8s + 3×7s, so
+the scene cuts land at exactly 8s / 15s / 22s — frames 120 / 225 / 330 on desktop and
+96 / 180 / 264 on portrait. The quench keeps the most frames per viewport height in the
+build (105 frames over 1.32vh) and the cut the fewest (fast by design). Portrait
+compresses the holds, since thumb gestures cover less distance per effort.
+
+### Verified in the browser, on the real sequence
 
 | Check | Result |
 |---|---|
 | `npm run build --workspace sites/forged-knife` | passes |
 | Console errors | none |
 | Network 4xx/5xx | none — all requests 200 |
-| Horizontal overflow at 320px | none (`scrollWidth === clientWidth === 320`) |
-| Horizontal overflow at 375px | none |
+| Canvas actually paints frames | yes — sampled non-black pixel data mid-sequence |
+| Reverse scrub retraces exactly | yes — full-canvas signatures identical at p = 0.20, 0.30, 0.45, 0.60, 0.75 going up and coming back (warm cache) |
+| Jump-scroll == walked scroll | yes — identical signature at p = 0.55 reached both ways |
+| Mobile requests **only** the portrait sequence | yes — 13 mobile frame requests, 0 desktop |
+| Horizontal overflow at 320 / 375 | none |
 | Mobile menu open / Escape / focus restore | works; focus returns to the toggle |
 | Collection filters | work; empty state present |
-| Pre-footage state | stage collapses to 0, composed-still path renders, all copy and CTAs reachable |
+| Copy legibility over footage | checked frame-by-frame per chapter; scene 03 relocated (§8) |
+| Quench beat carries no copy | confirmed at p = 0.42–0.45 in both orientations |
+| Ending frame | the two tomato halves separating, blade still in motion |
 
-### Not yet verified, and cannot be until footage exists
+**One thing could not be verified here:** the real `prefers-reduced-motion: reduce` media
+query — the browser pane cannot emulate it. The path was checked by forcing the same
+rules: `.story-static` renders all three beats, both headings and CTAs, and `<picture>`
+correctly selects `mobile.webp` at phone width. The engine's own reduced-motion branch
+(never fetch the sequence, paint the poster) is shared `scroll-engine` code and was not
+re-exercised on this site.
 
-Scrub smoothness, pacing against the approved plan, whether each scene's planned copy
-space actually stayed clear, seam continuity (Path B only), reduced-motion poster paint,
-and per-orientation sequence selection in the network panel. All of these are Phase 6
-items that require real frames, and none of them are claimed here.
+A cold-cache caveat worth recording: immediately after a reload, a programmatic jump to
+a mid-sequence scroll position leaves the canvas blank for several seconds while the
+engine fetches around the new playhead. That is the bounded-concurrency loader behaving
+correctly, not a bug, but it does mean a screenshot taken too soon reads as a black
+frame.
 
-## 8 — Deploy
+## 10 — Deploy
 
 `netlify.toml` lives in `sites/forged-knife/`, never at the repo root. Netlify UI:
 **Package directory** `sites/forged-knife`, **Base directory** empty (repo root, required

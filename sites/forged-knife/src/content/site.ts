@@ -33,16 +33,26 @@ export const site = {
   /**
    * Copy beats revealed over the pinned canvas, keyed to scroll progress.
    *
-   * Alignment follows the footage, not a layout preference: scenes 01 and 04 hold
-   * their negative space upper-LEFT, and scene 03 runs the blade lower-left to
-   * upper-right so its clean third is on the RIGHT. Each range sits inside one
-   * scene and never straddles the quench.
+   * Placement is set from MEASURED frame luminance in each chapter's own range, not
+   * from the storyboard's intent — see production-notes.md §9. Mean 8-bit luma of
+   * the candidate zone across each range:
+   *
+   *   hero   (f 0–49)    mid-left  4–50   ← chosen; bar and crucible stay clear of it
+   *   edge   (f 242–320) mid-left 28–114, right 59–63, bottom-left 55–75 ← chosen
+   *   reveal (f 347–434) mid-left  1–18   ← chosen; bottom is the lit board, 102–118
+   *
+   * Scene 03 is a full-frame macro with no clean third anywhere, so `edge` sits
+   * bottom-left over the dark anvil — the most STABLE zone (variance 20 vs 86 for
+   * mid-left), since a scrim can fix brightness but not flicker. Each range sits
+   * inside one scene and none straddles the quench.
    */
   chapters: [
     {
       id: "hero",
       at: [0.0, 0.2] as [number, number],
       align: "left" as const,
+      position: "centre" as const,
+      scrim: "left" as const,
       eyebrow: "Okumi · Forged by one pair of hands",
       heading: "The blade remembers the fire.",
       body:
@@ -54,7 +64,9 @@ export const site = {
     {
       id: "edge",
       at: [0.6, 0.78] as [number, number],
-      align: "right" as const,
+      align: "left" as const,
+      position: "bottom" as const,
+      scrim: "up" as const,
       eyebrow: "The edge",
       heading: "Sixty-one layers, one edge.",
       body:
@@ -65,6 +77,8 @@ export const site = {
       id: "reveal",
       at: [0.86, 1.0] as [number, number],
       align: "left" as const,
+      position: "centre" as const,
+      scrim: "left" as const,
       eyebrow: "Finished",
       heading: "Then it disappears into the work.",
       body:
@@ -75,15 +89,17 @@ export const site = {
   ],
 
   /**
-   * Scroll → frame mapping, per orientation.
+   * Scroll → frame mapping, per orientation. MEASURED, not predicted.
    *
-   * PROVISIONAL. These are the Gate-2 scroll ranges with frame indices written
-   * against the expected Flow delivery (8s + 3×7s at 15fps = 435 frames, scene
-   * boundaries at 120 / 225 / 330). They are restated against the measured
-   * manifest the moment the footage lands — see production-notes.md §6.
+   * Both masters are 29.01s. The four Flow scenes are 8s + 3×7s, so the cuts land
+   * at exactly 8s / 15s / 22s in both orientations.
    *
-   * The quench (scene 02) deliberately carries the most frames per viewport
-   * height in the whole build; it is the load-bearing beat.
+   *   Desktop  435 frames @ 15fps → scene boundaries at 120 / 225 / 330, last 434
+   *   Portrait 348 frames @ 12fps → scene boundaries at  96 / 180 / 264, last 347
+   *
+   * The quench (scene 02) deliberately carries the most frames per viewport height
+   * in the whole build; it is the load-bearing beat. Portrait compresses the holds
+   * because thumb gestures cover less distance per effort.
    */
   beats: {
     landscape: [
@@ -97,12 +113,12 @@ export const site = {
     ] as Beat[],
     portrait: [
       { scroll: [0.0, 0.07], frames: [0, 0] },
-      { scroll: [0.07, 0.3], frames: [0, 119] },
-      { scroll: [0.3, 0.52], frames: [120, 224] },
-      { scroll: [0.52, 0.78], frames: [225, 329] },
-      { scroll: [0.78, 0.81], frames: [330, 330] },  // compressed vs desktop
-      { scroll: [0.81, 0.95], frames: [330, 434] },
-      { scroll: [0.95, 1.0], frames: [434, 434] },
+      { scroll: [0.07, 0.3], frames: [0, 95] },
+      { scroll: [0.3, 0.52], frames: [96, 179] },
+      { scroll: [0.52, 0.78], frames: [180, 263] },
+      { scroll: [0.78, 0.81], frames: [264, 264] },  // compressed vs desktop
+      { scroll: [0.81, 0.95], frames: [264, 347] },
+      { scroll: [0.95, 1.0], frames: [347, 347] },
     ] as Beat[],
   },
 
@@ -173,7 +189,7 @@ export const site = {
       category: "Knives",
       price: "£620",
       unit: "210 mm",
-      image: "/products/gyuto.svg",
+      image: "/products/gyuto.webp",
       blurb:
         "The chef’s knife. 61-layer damascus over a VG-10 core, mirror bevel, ho wood handle.",
       detail: [
@@ -188,7 +204,7 @@ export const site = {
       category: "Knives",
       price: "£480",
       unit: "165 mm",
-      image: "/products/santoku.svg",
+      image: "/products/santoku.webp",
       blurb:
         "Shorter, deeper, flatter through the belly. The one most people reach for daily.",
       detail: [
@@ -202,7 +218,7 @@ export const site = {
       category: "Knives",
       price: "£340",
       unit: "120 mm",
-      image: "/products/petty.svg",
+      image: "/products/petty.webp",
       blurb: "Small, fine, sharply tapered. Shallots, herbs, and anything done in the hand.",
       detail: [
         "82 g. Thin enough behind the edge to peel with.",
@@ -215,7 +231,7 @@ export const site = {
       category: "Care",
       price: "£195",
       unit: "1000 / 6000",
-      image: "/products/whetstone.svg",
+      image: "/products/whetstone.webp",
       blurb: "Coarse side to reset the edge, fine side to finish it. On a hardwood base.",
       detail: [
         "Soak for ten minutes before use; it is a water stone, not an oil stone.",
@@ -228,7 +244,7 @@ export const site = {
       category: "Carry",
       price: "£180",
       unit: "3 slots",
-      image: "/products/roll.svg",
+      image: "/products/roll.webp",
       blurb: "Waxed cotton canvas, three slots of differing widths, one long tie.",
       detail: [
         "Ships with every knife at no charge if you buy two or more.",

@@ -3,20 +3,27 @@ interface Props {
   id: string;
   at: [number, number];
   align: "left" | "right" | "centre";
+  /** Vertical placement over the frame. "bottom" is for scenes with no clean third. */
+  position?: "centre" | "bottom";
+  /** Which scrim the stage should rake while this chapter is showing. */
+  scrim?: "left" | "right" | "up";
   eyebrow?: string;
   heading: string;
   body?: string;
   cta?: { label: string; href: string };
   secondary?: { label: string; href: string };
 }
-const { id, at, align, eyebrow, heading, body, cta, secondary } = Astro.props;
+const {
+  id, at, align, position = "centre", scrim = "left",
+  eyebrow, heading, body, cta, secondary,
+} = Astro.props;
 ---
 
 <div
-  class={`chapter chapter--${align}`}
+  class:list={[`chapter chapter--${align} chapter--v-${position}`, { "chapter--has-cta": !!cta }]}
   data-chapter
   data-at={JSON.stringify(at)}
-  data-align={align}
+  data-scrim={scrim}
   id={`ch-${id}`}
 >
   <div class="chapter__inner">
@@ -63,6 +70,17 @@ const { id, at, align, eyebrow, heading, body, cta, secondary } = Astro.props;
     gap: var(--s-4);
     justify-items: start;
   }
+  /* Vertical placement. "bottom" sits the copy low over the dark part of a
+     full-frame macro, where no clean left/right third exists. */
+  .chapter--v-bottom {
+    align-items: end;
+    padding-bottom: calc(var(--s-8) + env(safe-area-inset-bottom));
+  }
+  /* Bottom-placed copy runs wider and shorter, so it occupies the dark band rather
+     than growing up into the subject. */
+  .chapter--v-bottom .chapter__heading { max-width: 22ch; }
+  .chapter--v-bottom .chapter__body { max-width: 52ch; }
+
   .chapter--left .chapter__inner { text-align: left; }
   .chapter--right .chapter__inner { justify-items: end; text-align: right; }
   .chapter--centre .chapter__inner { justify-items: center; text-align: center; }
@@ -90,6 +108,11 @@ const { id, at, align, eyebrow, heading, body, cta, secondary } = Astro.props;
     .chapter { align-items: end; padding-bottom: calc(var(--s-9) + env(safe-area-inset-bottom)); }
     .chapter--right .chapter__inner,
     .chapter--centre .chapter__inner { justify-items: start; text-align: left; }
+    /* mobile.md §2 — the opening screen carries the nav, ONE headline, ONE action
+       and the scroll cue. The secondary button and the decorative eyebrow both
+       compete with the image at this width, so neither survives. */
+    .chapter__actions .btn--ghost { display: none; }
+    .chapter--has-cta .eyebrow { display: none; }
     .chapter__heading { max-width: 12ch; }
     .chapter__body { font-size: var(--step-0); }
     .chapter__actions { width: 100%; }

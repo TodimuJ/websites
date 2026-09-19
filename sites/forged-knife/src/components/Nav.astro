@@ -1,0 +1,224 @@
+---
+import { site } from "../content/site";
+const symbol = await import("../../public/logo-symbol.svg?raw").then((m) => m.default);
+---
+
+<a class="skip-link" href="#making">Skip the story</a>
+
+<header class="nav">
+  <div class="nav__inner">
+    <a class="brand" href="#top" aria-label={`${site.brand.name} — home`}>
+      <span class="brand__symbol" set:html={symbol} />
+      <span class="brand__word">{site.brand.name}</span>
+    </a>
+
+    <nav class="nav__links" aria-label="Primary">
+      {site.nav.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+
+    <a class="btn btn--primary nav__cta" href={site.cta.href}>{site.cta.label}</a>
+
+    <button
+      class="nav__toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Open menu"
+    >
+      <span class="nav__bars" aria-hidden="true"><i></i><i></i></span>
+    </button>
+  </div>
+</header>
+
+<div class="menu" id="mobile-menu" hidden>
+  <div class="menu__panel" role="dialog" aria-modal="true" aria-label="Menu">
+    <button class="menu__close" type="button" aria-label="Close menu">&times;</button>
+    <nav class="menu__links" aria-label="Menu">
+      {site.nav.map((l) => <a href={l.href}>{l.label}</a>)}
+      <a href={site.cta.href} class="menu__cta">{site.cta.label}</a>
+    </nav>
+  </div>
+</div>
+
+<style>
+  .skip-link {
+    position: fixed;
+    top: 0; left: 50%;
+    transform: translate(-50%, -120%);
+    z-index: 60;
+    background: var(--ember);
+    color: #FFF6F0;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: var(--tracking-mid);
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: var(--s-3) var(--s-5);
+    transition: transform 160ms var(--ease);
+  }
+  .skip-link:focus-visible { transform: translate(-50%, 0); }
+
+  .nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 50;
+    background: rgba(5, 5, 6, 0.84);
+    backdrop-filter: blur(14px) saturate(1.2);
+    border-bottom: 1px solid var(--hairline);
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .nav__inner {
+    height: var(--nav-h);
+    max-width: var(--maxw);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    padding-left: max(var(--gutter), env(safe-area-inset-left));
+    padding-right: max(var(--gutter), env(safe-area-inset-right));
+    display: flex;
+    align-items: center;
+    gap: var(--s-6);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-3);
+    text-decoration: none;
+    margin-right: auto;
+    min-height: 44px;
+  }
+  .brand__symbol { display: block; width: 22px; height: 22px; color: var(--ember); }
+  .brand__symbol :global(svg) { width: 100%; height: 100%; display: block; }
+  .brand__word {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: var(--tracking-wide);
+    color: var(--ash);
+  }
+
+  .nav__links { display: flex; gap: var(--s-6); }
+  .nav__links a {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: var(--tracking-mid);
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ash-dim);
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    transition: color 160ms var(--ease);
+  }
+  .nav__links a:hover { color: var(--forge-gold); }
+
+  .nav__cta { min-height: 40px; }
+
+  .nav__toggle {
+    display: none;
+    width: 44px; height: 44px;
+    align-items: center; justify-content: center;
+    background: none; border: 0; cursor: pointer; color: var(--ash);
+  }
+  .nav__bars { display: grid; gap: 6px; width: 22px; }
+  .nav__bars i { display: block; height: 1.5px; background: currentColor; }
+
+  @media (max-width: 860px) {
+    .nav__links, .nav__cta { display: none; }
+    .nav__toggle { display: inline-flex; }
+  }
+
+  /* Menu */
+  .menu {
+    position: fixed; inset: 0; z-index: 70;
+    background: rgba(4, 4, 5, 0.88);
+    backdrop-filter: blur(6px);
+  }
+  .menu[hidden] { display: none; }
+  .menu__panel {
+    position: absolute;
+    inset: 0 0 auto 0;
+    background: var(--soot-raised);
+    border-bottom: 1px solid var(--hairline);
+    padding: calc(env(safe-area-inset-top) + var(--s-5)) var(--gutter) var(--s-7);
+  }
+  .menu__close {
+    position: absolute;
+    top: calc(env(safe-area-inset-top) + var(--s-3));
+    right: var(--gutter);
+    width: 44px; height: 44px;
+    font-size: 28px; line-height: 1;
+    background: none; border: 0; color: var(--ash); cursor: pointer;
+  }
+  .menu__links { display: grid; gap: var(--s-2); margin-top: var(--s-6); }
+  .menu__links a {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-size: var(--step-2);
+    text-decoration: none;
+    color: #F2EFEA;
+    padding: var(--s-3) 0;
+    border-bottom: 1px solid var(--hairline);
+    min-height: 44px;
+  }
+  .menu__cta {
+    margin-top: var(--s-4);
+    font-family: var(--font-mono) !important;
+    font-size: var(--step--1) !important;
+    letter-spacing: var(--tracking-mid);
+    color: var(--ember) !important;
+    border-bottom: 0 !important;
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>(".nav__toggle")!;
+  const menu = document.getElementById("mobile-menu")!;
+  const closeBtn = menu.querySelector<HTMLButtonElement>(".menu__close")!;
+  const panel = menu.querySelector<HTMLElement>(".menu__panel")!;
+  let lastFocused: HTMLElement | null = null;
+
+  const focusables = () =>
+    [...panel.querySelectorAll<HTMLElement>("a[href], button")].filter(
+      (el) => !el.hasAttribute("disabled"),
+    );
+
+  function open() {
+    lastFocused = document.activeElement as HTMLElement;
+    menu.hidden = false;
+    toggle.setAttribute("aria-expanded", "true");
+    document.body.style.overflow = "hidden";
+    focusables()[0]?.focus();
+    document.addEventListener("keydown", onKey);
+  }
+
+  function close() {
+    menu.hidden = true;
+    toggle.setAttribute("aria-expanded", "false");
+    document.body.style.overflow = "";
+    document.removeEventListener("keydown", onKey);
+    // Fall back to the toggle: lastFocused is <body> when the menu was opened
+    // by anything other than a real click on the button.
+    const restore =
+      lastFocused && lastFocused !== document.body ? lastFocused : toggle;
+    restore.focus();
+  }
+
+  function onKey(e: KeyboardEvent) {
+    if (e.key === "Escape") { close(); return; }
+    if (e.key !== "Tab") return;
+    // Focus trap.
+    const items = focusables();
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+
+  toggle.addEventListener("click", () => (menu.hidden ? open() : close()));
+  closeBtn.addEventListener("click", close);
+  menu.addEventListener("click", (e) => { if (e.target === menu) close(); });
+  // Close after a link is chosen, so the anchor target is actually visible.
+  panel.querySelectorAll("a[href]").forEach((a) => a.addEventListener("click", close));
+</script>

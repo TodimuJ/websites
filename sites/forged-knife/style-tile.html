@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OKUMI — style tile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="src/styles/tokens.css" />
+<style>
+  body { padding: var(--s-8) 0; }
+  section { padding-block: var(--s-7); border-top: 1px solid var(--hairline); }
+  section:first-of-type { border-top: 0; }
+  h2.tile-title {
+    font-family: var(--font-mono); font-size: var(--step--1);
+    letter-spacing: var(--tracking-wide); text-transform: uppercase;
+    color: var(--ash-faint); margin-bottom: var(--s-5); font-weight: 400;
+  }
+  .swatches { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); }
+  .sw__chip { height: 92px; border-radius: var(--radius-lg); border: 1px solid var(--hairline); }
+  .sw__name { margin-top: var(--s-2); }
+  .row { display: flex; flex-wrap: wrap; gap: var(--s-4); align-items: center; }
+  .specimen { display: grid; gap: var(--s-4); }
+  .card {
+    max-width: 22rem; background: var(--soot-raised);
+    border: 1px solid rgba(216,85,31,0.55); border-radius: var(--radius-lg); overflow: hidden;
+  }
+  .card img { width: 100%; display: block; aspect-ratio: 1; object-fit: cover; }
+  .card__body { padding: var(--s-5); display: grid; gap: var(--s-2); }
+  .card__row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); }
+  .mark { display: flex; align-items: center; gap: var(--s-4); }
+  .mark svg { width: 56px; height: 56px; color: var(--ember); }
+  .wordmark { font-family: var(--font-mono); font-size: 1.6rem; letter-spacing: var(--tracking-wide); }
+  dl.spec-rows { margin: 0; max-width: 34rem; }
+  dl.spec-rows > div { display: grid; grid-template-columns: 11rem 1fr; gap: var(--s-4); padding: var(--s-3) 0; border-bottom: 1px solid var(--hairline); }
+  dl.spec-rows dt { color: var(--ash-faint); text-transform: uppercase; letter-spacing: var(--tracking-mid); }
+  dl.spec-rows dd { margin: 0; color: var(--ash); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section>
+    <h2 class="tile-title">Identity</h2>
+    <div class="mark">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"
+          d="M12 0.8 C 15.2 5.4 16.6 9.1 16.6 12 C 16.6 14.9 15.2 18.6 12 23.2
+             C 8.8 18.6 7.4 14.9 7.4 12 C 7.4 9.1 8.8 5.4 12 0.8 Z
+             M12.85 5.6 h0.62 v12.8 h-0.62 z
+             M9.7 14.6 h2.3 v0.62 H9.7 z
+             M10.0 16.3 h2.0 v0.62 h-2.0 z
+             M10.4 18.0 h1.6 v0.62 h-1.6 z"/>
+      </svg>
+      <span class="wordmark">OKUMI</span>
+    </div>
+    <p class="measure" style="margin-top:var(--s-4);color:var(--ash-dim)">
+      A blade seen edge-on, with the bevel hairline and three folded-layer ticks knocked
+      out. One flat colour, legible at 24px. The wordmark is HTML type, never a graphic.
+    </p>
+  </section>
+
+  <section>
+    <h2 class="tile-title">Palette</h2>
+    <div class="swatches">
+      <div><div class="sw__chip" style="background:#0A0A0B"></div><p class="sw__name spec">SOOT · #0A0A0B</p></div>
+      <div><div class="sw__chip" style="background:#D8551F"></div><p class="sw__name spec">EMBER · #D8551F</p></div>
+      <div><div class="sw__chip" style="background:#E8A33D"></div><p class="sw__name spec">FORGE GOLD · #E8A33D</p></div>
+      <div><div class="sw__chip" style="background:#6E7B85"></div><p class="sw__name spec">STEEL · #6E7B85</p></div>
+      <div><div class="sw__chip" style="background:#CFC8BE"></div><p class="sw__name spec">ASH · #CFC8BE</p></div>
+    </div>
+    <p class="measure" style="margin-top:var(--s-5);color:var(--ash-dim)">
+      Ember is the only saturated colour on the page and it means “act” — primary
+      buttons, the active filter, the eyebrow. Forge gold carries prices and hovers.
+      Steel and ash carry everything else.
+    </p>
+  </section>
+
+  <section>
+    <h2 class="tile-title">Type</h2>
+    <div class="specimen">
+      <h1 style="font-size:var(--step-4)">The blade remembers the fire.</h1>
+      <h2 style="font-size:var(--step-3)">Sixty-one layers, one edge.</h2>
+      <p class="measure" style="font-size:var(--step-1);color:var(--ash-dim)">
+        Folded damascus over a hard core, ground to a mirror bevel at 15° a side. The
+        pattern isn’t printed on — it’s what steel does when you fold it sixty-one times.
+      </p>
+      <p class="eyebrow">Okumi · Forged by one pair of hands</p>
+      <p class="spec">VG-10 CORE · 61 LAYERS · 61 HRC · 210 MM · 198 G</p>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="tile-title">Specification block</h2>
+    <dl class="spec-rows">
+      <div><dt class="spec">Core steel</dt><dd class="spec">VG-10, differentially hardened</dd></div>
+      <div><dt class="spec">Cladding</dt><dd class="spec">61 folded layers, stainless damascus</dd></div>
+      <div><dt class="spec">Hardness</dt><dd class="spec">61 HRC ± 1</dd></div>
+      <div><dt class="spec">Weight</dt><dd class="spec">198 g</dd></div>
+    </dl>
+  </section>
+
+  <section>
+    <h2 class="tile-title">Buttons</h2>
+    <div class="row">
+      <a class="btn btn--primary" href="#">Buy the Gyuto 210 — £620</a>
+      <a class="btn btn--ghost" href="#">See the collection</a>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="tile-title">Product card</h2>
+    <div class="card">
+      <img src="public/products/gyuto.svg" alt="" />
+      <div class="card__body">
+        <div class="card__row">
+          <h3 style="font-size:var(--step-1)">Gyuto 210</h3>
+          <p class="spec" style="color:var(--forge-gold)">£620</p>
+        </div>
+        <p class="spec" style="color:var(--ash-faint)">KNIVES · 210 MM</p>
+        <p style="color:var(--ash-dim)">The chef’s knife. 61-layer damascus over a VG-10 core, mirror bevel, ho wood handle.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="tile-title">Imagery direction</h2>
+    <p class="measure" style="color:var(--ash-dim)">
+      Near-black ground everywhere. One hard low key light, one narrow ember rim.
+      Violent falloff into black — no fill, no studio softbox wash. Macro stays tack
+      sharp at maximum magnification; blur never stands in for scale. Hands appear only
+      as backlit silhouette, never near the edge. Nothing in any generated frame carries
+      text, engraving, kanji or a maker’s mark.
+    </p>
+  </section>
+
+</div>
+</body>
+</html>

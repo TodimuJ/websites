@@ -1,0 +1,11 @@
+# Source masters from the external generation pass (Nano Banana Pro + Google Flow).
+#
+# Video is excluded: the MP4 masters are large and only the extracted WebP frames in
+# public/frames/ are ever served. Keep the MP4s locally — they are the masters you
+# would re-extract from if the delivery settings ever change.
+*.mp4
+*.mov
+
+# Still masters (keyframes, symbol concepts, product shots) ARE committed: they are
+# small, they cannot be regenerated identically, and they are the provenance record
+# for everything in public/. Nothing on the site references them.

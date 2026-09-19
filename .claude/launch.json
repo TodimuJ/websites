@@ -2,10 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "espresso",
+      "name": "forged-knife",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--workspace", "sites/espresso", "--", "--port", "4321"],
-      "port": 4321
+      "runtimeArgs": ["run", "dev", "--workspace", "sites/forged-knife"],
+      "port": 4322
     }
   ]
 }

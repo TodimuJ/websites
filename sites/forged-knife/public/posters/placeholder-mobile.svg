@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">
+  <!-- PLACEHOLDER. Replaced by frame 0 of the delivered footage (posters/mobile.webp). -->
+  <defs>
+    <radialGradient id="forge" cx="50%" cy="54%" r="42%">
+      <stop offset="0%" stop-color="#E8A33D" stop-opacity="0.55"/>
+      <stop offset="34%" stop-color="#D8551F" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#0A0A0B" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="#0A0A0B"/>
+  <rect width="1080" height="1920" fill="url(#forge)"/>
+</svg>

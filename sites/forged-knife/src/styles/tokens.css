@@ -1,0 +1,162 @@
+/* OKUMI — design tokens. Everything downstream reads from here. */
+
+:root {
+  /* Palette — locked at Gate 1 (brief palette, unmodified) */
+  --soot:       #0A0A0B;
+  --ember:      #D8551F;
+  --forge-gold: #E8A33D;
+  --steel:      #6E7B85;
+  --ash:        #CFC8BE;
+
+  /* Derived surfaces */
+  --soot-raised: #141416;
+  --soot-sunken: #050506;
+  --hairline:        rgba(207, 200, 190, 0.14);
+  --hairline-strong: rgba(207, 200, 190, 0.30);
+  --ash-dim:   rgba(207, 200, 190, 0.66);
+  --ash-faint: rgba(207, 200, 190, 0.42);
+  --ember-dim: rgba(216, 85, 31, 0.16);
+
+  /* Copy sits on the left for every chapter, so the scrim rakes the same way. */
+  --scrim:    linear-gradient(90deg, rgba(10,10,11,0.93) 0%, rgba(10,10,11,0.74) 40%, rgba(10,10,11,0) 76%);
+  --scrim-up: linear-gradient(0deg, rgba(10,10,11,0.95) 0%, rgba(10,10,11,0.72) 46%, rgba(10,10,11,0) 100%);
+
+  /* Type — condensed industrial sans headings, generous serif body, mono for specs */
+  --font-display: "Archivo Narrow", "Oswald", "Helvetica Neue Condensed", Impact, sans-serif;
+  --font-body: "Source Serif 4", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --step--1: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);
+  --step-0:  clamp(1rem, 0.96rem + 0.18vw, 1.12rem);
+  --step-1:  clamp(1.2rem, 1.1rem + 0.5vw, 1.45rem);
+  --step-2:  clamp(1.6rem, 1.3rem + 1.3vw, 2.3rem);
+  --step-3:  clamp(2.1rem, 1.5rem + 2.8vw, 3.8rem);
+  --step-4:  clamp(2.8rem, 1.6rem + 5.4vw, 6.2rem);
+
+  --tracking-wide: 0.24em;
+  --tracking-mid: 0.09em;
+  --leading-tight: 0.98;
+  --leading-body: 1.66;
+
+  /* Space */
+  --s-1: 0.25rem; --s-2: 0.5rem;  --s-3: 0.75rem; --s-4: 1rem;
+  --s-5: 1.5rem;  --s-6: 2rem;    --s-7: 3rem;    --s-8: 4.5rem;
+  --s-9: 7rem;    --s-10: 10rem;
+
+  --measure: 36ch;
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --maxw: 78rem;
+
+  --radius: 1px;
+  --radius-lg: 2px;
+
+  --nav-h: 64px;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (max-width: 767px) {
+  :root { --nav-h: 56px; }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  background: var(--soot);
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--soot);
+  color: var(--ash);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Condensed, tightly set, uppercase — the industrial half of the type pairing. */
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  margin: 0;
+  text-wrap: balance;
+  color: #F2EFEA;
+}
+
+p { margin: 0; text-wrap: pretty; }
+
+a { color: inherit; }
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--forge-gold);
+  outline-offset: 3px;
+  border-radius: var(--radius);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--ember);
+  margin: 0;
+}
+
+.measure { max-width: var(--measure); }
+
+.wrap {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: 48px;
+  padding: 0 var(--s-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-mid);
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 180ms var(--ease), color 180ms var(--ease),
+              border-color 180ms var(--ease);
+}
+
+/* Ember is the only saturated colour on the page, and it means "act". */
+.btn--primary { background: var(--ember); color: #FFF6F0; }
+.btn--primary:hover { background: var(--forge-gold); color: var(--soot); }
+
+.btn--ghost { border-color: var(--hairline-strong); color: var(--ash); background: transparent; }
+.btn--ghost:hover { border-color: var(--forge-gold); color: var(--forge-gold); }
+
+/* Specs are mono, per the brief's type direction. */
+.spec {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.02em;
+  color: var(--steel);
+}
+
+/* Anchors must clear the fixed header */
+[id] { scroll-margin-top: calc(var(--nav-h) + var(--s-5)); }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}

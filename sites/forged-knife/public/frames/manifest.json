@@ -1,0 +1,20 @@
+{
+  "desktop": {
+    "pattern": "/frames/desktop/frame-%04d.webp",
+    "count": 0,
+    "width": 1280,
+    "height": 720,
+    "fps": 15,
+    "poster": "/posters/placeholder-desktop.svg",
+    "bytes": 0
+  },
+  "mobile": {
+    "pattern": "/frames/mobile/frame-%04d.webp",
+    "count": 0,
+    "width": 720,
+    "height": 1280,
+    "fps": 15,
+    "poster": "/posters/placeholder-mobile.svg",
+    "bytes": 0
+  }
+}

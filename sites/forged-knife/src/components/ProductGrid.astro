@@ -1,0 +1,148 @@
+---
+import { site } from "../content/site";
+const { collection, products } = site;
+---
+
+<section id="collection" class="collection">
+  <div class="wrap">
+    <header class="collection__head">
+      <p class="eyebrow">{collection.eyebrow}</p>
+      <h2>{collection.heading}</h2>
+      <p class="collection__note measure">{collection.note}</p>
+
+      <div class="filters" role="group" aria-label="Filter the collection">
+        {collection.filters.map((f, i) => (
+          <button
+            type="button"
+            class="filter"
+            data-filter={f}
+            aria-pressed={i === 0 ? "true" : "false"}
+          >{f}</button>
+        ))}
+      </div>
+    </header>
+
+    <ul class="grid" role="list">
+      {products.map((p) => (
+        <li class:list={["card", { "card--featured": "featured" in p && p.featured }]} data-category={p.category}>
+          <img
+            class="card__img"
+            src={p.image}
+            width="900" height="900" loading="lazy" decoding="async"
+            alt={`${p.name} — ${p.blurb}`}
+          />
+          <div class="card__body">
+            <div class="card__row">
+              <h3 class="card__name">{p.name}</h3>
+              <p class="card__price">{p.price}</p>
+            </div>
+            <p class="card__meta">{p.category} · {p.unit}</p>
+            <p class="card__blurb">{p.blurb}</p>
+
+            <details class="card__detail">
+              <summary>Details</summary>
+              <ul role="list">
+                {p.detail.map((d) => <li>{d}</li>)}
+              </ul>
+            </details>
+          </div>
+        </li>
+      ))}
+    </ul>
+    <p class="collection__empty" hidden>Nothing in that category.</p>
+  </div>
+</section>
+
+<style>
+  .collection { padding: var(--s-9) 0; border-top: 1px solid var(--hairline); }
+  .collection__head { display: grid; gap: var(--s-4); margin-bottom: var(--s-7); }
+  .collection__head h2 { font-size: var(--step-3); max-width: 18ch; }
+  .collection__note { color: var(--ash-dim); }
+
+  .filters { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-2); }
+  .filter {
+    min-height: 44px;
+    padding: 0 var(--s-4);
+    background: transparent;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    color: var(--ash-dim);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: var(--tracking-mid);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 160ms var(--ease), color 160ms var(--ease),
+                background-color 160ms var(--ease);
+  }
+  .filter:hover { color: var(--ash); border-color: var(--hairline-strong); }
+  .filter[aria-pressed="true"] { background: var(--ember); border-color: var(--ember); color: #FFF6F0; }
+
+  .grid {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; gap: var(--s-5);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  }
+
+  .card {
+    display: grid;
+    background: var(--soot-raised);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .card--featured { border-color: rgba(216, 85, 31, 0.55); }
+  .card[hidden] { display: none; }
+
+  .card__img { width: 100%; height: auto; display: block; aspect-ratio: 1; object-fit: cover; }
+  .card__body { padding: var(--s-5); display: grid; gap: var(--s-2); align-content: start; }
+  .card__row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); }
+  .card__name { font-size: var(--step-1); }
+  .card__price { font-family: var(--font-mono); color: var(--forge-gold); }
+  .card__meta {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: var(--tracking-mid);
+    text-transform: uppercase;
+    color: var(--ash-faint);
+  }
+  .card__blurb { color: var(--ash-dim); font-size: var(--step-0); }
+
+  .card__detail { margin-top: var(--s-2); }
+  .card__detail summary {
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: var(--tracking-mid);
+    text-transform: uppercase;
+    color: var(--ash-faint);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .card__detail summary:hover { color: var(--forge-gold); }
+  .card__detail ul { margin: 0 0 var(--s-2); padding-left: 1.1em; color: var(--ash-dim); font-size: var(--step-0); }
+  .card__detail li + li { margin-top: var(--s-1); }
+
+  .collection__empty { margin-top: var(--s-5); color: var(--ash-faint); }
+</style>
+
+<script>
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>(".filter")];
+  const cards = [...document.querySelectorAll<HTMLLIElement>(".card")];
+  const empty = document.querySelector<HTMLElement>(".collection__empty");
+
+  for (const btn of buttons) {
+    btn.addEventListener("click", () => {
+      const want = btn.dataset.filter!;
+      for (const b of buttons) b.setAttribute("aria-pressed", String(b === btn));
+      let shown = 0;
+      for (const card of cards) {
+        const on = want === "All" || card.dataset.category === want;
+        card.hidden = !on;
+        if (on) shown++;
+      }
+      if (empty) empty.hidden = shown > 0;
+    });
+  }
+</script>

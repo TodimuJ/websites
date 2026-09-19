@@ -1,0 +1,244 @@
+---
+import "../styles/tokens.css";
+import Nav from "../components/Nav.astro";
+import ScrollStage from "../components/ScrollStage.astro";
+import ProductGrid from "../components/ProductGrid.astro";
+import { site } from "../content/site";
+
+const { brand, meta, making, spec, smith, checkout, footer } = site;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{meta.title}</title>
+    <meta name="description" content={meta.description} />
+    <meta name="theme-color" content="#0A0A0B" />
+    <link rel="icon" href={brand.symbol} type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    />
+    <meta property="og:title" content={meta.title} />
+    <meta property="og:description" content={meta.description} />
+    <meta property="og:type" content="website" />
+  </head>
+
+  <body id="top">
+    <Nav />
+
+    <main>
+      <h1 class="visually-hidden">{brand.name} — {brand.tagline}</h1>
+
+      <ScrollStage />
+
+      <!-- The making -->
+      <section id="making" class="making">
+        <div class="wrap">
+          <header class="section__head">
+            <p class="eyebrow">{making.eyebrow}</p>
+            <h2>{making.heading}</h2>
+            <p class="measure section__lede">{making.body}</p>
+          </header>
+
+          <ol class="stages" role="list">
+            {making.stages.map((s) => (
+              <li class="stage">
+                <p class="stage__k spec">{s.k}</p>
+                <h3 class="stage__v">{s.v}</h3>
+                <p class="stage__note">{s.note}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <!-- Specification -->
+      <section id="spec" class="spec-block">
+        <div class="wrap spec-block__grid">
+          <div class="spec-block__intro">
+            <p class="eyebrow">{spec.eyebrow}</p>
+            <h2>{spec.heading}</h2>
+            <p class="measure section__lede">{spec.body}</p>
+            <a class="btn btn--primary" href="#collection">Buy the Gyuto 210 — £620</a>
+          </div>
+
+          <dl class="spec-table">
+            {spec.rows.map(([k, v]) => (
+              <div class="spec-table__row">
+                <dt class="spec">{k}</dt>
+                <dd class="spec spec-table__v">{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      <ProductGrid />
+
+      <!-- The smith -->
+      <section id="smith" class="smith">
+        <div class="wrap smith__grid">
+          <div>
+            <p class="eyebrow">{smith.eyebrow}</p>
+            <h2>{smith.heading}</h2>
+            <p class="measure section__lede">{smith.body}</p>
+            <p class="measure section__lede">{smith.body2}</p>
+          </div>
+          <dl class="facts">
+            {smith.facts.map(([k, v]) => (
+              <div class="facts__row">
+                <dt class="spec">{k}</dt>
+                <dd class="facts__v">{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      <!-- Ordering. There is no backend, and the page says so rather than
+           pretending an order can be placed. -->
+      <section id="ordering" class="ordering">
+        <div class="wrap">
+          <h2>{checkout.heading}</h2>
+          <p class="measure section__lede">{checkout.body}</p>
+          <a class="btn btn--ghost" href={`mailto:${checkout.email}`}>{checkout.email}</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap footer__grid">
+        <div class="footer__brand">
+          <span class="footer__word">{brand.name}</span>
+          <p class="measure footer__note">{footer.note}</p>
+        </div>
+        {footer.columns.map((c) => (
+          <nav class="footer__col" aria-label={c.title}>
+            <p class="spec footer__title">{c.title}</p>
+            <ul role="list">
+              {c.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+            </ul>
+          </nav>
+        ))}
+      </div>
+      <div class="wrap footer__legal">
+        <p class="spec">{footer.legal}</p>
+      </div>
+    </footer>
+
+    <style>
+      main { display: block; }
+
+      .section__head { display: grid; gap: var(--s-4); margin-bottom: var(--s-8); }
+      .section__head h2 { font-size: var(--step-3); max-width: 18ch; }
+      .section__lede { color: var(--ash-dim); }
+
+      /* The making */
+      .making { padding: var(--s-9) 0 var(--s-8); border-top: 1px solid var(--hairline); }
+      .stages {
+        list-style: none; margin: 0; padding: 0;
+        display: grid; gap: var(--s-6);
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+      }
+      .stage {
+        display: grid; gap: var(--s-2); align-content: start;
+        padding-top: var(--s-4);
+        border-top: 1px solid var(--hairline-strong);
+      }
+      .stage__k { color: var(--ember); letter-spacing: var(--tracking-wide); }
+      .stage__v { font-size: var(--step-2); }
+      .stage__note { color: var(--ash-dim); font-size: var(--step-0); }
+
+      /* Specification */
+      .spec-block { padding: var(--s-9) 0; border-top: 1px solid var(--hairline); background: var(--soot-sunken); }
+      .spec-block__grid {
+        display: grid; gap: var(--s-8);
+        grid-template-columns: 1fr;
+        align-items: start;
+      }
+      @media (min-width: 900px) {
+        .spec-block__grid { grid-template-columns: 1fr 1fr; gap: var(--s-9); }
+      }
+      .spec-block__intro { display: grid; gap: var(--s-4); justify-items: start; }
+      .spec-block__intro h2 { font-size: var(--step-3); }
+
+      .spec-table { margin: 0; display: grid; }
+      .spec-table__row {
+        display: grid;
+        grid-template-columns: minmax(9rem, 12rem) 1fr;
+        gap: var(--s-4);
+        padding: var(--s-3) 0;
+        border-bottom: 1px solid var(--hairline);
+      }
+      .spec-table dt { color: var(--ash-faint); text-transform: uppercase; letter-spacing: var(--tracking-mid); }
+      .spec-table dd { margin: 0; }
+      .spec-table__v { color: var(--ash); }
+      @media (max-width: 520px) {
+        .spec-table__row { grid-template-columns: 1fr; gap: var(--s-1); }
+      }
+
+      /* The smith */
+      .smith { padding: var(--s-9) 0; border-top: 1px solid var(--hairline); }
+      .smith__grid {
+        display: grid; gap: var(--s-8);
+        grid-template-columns: 1fr;
+        align-items: start;
+      }
+      @media (min-width: 900px) {
+        .smith__grid { grid-template-columns: 1.2fr 1fr; gap: var(--s-9); }
+      }
+      .smith h2 { font-size: var(--step-3); margin-bottom: var(--s-4); }
+      .smith .section__lede + .section__lede { margin-top: var(--s-4); }
+      .facts { margin: 0; display: grid; }
+      .facts__row {
+        display: grid; gap: var(--s-1);
+        padding: var(--s-4) 0;
+        border-top: 1px solid var(--hairline);
+      }
+      .facts dt { color: var(--ash-faint); text-transform: uppercase; letter-spacing: var(--tracking-mid); }
+      .facts dd { margin: 0; color: var(--ash); }
+
+      /* Ordering */
+      .ordering { padding: var(--s-9) 0; border-top: 1px solid var(--hairline); }
+      .ordering h2 { font-size: var(--step-2); margin-bottom: var(--s-4); }
+      .ordering .btn { margin-top: var(--s-5); }
+
+      /* Footer */
+      .footer { border-top: 1px solid var(--hairline); padding: var(--s-8) 0 var(--s-6); background: var(--soot-sunken); }
+      .footer__grid {
+        display: grid; gap: var(--s-7);
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 700px) {
+        .footer__grid { grid-template-columns: 2fr 1fr 1fr; gap: var(--s-8); }
+      }
+      .footer__word {
+        font-family: var(--font-mono);
+        font-size: var(--step--1);
+        letter-spacing: var(--tracking-wide);
+        color: var(--ash);
+      }
+      .footer__note { color: var(--ash-faint); margin-top: var(--s-3); font-size: var(--step-0); }
+      .footer__title { color: var(--ash-faint); text-transform: uppercase; letter-spacing: var(--tracking-mid); margin-bottom: var(--s-3); }
+      .footer__col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
+      .footer__col a {
+        text-decoration: none;
+        color: var(--ash-dim);
+        display: inline-flex; align-items: center; min-height: 34px;
+        transition: color 160ms var(--ease);
+      }
+      .footer__col a:hover { color: var(--forge-gold); }
+      .footer__legal {
+        margin-top: var(--s-7);
+        padding-top: var(--s-5);
+        border-top: 1px solid var(--hairline);
+        color: var(--ash-faint);
+      }
+    </style>
+  </body>
+</html>

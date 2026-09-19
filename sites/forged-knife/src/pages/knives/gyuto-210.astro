@@ -1,0 +1,501 @@
+---
+import Base from "../../layouts/Base.astro";
+import { site } from "../../content/site";
+
+const g = site.gyuto;
+const { checkout } = site;
+const hero = g.gallery[0];
+const rest = g.gallery.slice(1);
+---
+
+<Base
+  title={g.meta.title}
+  description={g.meta.description}
+  skipTo="#content"
+  skipLabel="Skip to content"
+>
+  <main>
+    <nav class="crumb" aria-label="Breadcrumb">
+      <div class="wrap">
+        <ol role="list">
+          <li><a href="/">Home</a></li>
+          {g.crumb.map((c, i) => (
+            <li>
+              {i === g.crumb.length - 1
+                ? <span aria-current="page">{c.label}</span>
+                : <a href={c.href}>{c.label}</a>}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" id="content">
+      <div class="wrap hero__grid">
+        <figure class="hero__media">
+          <img
+            src={hero.src}
+            alt={hero.alt}
+            width="900" height="900"
+            fetchpriority="high" decoding="async"
+          />
+        </figure>
+
+        <div class="hero__body">
+          <p class="eyebrow">{g.eyebrow}</p>
+          <h1 class="hero__name">{g.name}</h1>
+          <p class="hero__price spec">{g.price}</p>
+          <p class="hero__lede">{g.lede}</p>
+
+          <dl class="stats">
+            {g.stats.map(([k, v]) => (
+              <div class="stats__cell">
+                <dt class="spec">{k}</dt>
+                <dd>{v}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <div class="hero__actions">
+            <a class="btn btn--primary" href={g.cta.href}>{g.cta.label}</a>
+            <a class="btn btn--ghost" href={g.secondary.href}>{g.secondary.label}</a>
+          </div>
+          <p class="hero__avail spec">{g.availability}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery -->
+    <section class="gallery" aria-label="The Gyuto 210 being made">
+      <div class="wrap gallery__grid">
+        {rest.map((img) => (
+          <figure class="gallery__item">
+            <img src={img.src} alt={img.alt} width="1200" height="675" loading="lazy" decoding="async" />
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <!-- Why this knife -->
+    <section class="prose">
+      <div class="wrap prose__grid">
+        <header class="section__head prose__head">
+          <p class="eyebrow">{g.story.eyebrow}</p>
+          <h2>{g.story.heading}</h2>
+        </header>
+        <div class="prose__body">
+          {g.story.paragraphs.map((t) => <p>{t}</p>)}
+        </div>
+      </div>
+    </section>
+
+    <!-- How it is made -->
+    <section class="steps">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="eyebrow">{g.making.eyebrow}</p>
+          <h2>{g.making.heading}</h2>
+          <p class="measure section__lede">{g.making.body}</p>
+        </header>
+        <ol class="steps__list" role="list">
+          {g.making.steps.map((s) => (
+            <li class="step">
+              <p class="step__k spec">{s.k}</p>
+              <h3 class="step__v">{s.v}</h3>
+              <p class="step__note">{s.note}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <!-- In the hand -->
+    <section class="prose prose--alt">
+      <div class="wrap prose__grid">
+        <header class="section__head prose__head">
+          <p class="eyebrow">{g.hand.eyebrow}</p>
+          <h2>{g.hand.heading}</h2>
+        </header>
+        <div class="prose__body">
+          {g.hand.paragraphs.map((t) => <p>{t}</p>)}
+        </div>
+      </div>
+    </section>
+
+    <!-- Full specification -->
+    <section class="fullspec" id="specification">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="eyebrow">{g.spec.eyebrow}</p>
+          <h2>{g.spec.heading}</h2>
+        </header>
+        <dl class="fullspec__table">
+          {g.spec.rows.map(([k, v]) => (
+            <div class="fullspec__row">
+              <dt class="spec">{k}</dt>
+              <dd class="spec fullspec__v">{v}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+
+    <!-- What arrives + care -->
+    <section class="twocol">
+      <div class="wrap twocol__grid">
+        <div>
+          <p class="eyebrow">{g.included.eyebrow}</p>
+          <h2 class="twocol__h">{g.included.heading}</h2>
+          <ul class="ticks" role="list">
+            {g.included.items.map((t) => <li>{t}</li>)}
+          </ul>
+          <p class="measure section__lede twocol__note">{g.included.note}</p>
+        </div>
+
+        <div>
+          <p class="eyebrow">{g.care.eyebrow}</p>
+          <h2 class="twocol__h">{g.care.heading}</h2>
+          <p class="care__label spec">Do</p>
+          <ul class="ticks" role="list">
+            {g.care.do.map((t) => <li>{t}</li>)}
+          </ul>
+          <p class="care__label care__label--no spec">Don’t</p>
+          <ul class="ticks ticks--no" role="list">
+            {g.care.dont.map((t) => <li>{t}</li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sharpening -->
+    <section class="sharpen">
+      <div class="wrap sharpen__inner">
+        <p class="eyebrow">{g.sharpening.eyebrow}</p>
+        <h2>{g.sharpening.heading}</h2>
+        <p class="measure section__lede">{g.sharpening.body}</p>
+        <a class="btn btn--ghost" href={g.sharpening.cta.href}>{g.sharpening.cta.label}</a>
+      </div>
+    </section>
+
+    <!-- Which one -->
+    <section class="compare">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="eyebrow">{g.compare.eyebrow}</p>
+          <h2>{g.compare.heading}</h2>
+          <p class="measure section__lede">{g.compare.body}</p>
+        </header>
+
+        <div class="compare__scroll">
+          <table class="compare__table">
+            <thead>
+              <tr>{g.compare.head.map((h, i) => (
+                i === 0 ? <th scope="col"><span class="visually-hidden">Attribute</span></th>
+                        : <th scope="col">{h}</th>
+              ))}</tr>
+            </thead>
+            <tbody>
+              {g.compare.rows.map((row) => (
+                <tr>
+                  <th scope="row">{row[0]}</th>
+                  {row.slice(1).map((cell, i) => (
+                    <td class:list={{ "is-hero": i === 0 }}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="eyebrow">{g.faq.eyebrow}</p>
+          <h2>{g.faq.heading}</h2>
+        </header>
+        <div class="faq__list">
+          {g.faq.items.map((item) => (
+            <details class="faq__item">
+              <summary><span>{item.q}</span></summary>
+              <p class="measure">{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Ordering. No backend: the page says so instead of faking a checkout. -->
+    <section class="ordering" id="ordering">
+      <div class="wrap ordering__inner">
+        <h2>{g.close.heading}</h2>
+        <p class="measure section__lede">{g.close.body}</p>
+        <div class="ordering__actions">
+          <a class="btn btn--primary" href={`mailto:${checkout.email}?subject=Gyuto%20210`}>
+            {checkout.email}
+          </a>
+          <a class="btn btn--ghost" href="/#collection">Back to the collection</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    /* Breadcrumb */
+    .crumb { padding-top: calc(var(--nav-h) + var(--s-6)); }
+    .crumb ol {
+      list-style: none; margin: 0; padding: 0;
+      display: flex; flex-wrap: wrap; gap: var(--s-2);
+      font-family: var(--font-mono);
+      font-size: var(--step--1);
+      letter-spacing: var(--tracking-mid);
+      text-transform: uppercase;
+      color: var(--ash-faint);
+    }
+    .crumb li + li::before { content: "/"; margin-right: var(--s-2); color: var(--hairline-strong); }
+    .crumb a { color: var(--ash-dim); text-decoration: none; }
+    .crumb a:hover { color: var(--forge-gold); }
+    .crumb [aria-current] { color: var(--ember); }
+
+    /* Hero */
+    .hero { padding: var(--s-6) 0 var(--s-8); }
+    .hero__grid {
+      display: grid; gap: var(--s-7);
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+    @media (min-width: 900px) {
+      .hero__grid { grid-template-columns: 1.05fr 1fr; gap: var(--s-9); align-items: center; }
+    }
+    .hero__media { margin: 0; }
+    .hero__media img {
+      width: 100%; height: auto; display: block;
+      aspect-ratio: 1; object-fit: cover;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-lg);
+      background: var(--soot-raised);
+    }
+    .hero__body { display: grid; gap: var(--s-4); justify-items: start; }
+    .hero__name { font-size: var(--step-4); }
+    .hero__price {
+      font-size: var(--step-2);
+      color: var(--forge-gold);
+      letter-spacing: 0;
+    }
+    .hero__lede { color: var(--ash-dim); font-size: var(--step-1); max-width: 44ch; }
+
+    .stats {
+      margin: var(--s-2) 0 0;
+      display: grid; gap: 1px;
+      grid-template-columns: repeat(2, 1fr);
+      background: var(--hairline);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      width: 100%;
+    }
+    @media (min-width: 560px) { .stats { grid-template-columns: repeat(4, 1fr); } }
+    .stats__cell { background: var(--soot-raised); padding: var(--s-4); display: grid; gap: var(--s-1); }
+    .stats dt { color: var(--ash-faint); text-transform: uppercase; letter-spacing: var(--tracking-mid); }
+    .stats dd { margin: 0; color: #F2EFEA; font-family: var(--font-mono); font-size: var(--step-0); }
+
+    .hero__actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-2); }
+    .hero__avail { color: var(--ash-faint); }
+    @media (max-width: 559px) {
+      .hero__actions { width: 100%; }
+      .hero__actions .btn { flex: 1 1 100%; }
+    }
+
+    /* Gallery */
+    .gallery { padding-bottom: var(--s-8); }
+    .gallery__grid {
+      display: grid; gap: var(--s-4);
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 760px) {
+      .gallery__grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .gallery__item { margin: 0; }
+    .gallery__item img {
+      width: 100%; height: auto; display: block;
+      aspect-ratio: 16 / 9; object-fit: cover;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--hairline);
+    }
+
+    /* Prose sections */
+    .prose { padding: var(--s-9) 0; border-top: 1px solid var(--hairline); }
+    .prose--alt { background: var(--soot-sunken); }
+    .prose__grid {
+      display: grid; gap: var(--s-6);
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+    @media (min-width: 900px) {
+      .prose__grid { grid-template-columns: 1fr 1.25fr; gap: var(--s-9); }
+    }
+    .prose__head { margin-bottom: 0; }
+    .prose__body { display: grid; gap: var(--s-5); }
+    .prose__body p { color: var(--ash-dim); max-width: 62ch; }
+    .prose__body p:first-child { color: var(--ash); font-size: var(--step-1); }
+
+    /* Steps */
+    .steps { padding: var(--s-9) 0; border-top: 1px solid var(--hairline); }
+    .steps__list {
+      list-style: none; margin: 0; padding: 0;
+      display: grid; gap: var(--s-6);
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    }
+    .step {
+      display: grid; gap: var(--s-2); align-content: start;
+      padding-top: var(--s-4);
+      border-top: 1px solid var(--hairline-strong);
+    }
+    .step__k { color: var(--ember); letter-spacing: var(--tracking-wide); }
+    .step__v { font-size: var(--step-2); }
+    .step__note { color: var(--ash-dim); font-size: var(--step-0); }
+
+    /* Full specification */
+    .fullspec { padding: var(--s-9) 0; border-top: 1px solid var(--hairline); background: var(--soot-sunken); }
+    .fullspec__table {
+      margin: 0; display: grid;
+      column-gap: var(--s-8);
+    }
+    @media (min-width: 900px) {
+      .fullspec__table { grid-template-columns: 1fr 1fr; }
+    }
+    .fullspec__row {
+      display: grid;
+      grid-template-columns: minmax(10rem, 14rem) 1fr;
+      gap: var(--s-4);
+      padding: var(--s-3) 0;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .fullspec dt { color: var(--ash-faint); text-transform: uppercase; letter-spacing: var(--tracking-mid); }
+    .fullspec dd { margin: 0; }
+    .fullspec__v { color: var(--ash); }
+    @media (max-width: 520px) {
+      .fullspec__row { grid-template-columns: 1fr; gap: var(--s-1); }
+    }
+
+    /* What arrives + care */
+    .twocol { padding: var(--s-9) 0; border-top: 1px solid var(--hairline); }
+    .twocol__grid {
+      display: grid; gap: var(--s-8);
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+    @media (min-width: 900px) {
+      .twocol__grid { grid-template-columns: 1fr 1fr; gap: var(--s-9); }
+    }
+    .twocol__h { font-size: var(--step-2); margin: var(--s-3) 0 var(--s-5); }
+    .twocol__note { margin-top: var(--s-5); }
+
+    .ticks { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); }
+    .ticks li {
+      position: relative;
+      padding-left: var(--s-5);
+      color: var(--ash-dim);
+      max-width: 52ch;
+    }
+    .ticks li::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0.62em;
+      width: 10px; height: 1px;
+      background: var(--forge-gold);
+    }
+    .ticks--no li::before { background: var(--steel); }
+
+    .care__label {
+      color: var(--forge-gold);
+      text-transform: uppercase;
+      letter-spacing: var(--tracking-wide);
+      margin-bottom: var(--s-3);
+    }
+    .care__label--no { color: var(--steel); margin-top: var(--s-6); }
+
+    /* Sharpening */
+    .sharpen { padding: var(--s-9) 0; border-top: 1px solid var(--hairline); background: var(--soot-sunken); }
+    .sharpen__inner { display: grid; gap: var(--s-4); justify-items: start; }
+    .sharpen h2 { font-size: var(--step-3); max-width: 20ch; }
+    .sharpen .btn { margin-top: var(--s-2); }
+
+    /* Comparison */
+    .compare { padding: var(--s-9) 0; border-top: 1px solid var(--hairline); }
+    .compare__scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .compare__table {
+      width: 100%;
+      min-width: 34rem;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: var(--step--1);
+    }
+    .compare__table th,
+    .compare__table td {
+      text-align: left;
+      padding: var(--s-4) var(--s-4) var(--s-4) 0;
+      border-bottom: 1px solid var(--hairline);
+      vertical-align: top;
+    }
+    .compare__table thead th {
+      color: #F2EFEA;
+      letter-spacing: var(--tracking-mid);
+      text-transform: uppercase;
+      border-bottom-color: var(--hairline-strong);
+    }
+    .compare__table tbody th {
+      color: var(--ash-faint);
+      text-transform: uppercase;
+      letter-spacing: var(--tracking-mid);
+      font-weight: 400;
+    }
+    .compare__table td { color: var(--ash-dim); }
+    .compare__table td.is-hero { color: var(--forge-gold); }
+
+    /* FAQ */
+    .faq { padding: var(--s-9) 0; border-top: 1px solid var(--hairline); background: var(--soot-sunken); }
+    .faq__list { display: grid; }
+    .faq__item { border-top: 1px solid var(--hairline); }
+    .faq__item:last-child { border-bottom: 1px solid var(--hairline); }
+    .faq__item summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-4);
+      min-height: 64px;
+      padding: var(--s-4) 0;
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      font-size: var(--step-1);
+      color: #F2EFEA;
+    }
+    .faq__item summary::-webkit-details-marker { display: none; }
+    .faq__item summary::after {
+      content: "+";
+      font-family: var(--font-mono);
+      color: var(--ember);
+      font-size: var(--step-2);
+      line-height: 1;
+      flex: none;
+    }
+    .faq__item[open] summary::after { content: "–"; }
+    .faq__item summary:hover { color: var(--forge-gold); }
+    .faq__item p { color: var(--ash-dim); padding-bottom: var(--s-5); max-width: 62ch; }
+
+    /* Ordering */
+    .ordering { padding: var(--s-9) 0 var(--s-10); border-top: 1px solid var(--hairline); }
+    .ordering__inner { display: grid; gap: var(--s-4); justify-items: start; }
+    .ordering h2 { font-size: var(--step-3); max-width: 18ch; }
+    .ordering__actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-2); }
+    @media (max-width: 559px) {
+      .ordering__actions { width: 100%; }
+      .ordering__actions .btn { flex: 1 1 100%; }
+    }
+  </style>
+</Base>

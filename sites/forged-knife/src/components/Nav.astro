@@ -1,22 +1,34 @@
 ---
 import { site } from "../content/site";
 const symbol = await import("../../public/logo-symbol.svg?raw").then((m) => m.default);
+
+interface Props {
+  skipTo?: string;
+  skipLabel?: string;
+}
+const { skipTo = "#making", skipLabel = "Skip the story" } = Astro.props;
+
+// The nav points at sections of the home page. On the home page those stay bare
+// fragments so they scroll rather than reload; anywhere else they need the path.
+const home = Astro.url.pathname === "/";
+const to = (href: string) => (home || !href.startsWith("#") ? href : `/${href}`);
+const brandHref = home ? "#top" : "/";
 ---
 
-<a class="skip-link" href="#making">Skip the story</a>
+<a class="skip-link" href={skipTo}>{skipLabel}</a>
 
 <header class="nav">
   <div class="nav__inner">
-    <a class="brand" href="#top" aria-label={`${site.brand.name} — home`}>
+    <a class="brand" href={brandHref} aria-label={`${site.brand.name} — home`}>
       <span class="brand__symbol" set:html={symbol} />
       <span class="brand__word">{site.brand.name}</span>
     </a>
 
     <nav class="nav__links" aria-label="Primary">
-      {site.nav.map((l) => <a href={l.href}>{l.label}</a>)}
+      {site.nav.map((l) => <a href={to(l.href)}>{l.label}</a>)}
     </nav>
 
-    <a class="btn btn--primary nav__cta" href={site.cta.href}>{site.cta.label}</a>
+    <a class="btn btn--primary nav__cta" href={to(site.cta.href)}>{site.cta.label}</a>
 
     <button
       class="nav__toggle"
@@ -34,8 +46,8 @@ const symbol = await import("../../public/logo-symbol.svg?raw").then((m) => m.de
   <div class="menu__panel" role="dialog" aria-modal="true" aria-label="Menu">
     <button class="menu__close" type="button" aria-label="Close menu">&times;</button>
     <nav class="menu__links" aria-label="Menu">
-      {site.nav.map((l) => <a href={l.href}>{l.label}</a>)}
-      <a href={site.cta.href} class="menu__cta">{site.cta.label}</a>
+      {site.nav.map((l) => <a href={to(l.href)}>{l.label}</a>)}
+      <a href={to(site.cta.href)} class="menu__cta">{site.cta.label}</a>
     </nav>
   </div>
 </div>

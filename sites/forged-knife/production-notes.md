@@ -373,7 +373,81 @@ engine fetches around the new playhead. That is the bounded-concurrency loader b
 correctly, not a bug, but it does mean a screenshot taken too soon reads as a black
 frame.
 
-## 10 — Deploy
+## 10 — Gyuto 210 product page (added 2026-09-19)
+
+`/knives/gyuto-210/` — a detail page for the hero knife only. The product name in the
+collection grid links to it, as do the hero chapter's secondary CTA, the closing chapter
+CTA, the home specification block and the footer.
+
+### Structural change: a shared layout
+
+Nav and footer were duplicated the moment a second page existed, so they moved into
+`src/layouts/Base.astro`, which now owns the document shell, the font links, the nav, the
+footer and the shared section furniture. `index.astro` was refactored onto it and its
+rendered output is **byte-identical to before the refactor** where content did not change.
+
+`Nav.astro` became path-aware. The nav points at home-page sections, so on `/` the links
+stay bare fragments (`#making`) and scroll; anywhere else they gain the path (`/#making`)
+and navigate. The brand mark links to `#top` on the home page and to `/` elsewhere. The
+skip link is now a prop — "Skip the story" → `#making` on the home page, "Skip to
+content" → `#content` on the product page, where there is no story to skip.
+
+### What is on the page
+
+Breadcrumb · hero (image, price, lede, four-stat strip, buy + collection CTAs,
+availability line) · three-image gallery · "Why a gyuto, and why 210" · "Six days, four
+irreversible steps" · "Where the weight sits" · an 18-row full specification · "In the
+box" and a do/don't care list side by side · free-resharpening-for-life · a
+gyuto/santoku/petty comparison table · six-question FAQ · ordering.
+
+All of it lives in `site.gyuto` in `src/content/site.ts`. Nothing user-visible is
+hardcoded in the page component, same rule as everywhere else.
+
+**The copy is placeholder like the rest of the site.** The 61-layer construction, the
+one-in-twelve quench failure rate, the 8 mm balance point, the saya, the numbered card,
+the free-resharpening policy and every FAQ answer are invented. Replace them before
+trading.
+
+### Gallery assets
+
+Three stills extracted from `desktop.mp4` at 1200 wide, `cwebp -q 84`: the forge at
+6.5s, the honing at 20.6s and the cut at 28.7s — 28–37KB each. They are genuine frames of
+the same knife the page sells, not stock imagery, and they reuse footage already paid for.
+The hero image is the existing `products/gyuto.webp`.
+
+### Card linking
+
+The product **name** is the link, not the whole card. Wrapping the card would have
+swallowed the price, the details disclosure and the filter buttons into one target. The
+image is a second link to the same place, `tabindex="-1"` and `aria-hidden`, so it is
+clickable without duplicating the destination in the tab order, and a "Full specification
+→" link sits under the details disclosure. Only the gyuto has `href` in `products`; the
+markup falls back to plain text for the other four.
+
+### Verified
+
+| Check | Result |
+|---|---|
+| `npm run build` | passes, 2 pages |
+| Clicking the product name in the grid | navigates to `/knives/gyuto-210/` |
+| Every internal `href` on both pages | 200, checked by sweeping the built HTML |
+| Both pages in a fresh-clone build | byte-identical to local |
+| Home page scroll sequence after the refactor | still paints; reveal chapter and scrim correct at p = 0.90 |
+| Horizontal overflow at 375 | none (`scrollWidth === clientWidth === 375`) |
+| Mobile layout | hero, gallery and spec rows collapse to one column; stats go 2×2; both CTAs full width |
+| Comparison table on mobile | scrolls inside its own container; the page does not overflow |
+| FAQ disclosure | opens, answer renders |
+| Failed requests | zero on both pages |
+
+**Screenshot caveat, recorded because it wasted time:** the desktop app's Browser pane
+stops compositing this page below roughly 2,000 px of scroll and returns solid-black
+screenshots, and a programmatic `scrollIntoView` triggers it immediately. The page is
+fine — element rects, computed styles, colours and text were all read back correctly at
+those positions, and a freshly created tab loaded at an anchor renders normally. Sections
+verified structurally rather than visually: "In the box" / care, and the comparison table
+on desktop. Both were confirmed by reading layout and content from the DOM.
+
+## 11 — Deploy
 
 `netlify.toml` lives in `sites/forged-knife/`, never at the repo root. Netlify UI:
 **Package directory** `sites/forged-knife`, **Base directory** empty (repo root, required

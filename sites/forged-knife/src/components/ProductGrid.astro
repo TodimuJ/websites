@@ -25,15 +25,33 @@ const { collection, products } = site;
     <ul class="grid" role="list">
       {products.map((p) => (
         <li class:list={["card", { "card--featured": "featured" in p && p.featured }]} data-category={p.category}>
-          <img
-            class="card__img"
-            src={p.image}
-            width="900" height="900" loading="lazy" decoding="async"
-            alt={`${p.name} — ${p.blurb}`}
-          />
+          {"href" in p && p.href ? (
+            <a class="card__media" href={p.href} tabindex="-1" aria-hidden="true">
+              <img
+                class="card__img"
+                src={p.image}
+                width="900" height="900" loading="lazy" decoding="async"
+                alt=""
+              />
+            </a>
+          ) : (
+            <img
+              class="card__img"
+              src={p.image}
+              width="900" height="900" loading="lazy" decoding="async"
+              alt={`${p.name} — ${p.blurb}`}
+            />
+          )}
           <div class="card__body">
             <div class="card__row">
-              <h3 class="card__name">{p.name}</h3>
+              <h3 class="card__name">
+                {"href" in p && p.href ? (
+                  <a class="card__link" href={p.href}>
+                    {p.name}
+                    <span class="visually-hidden"> — see the full specification</span>
+                  </a>
+                ) : p.name}
+              </h3>
               <p class="card__price">{p.price}</p>
             </div>
             <p class="card__meta">{p.category} · {p.unit}</p>
@@ -45,6 +63,10 @@ const { collection, products } = site;
                 {p.detail.map((d) => <li>{d}</li>)}
               </ul>
             </details>
+
+            {"href" in p && p.href && (
+              <a class="card__more" href={p.href}>Full specification &rarr;</a>
+            )}
           </div>
         </li>
       ))}
@@ -95,6 +117,27 @@ const { collection, products } = site;
   .card[hidden] { display: none; }
 
   .card__img { width: 100%; height: auto; display: block; aspect-ratio: 1; object-fit: cover; }
+  .card__media { display: block; }
+  .card__media .card__img { transition: transform 420ms var(--ease), opacity 220ms var(--ease); }
+  .card:hover .card__media .card__img { transform: scale(1.03); }
+
+  /* The whole card is not a link — the name is, so the price, the details
+     disclosure and the filter buttons all stay independently operable. */
+  .card__link { text-decoration: none; }
+  .card__link:hover { color: var(--forge-gold); }
+  .card__more {
+    margin-top: var(--s-1);
+    justify-self: start;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: var(--tracking-mid);
+    text-transform: uppercase;
+    color: var(--ember);
+    text-decoration: none;
+    display: inline-flex; align-items: center; min-height: 44px;
+    transition: color 160ms var(--ease);
+  }
+  .card__more:hover { color: var(--forge-gold); }
   .card__body { padding: var(--s-5); display: grid; gap: var(--s-2); align-content: start; }
   .card__row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); }
   .card__name { font-size: var(--step-1); }

@@ -93,8 +93,7 @@ export const site = {
 
 Write the footer as a real brand would: a short brand line and a copyright. No demo
 marker, no "this site is a demonstration" disclaimer, and no `noindex` — these sites are
-built to become real storefronts. Do not invent testimonials, ratings, awards,
-certifications, press quotes or addresses; ask the user or omit the section.
+built to become real storefronts.
 
 ## `ScrollStage.astro`
 

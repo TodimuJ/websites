@@ -65,7 +65,7 @@ accounts. Check whether the target repo is public before pushing.
 
 ### Netlify from this monorepo
 
-`netlify.toml` at the **repo root**:
+`netlify.toml` goes in **`sites/<slug>/`**, never at the repo root:
 
 ```toml
 [build]
@@ -76,10 +76,21 @@ accounts. Check whether the target repo is public before pushing.
   NODE_VERSION = "22"
 ```
 
-Netlify imports a **repository**, not a subfolder — `netlify.toml` selects the site.
-**Do not set Netlify's base directory to `sites/<slug>`:** these are npm workspaces, so
-the install and `packages/scroll-engine` live at the root and the site directory cannot
-resolve `@sites/scroll-engine` on its own.
+Then in the Netlify UI, under Build & deploy:
+
+| Setting | Value | Why |
+|---|---|---|
+| **Package directory** | `sites/<slug>` | Netlify reads that site's `netlify.toml` from here |
+| **Base directory** | *(empty — repo root)* | Where deps install; npm workspaces need the root |
+| Build command | *(from the file)* | — |
+| Publish directory | *(from the file)* | Relative to **base**, so the full `sites/<slug>/dist` |
+
+This is Netlify's documented monorepo recommendation and it is what makes **one repo,
+many Netlify sites** work. Never put a `netlify.toml` at the repo root: file-based config
+overrides UI settings, so a root file would hijack the build of every site pointed at
+this repo. A single `[build]` table cannot describe two sites either.
+
+Netlify imports a **repository**, not a subfolder URL.
 
 Ship `public/_headers` so returning visitors do not re-download the sequence:
 

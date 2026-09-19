@@ -10,9 +10,7 @@ the four-day roast-to-door claim are invented to give the layout real content. T
 as fact to a visitor. Swap them for your own in `src/content/site.ts` before the site
 takes an order.
 
-No testimonials, customer counts, ratings, awards, certifications, press quotes or
-addresses appear anywhere — those are the claims that must come from the business rather
-than be invented, and none were. No real brand or real farm is named or implied.
+No real brand or real farm is named or implied.
 
 ---
 
@@ -404,10 +402,12 @@ be used to build a live commercial site. Changed:
   applies equally to a live store. Replace it when a real checkout is wired up.
 
 Instruction files updated so future sites inherit this: `CLAUDE.md`, `SKILL.md`
-(non-negotiable 6), `references/build.md`. The rule against inventing testimonials,
-ratings, awards, certifications, press quotes and addresses was **kept and reframed** —
-it now reads as a brand-integrity rule (those claims come from the user) rather than a
-demo rule.
+(non-negotiable 6), `references/build.md`. At the user's direction the rule against
+inventing testimonials, customer counts, ratings, awards, certifications, press quotes
+and addresses was **removed entirely** from all three, and the corresponding note removed
+from this file. Reviewing generated copy for invented social proof is now the user's
+call, not an automatic constraint. The separate rule that an action which did not happen
+must not report success is **kept**.
 
 Also folded back into the skill from this build:
 
@@ -419,10 +419,26 @@ Also folded back into the skill from this build:
 
 ## 14 — Deployment
 
-`netlify.toml` at the repo root builds `sites/espresso` out of the npm workspace and
-publishes `sites/espresso/dist`. Netlify's base directory must stay at the repo root:
-the install and `packages/scroll-engine` live there, and the site directory cannot
-resolve `@sites/scroll-engine` alone.
+`sites/espresso/netlify.toml` builds this site out of the npm workspace and publishes
+`sites/espresso/dist`.
+
+**Corrected 2026-09-19.** The config first went in at the repo root, which works for one
+site and breaks as soon as a second is added: Netlify's file-based config overrides UI
+settings, so a root `netlify.toml` would hijack the build settings of every Netlify site
+pointed at this repo, and a single `[build]` table cannot describe two sites. Netlify's
+documented monorepo recommendation is the opposite — per-site config in the site's own
+directory:
+
+| Netlify setting | Value |
+|---|---|
+| Package directory | `sites/espresso` (Netlify reads this site's `netlify.toml` here) |
+| Base directory | *(empty — repo root)* |
+
+Base must stay at the root because dependencies install there and `@sites/scroll-engine`
+cannot resolve from inside the site directory. `publish` is relative to **base**, so it
+keeps the full `sites/espresso/dist` path. Adding a second site means a second Netlify
+site with package directory `sites/<slug>` and its own `netlify.toml` — no shared file to
+conflict over.
 
 `public/_headers` sets `max-age=31536000, immutable` on `/frames/*`, `/posters/*` and
 `/products/*`.

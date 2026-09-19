@@ -41,9 +41,7 @@ something seems unexplained, it is in `SKILL.md` or one of `references/`.
   footer, no `noindex`, unless the user explicitly asks for one. These sites are built to
   become real storefronts.
 - Invented products, brand names and imagery are fine — that is how a site gets built
-  before the real catalogue exists. But **factual claims about the business come from the
-  user, never from you**: testimonials, customer counts, ratings, awards, certifications,
-  press quotes, physical addresses. Ask for them or leave the section out.
+  before the real catalogue exists.
 - Never impersonate a real brand you were not asked to build.
 - An action that did not happen must not report success. A checkout with no backend says
   so plainly; it never shows a confirmation.
@@ -54,14 +52,22 @@ Every site is built to be pushed to GitHub and hosted on Netlify from that repo.
 failure mode to design against is a site that is perfect locally and broken once
 deployed, because an asset was gitignored or the monorepo was wired up wrong.
 
-- **`netlify.toml` at the repo root**, one per deployed site:
-  `command = "npm run build --workspace sites/<slug>"`,
-  `publish = "sites/<slug>/dist"`, `NODE_VERSION` matching local.
-- **Never set Netlify's base directory to `sites/<slug>`.** These are npm workspaces —
-  the install and the shared `packages/scroll-engine` live at the repo root. Installing
-  from inside the site directory cannot resolve `@sites/scroll-engine`.
-- **Point Netlify at the repository, not a subfolder URL.** Netlify imports repos;
-  `netlify.toml` selects which site inside it gets built.
+- **`netlify.toml` goes in `sites/<slug>/`, never at the repo root.** This is Netlify's
+  documented monorepo setup and it is what lets one repo feed many Netlify sites:
+  - **Package directory** (Netlify UI) = `sites/<slug>` — Netlify reads that site's
+    `netlify.toml` from there.
+  - **Base directory** = repo root (leave empty) — it is where dependencies install and
+    the build command runs, and npm workspaces need that to be the root or
+    `@sites/scroll-engine` will not resolve.
+  - `publish` is relative to the **base** directory, so it stays `sites/<slug>/dist`.
+  - The file holds `command`, `publish` and `NODE_VERSION` matching local.
+- **A root `netlify.toml` is actively harmful here.** File-based config overrides the
+  Netlify UI, so one at the root would hijack the build settings of *every* Netlify site
+  pointed at this repo, including sites it was never meant to configure. A single
+  `[build]` table also cannot describe two sites — TOML has no second `[build]`, and
+  Netlify reads one.
+- **Point Netlify at the repository, not a subfolder URL.** Netlify imports repos; the
+  package directory selects which site inside it gets built.
 - **Commit everything the site serves.** All of `public/` — frames, posters, products,
   SVGs — is tracked. A `.gitignore` inside a subdirectory applies only to that directory
   and below; keep asset-excluding patterns scoped there and never at the repo root.

@@ -1,0 +1,147 @@
+/* NINE BAR — design tokens. Everything downstream reads from here. */
+
+:root {
+  /* Palette — locked at Gate 1 */
+  --ink:      #100C09;
+  --crema:    #C98F52;
+  --espresso: #3A2318;
+  --steel:    #8C8E90;
+  --paper:    #F2EDE6;
+
+  /* Derived surfaces */
+  --ink-raised:  #191310;
+  --ink-sunken:  #0A0706;
+  --hairline:    rgba(242, 237, 230, 0.14);
+  --hairline-strong: rgba(242, 237, 230, 0.28);
+  --paper-dim:   rgba(242, 237, 230, 0.66);
+  --paper-faint: rgba(242, 237, 230, 0.44);
+  --scrim:       linear-gradient(90deg, rgba(16,12,9,0.92) 0%, rgba(16,12,9,0.72) 42%, rgba(16,12,9,0) 78%);
+  --scrim-up:    linear-gradient(0deg, rgba(16,12,9,0.94) 0%, rgba(16,12,9,0.70) 46%, rgba(16,12,9,0) 100%);
+
+  /* Type */
+  --font-display: "Playfair Display", "Canela", "Iowan Old Style", Georgia, serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --step--1: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);
+  --step-0:  clamp(0.95rem, 0.92rem + 0.15vw, 1.05rem);
+  --step-1:  clamp(1.15rem, 1.05rem + 0.5vw, 1.4rem);
+  --step-2:  clamp(1.5rem, 1.25rem + 1.2vw, 2.1rem);
+  --step-3:  clamp(2rem, 1.5rem + 2.4vw, 3.4rem);
+  --step-4:  clamp(2.6rem, 1.6rem + 4.6vw, 5.6rem);
+
+  --tracking-wide: 0.22em;
+  --tracking-mid: 0.08em;
+  --leading-tight: 1.04;
+  --leading-body: 1.62;
+
+  /* Space */
+  --s-1: 0.25rem; --s-2: 0.5rem;  --s-3: 0.75rem; --s-4: 1rem;
+  --s-5: 1.5rem;  --s-6: 2rem;    --s-7: 3rem;    --s-8: 4.5rem;
+  --s-9: 7rem;    --s-10: 10rem;
+
+  --measure: 34ch;
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --maxw: 78rem;
+
+  --radius: 2px;
+  --radius-lg: 4px;
+
+  --nav-h: 64px;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (max-width: 767px) {
+  :root { --nav-h: 56px; }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  background: var(--ink);
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: var(--leading-tight);
+  letter-spacing: -0.015em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p { margin: 0; text-wrap: pretty; }
+
+a { color: inherit; }
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--crema);
+  outline-offset: 3px;
+  border-radius: var(--radius);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--crema);
+  margin: 0;
+}
+
+.measure { max-width: var(--measure); }
+
+.wrap {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: 48px;
+  padding: 0 var(--s-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-mid);
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 180ms var(--ease), color 180ms var(--ease),
+              border-color 180ms var(--ease);
+}
+
+.btn--primary { background: var(--crema); color: var(--ink); }
+.btn--primary:hover { background: var(--paper); }
+
+.btn--ghost { border-color: var(--hairline-strong); color: var(--paper); background: transparent; }
+.btn--ghost:hover { border-color: var(--crema); color: var(--crema); }
+
+/* Anchors must clear the fixed header */
+[id] { scroll-margin-top: calc(var(--nav-h) + var(--s-5)); }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}

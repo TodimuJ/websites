@@ -1,0 +1,96 @@
+---
+interface Props {
+  id: string;
+  at: [number, number];
+  align: "left" | "right" | "centre";
+  eyebrow?: string;
+  heading: string;
+  body?: string;
+  cta?: { label: string; href: string };
+  secondary?: { label: string; href: string };
+}
+const { id, at, align, eyebrow, heading, body, cta, secondary } = Astro.props;
+---
+
+<div class={`chapter chapter--${align}`} data-chapter data-at={JSON.stringify(at)} id={`ch-${id}`}>
+  <div class="chapter__inner">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h2 class="chapter__heading">{heading}</h2>
+    {body && <p class="chapter__body measure">{body}</p>}
+    {(cta || secondary) && (
+      <div class="chapter__actions">
+        {cta && <a class="btn btn--primary" href={cta.href}>{cta.label}</a>}
+        {secondary && <a class="btn btn--ghost" href={secondary.href}>{secondary.label}</a>}
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  .chapter {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    align-items: center;
+    padding: calc(var(--nav-h) + var(--s-6)) var(--gutter) var(--s-8);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 520ms var(--ease), transform 520ms var(--ease),
+                visibility 0s linear 520ms;
+    transform: translateY(14px);
+  }
+  .chapter.is-on {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
+  }
+  /* Only the visible chapter may be clicked. */
+  .chapter.is-on .chapter__actions { pointer-events: auto; }
+
+  .chapter__inner {
+    max-width: var(--maxw);
+    width: 100%;
+    margin-inline: auto;
+    display: grid;
+    gap: var(--s-4);
+    justify-items: start;
+  }
+  .chapter--left .chapter__inner { text-align: left; }
+  .chapter--right .chapter__inner { justify-items: end; text-align: right; }
+  .chapter--centre .chapter__inner { justify-items: center; text-align: center; }
+
+  .chapter__heading {
+    font-size: var(--step-4);
+    max-width: 16ch;
+    text-shadow: 0 2px 40px rgba(16, 12, 9, 0.85);
+  }
+  .chapter__body {
+    color: var(--paper-dim);
+    font-size: var(--step-1);
+    text-shadow: 0 1px 24px rgba(16, 12, 9, 0.9);
+  }
+  .chapter__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    margin-top: var(--s-3);
+  }
+
+  @media (max-width: 767px) {
+    /* Portrait: copy sits low, clear of the subject and the nav. */
+    /* Clear the fixed scroll cue at the bottom of the stage. */
+    .chapter { align-items: end; padding-bottom: calc(var(--s-9) + env(safe-area-inset-bottom)); }
+    .chapter--right .chapter__inner,
+    .chapter--centre .chapter__inner { justify-items: start; text-align: left; }
+    .chapter__heading { max-width: 12ch; }
+    .chapter__body { font-size: var(--step-0); }
+    .chapter__actions { width: 100%; }
+    .chapter__actions .btn { flex: 1 1 auto; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chapter { transition: none; }
+  }
+</style>

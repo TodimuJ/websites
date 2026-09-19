@@ -278,6 +278,22 @@ deliberately — `drama` or `epic` suits most of these briefs; `auto` drifts.
 Save the original MP4 and brand masters. Extract into a **fresh** staging directory.
 `fps` and `width` come from the budget.
 
+**Check the encoder exists first.** Homebrew's current `ffmpeg` formula is slim and has
+**no `libwebp`** — `ffmpeg -hide_banner -encoders | grep webp` comes back empty and the
+commands below fail with `Unknown encoder 'libwebp'`. Verify with that grep, and if it is
+missing use the two-step path instead, which is equivalent and exposes finer control:
+
+```sh
+ffmpeg -i source.mp4 -an -vf "fps=${FPS},scale=${WIDTH}:-2:flags=lanczos" \
+  -start_number 0 "$TMP/frame-%04d.png"
+ls -1 "$TMP" | xargs -P 8 -I{} cwebp -quiet -q 85 -m 6 "$TMP/{}" -o "frames/desktop/{}.webp"
+```
+
+`cwebp -resize W 0` also handles the downscale, so PNG intermediates can be extracted once
+per fps and re-encoded at several widths while measuring.
+
+Single-pass, when `libwebp` is available:
+
 ```sh
 # Desktop
 ffmpeg -i source.mp4 -an \
@@ -297,6 +313,19 @@ ffmpeg -i source.mp4 -vf "select=eq(n\,0),scale=${WIDTH}:-2" -frames:v 1 posters
 
 Tune from measurement. Drop `fps` before you drop `quality`. Never upscale a
 low-resolution source.
+
+**Check the source for letterboxing before extracting.** Generated portrait clips
+frequently carry a few pixels of pillarbox, which reads as a seam against the page
+background. Detect and crop it rather than shipping it:
+
+```sh
+ffmpeg -hide_banner -ss 2 -i portrait.mp4 -vf "cropdetect=24:2:0" -frames:v 60 -f null - 2>&1 \
+  | grep -o 'crop=[0-9:]*' | sort | uniq -c | sort -rn | head -3
+```
+
+Then put that exact `crop=` filter **before** the scale in the extraction chain. Crop
+first, scale second: cropping changes the effective aspect, so the output height follows
+from the cropped width.
 
 **Budget check before integrating:**
 

@@ -60,9 +60,65 @@ Publish only within the scope the user authorised. Use a private preview where t
 environment supports one. **Never silently expose a draft publicly.** If publishing is
 unavailable, deliver a runnable local project and name the missing dependency.
 
-GitHub Pages from a monorepo needs `base: "/<repo>/<slug>/"` in `astro.config.mjs`, or
-per-site Vercel/Netlify projects rooted at `sites/<slug>`. Ask before configuring a
-deploy target — it touches their accounts.
+Ask before configuring a deploy target or pushing to a remote — it touches their
+accounts. Check whether the target repo is public before pushing.
+
+### Netlify from this monorepo
+
+`netlify.toml` at the **repo root**:
+
+```toml
+[build]
+  command = "npm run build --workspace sites/<slug>"
+  publish = "sites/<slug>/dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+```
+
+Netlify imports a **repository**, not a subfolder — `netlify.toml` selects the site.
+**Do not set Netlify's base directory to `sites/<slug>`:** these are npm workspaces, so
+the install and `packages/scroll-engine` live at the root and the site directory cannot
+resolve `@sites/scroll-engine` on its own.
+
+Ship `public/_headers` so returning visitors do not re-download the sequence:
+
+```
+/frames/*
+  Cache-Control: public, max-age=31536000, immutable
+/posters/*
+  Cache-Control: public, max-age=31536000, immutable
+/products/*
+  Cache-Control: public, max-age=31536000, immutable
+```
+
+Tell the user the bandwidth arithmetic before they share the link: one full scroll-through
+transfers the whole sequence, so a ~13MB desktop sequence is roughly 7,500 complete views
+against Netlify's free 100GB/month.
+
+### Deploy parity — required before claiming a site is deployable
+
+A working tree that builds proves nothing about a fresh clone. An asset caught by a
+`.gitignore`, or a workspace that only resolves because `node_modules` happens to be
+there, both look fine locally and fail on Netlify. Reconstruct the clone and build it
+from zero:
+
+```sh
+T=$(mktemp -d)
+{ git ls-files -z; git ls-files --others --exclude-standard -z; } | cpio -0 -pdm --quiet "$T"
+cd "$T" && npm install && npm run build --workspace sites/<slug>
+cd sites/<slug>/dist && python3 -m http.server 4500
+```
+
+Load it and confirm, by measurement:
+
+- [ ] **Zero 4xx responses** anywhere in the network list
+- [ ] Canvas scrubs; every product image loads on scroll
+- [ ] `_headers` and `frames/manifest.json` present in `dist`
+- [ ] `dist` frame counts equal the manifest counts
+- [ ] `index.html` byte-identical to the local build
+
+Only then is "it will look the same deployed" a claim you have earned.
 
 ## Handoff
 

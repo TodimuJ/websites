@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="NINE BAR">
+  <g fill="none" stroke="currentColor" stroke-linecap="butt">
+    <circle cx="32" cy="32" r="25.5" stroke-width="4"/>
+    <line x1="32.00" y1="13.50" x2="32.00" y2="9.00" stroke-width="2.2"/>
+    <line x1="43.89" y1="17.83" x2="46.78" y2="14.38" stroke-width="3.4"/>
+    <line x1="50.22" y1="28.79" x2="54.65" y2="28.01" stroke-width="2.2"/>
+    <line x1="48.02" y1="41.25" x2="51.92" y2="43.50" stroke-width="2.2"/>
+    <line x1="38.33" y1="49.38" x2="39.87" y2="53.61" stroke-width="2.2"/>
+    <line x1="25.67" y1="49.38" x2="24.13" y2="53.61" stroke-width="2.2"/>
+    <line x1="15.98" y1="41.25" x2="12.08" y2="43.50" stroke-width="2.2"/>
+    <line x1="13.78" y1="28.79" x2="9.35" y2="28.01" stroke-width="2.2"/>
+    <line x1="20.11" y1="17.83" x2="17.22" y2="14.38" stroke-width="2.2"/>
+  </g>
+  <path d="M43.96 17.75 L33.15 32.96 L30.85 31.04 Z" fill="currentColor"/>
+  <circle cx="32" cy="32" r="3.1" fill="currentColor"/>
+</svg>

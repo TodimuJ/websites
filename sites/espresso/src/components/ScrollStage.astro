@@ -1,0 +1,198 @@
+---
+import Chapter from "./Chapter.astro";
+import { site } from "../content/site";
+import manifest from "../../public/frames/manifest.json";
+---
+
+<section id="stage" class="scroller" aria-label="The making of an espresso">
+  <div class="pin">
+    <canvas id="seq" aria-hidden="true"></canvas>
+    <div class="scrim" aria-hidden="true"></div>
+
+    <noscript>
+      <picture>
+        <source media="(max-width: 767px)" srcset={manifest.mobile.poster} />
+        <img class="poster-fallback" src={manifest.desktop.poster} alt="" />
+      </picture>
+    </noscript>
+
+    {site.chapters.map((c) => <Chapter {...c} />)}
+
+    <script type="application/json" id="seq-manifest" set:html={JSON.stringify(manifest)}></script>
+
+    <div class="cue" aria-hidden="true">
+      <span class="cue__label">Scroll</span>
+      <span class="cue__line"></span>
+    </div>
+  </div>
+</section>
+
+<!-- Reduced motion and no-JS: the same story as readable copy, in normal flow. -->
+<section class="story-static" aria-label="The making of an espresso">
+  <div class="wrap">
+    <picture>
+      <source
+        media="(max-width: 767px)"
+        srcset={manifest.mobile.poster}
+        width={manifest.mobile.width}
+        height={manifest.mobile.height}
+      />
+      <img
+        class="story-static__poster"
+        loading="lazy"
+        src={manifest.desktop.poster}
+        width={manifest.desktop.width}
+        height={manifest.desktop.height}
+        alt="A coffee cherry resting on a perforated steel tray, lit by a single warm lamp."
+      />
+    </picture>
+    <div class="story-static__copy">
+      {site.chapters.map((c) => (
+        <div class="story-static__beat">
+          {c.eyebrow && <p class="eyebrow">{c.eyebrow}</p>}
+          <h2>{c.heading}</h2>
+          {c.body && <p class="measure">{c.body}</p>}
+          {c.cta && <a class="btn btn--primary" href={c.cta.href}>{c.cta.label}</a>}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .scroller {
+    position: relative;
+    height: 700vh; /* active pinned travel = 600vh */
+  }
+  @media (max-width: 767px) {
+    .scroller { height: 560vh; } /* 460vh active — thumbs cover less per effort */
+  }
+
+  .pin {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+    background: var(--ink);
+  }
+
+  #seq { width: 100%; height: 100%; display: block; }
+
+  .poster-fallback {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
+  }
+
+  /* Legibility behind the left copy rail; bottom-up on phones. */
+  .scrim {
+    position: absolute; inset: 0;
+    background: var(--scrim);
+    pointer-events: none;
+  }
+  @media (max-width: 767px) {
+    /* Stronger bottom-up scrim: portrait copy sits over the lit subject, not beside it. */
+    .scrim {
+      background: linear-gradient(
+        0deg,
+        rgba(16, 12, 9, 0.97) 0%,
+        rgba(16, 12, 9, 0.88) 28%,
+        rgba(16, 12, 9, 0.55) 52%,
+        rgba(16, 12, 9, 0) 88%
+      );
+    }
+  }
+
+  .cue {
+    position: absolute;
+    left: 50%; bottom: calc(var(--s-4) + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    display: grid; justify-items: center; gap: var(--s-2);
+    opacity: 0.7;
+    transition: opacity 400ms var(--ease);
+  }
+  .cue.is-gone { opacity: 0; }
+  .cue__label {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--paper-faint);
+  }
+  .cue__line {
+    width: 1px; height: 38px;
+    background: linear-gradient(180deg, var(--paper-faint), transparent);
+  }
+  @media (max-width: 767px) {
+    /* Sits under the chapter's actions rather than through them. */
+    .cue { gap: var(--s-1); }
+    .cue__line { height: 22px; }
+  }
+
+  .story-static { display: none; padding: calc(var(--nav-h) + var(--s-8)) 0 var(--s-8); }
+  .story-static__poster {
+    width: 100%; height: auto; display: block;
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--s-7);
+  }
+  .story-static__copy { display: grid; gap: var(--s-7); }
+  .story-static__beat { display: grid; gap: var(--s-3); justify-items: start; }
+  .story-static__beat h2 { font-size: var(--step-3); }
+  .story-static__beat p { color: var(--paper-dim); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroller { height: 100svh; }
+    .cue { display: none; }
+    .pin :global(.chapter) { display: none; }
+    .story-static { display: block; }
+  }
+</style>
+
+<noscript>
+  <style>
+    .scroller { height: 100svh; }
+    .cue { display: none; }
+    .story-static { display: block; }
+  </style>
+</noscript>
+
+<script>
+  import { ScrollEngine, type SequenceSpec } from "@sites/scroll-engine";
+  import { site } from "../content/site";
+
+  // Vite refuses to import from public/ in client code, so the manifest is serialised
+  // into the document by the frontmatter above and read back here.
+  const manifest = JSON.parse(
+    document.getElementById("seq-manifest")!.textContent!,
+  ) as { desktop: SequenceSpec; mobile: SequenceSpec };
+
+  const canvas = document.getElementById("seq") as HTMLCanvasElement | null;
+  const scroller = document.getElementById("stage") as HTMLElement | null;
+
+  if (canvas && scroller) {
+    const chapters = [...document.querySelectorAll<HTMLElement>("[data-chapter]")];
+    const cue = document.querySelector<HTMLElement>(".cue");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Under reduced motion the chapters never toggle, so the static copy carries the
+    // story instead. Keep the overlays out of the a11y tree and the tab order entirely.
+    for (const el of chapters) el.inert = true;
+
+    new ScrollEngine({
+      canvas,
+      scroller,
+      landscape: manifest.desktop,
+      portrait: manifest.mobile,
+      beats: site.beats,
+      onProgress(p) {
+        if (reduced) return;
+        for (const el of chapters) {
+          const [a, b] = JSON.parse(el.dataset.at!) as [number, number];
+          const on = p >= a && p <= b;
+          el.classList.toggle("is-on", on);
+          el.inert = !on;
+        }
+        cue?.classList.toggle("is-gone", p > 0.04);
+      },
+    });
+  }
+</script>

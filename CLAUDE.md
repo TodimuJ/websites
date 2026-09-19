@@ -37,8 +37,58 @@ something seems unexplained, it is in `SKILL.md` or one of `references/`.
   bottle labels or signatures. All type is HTML over the canvas.
 - **Never silently degrade.** If a chosen model cannot do what the storyboard needs, or a
   budget forces a compromise, say so and let the user choose.
-- Sites are demos. Products and imagery are AI-generated; never invent testimonials,
-  customer counts, awards or press quotes, and never impersonate a real brand.
+- **Never label a site as a demo.** No "Demo" badge, no "this is a demonstration site"
+  footer, no `noindex`, unless the user explicitly asks for one. These sites are built to
+  become real storefronts.
+- Invented products, brand names and imagery are fine — that is how a site gets built
+  before the real catalogue exists. But **factual claims about the business come from the
+  user, never from you**: testimonials, customer counts, ratings, awards, certifications,
+  press quotes, physical addresses. Ask for them or leave the section out.
+- Never impersonate a real brand you were not asked to build.
+- An action that did not happen must not report success. A checkout with no backend says
+  so plainly; it never shows a confirmation.
+
+## Deploying — local and hosted must match
+
+Every site is built to be pushed to GitHub and hosted on Netlify from that repo. The
+failure mode to design against is a site that is perfect locally and broken once
+deployed, because an asset was gitignored or the monorepo was wired up wrong.
+
+- **`netlify.toml` at the repo root**, one per deployed site:
+  `command = "npm run build --workspace sites/<slug>"`,
+  `publish = "sites/<slug>/dist"`, `NODE_VERSION` matching local.
+- **Never set Netlify's base directory to `sites/<slug>`.** These are npm workspaces —
+  the install and the shared `packages/scroll-engine` live at the repo root. Installing
+  from inside the site directory cannot resolve `@sites/scroll-engine`.
+- **Point Netlify at the repository, not a subfolder URL.** Netlify imports repos;
+  `netlify.toml` selects which site inside it gets built.
+- **Commit everything the site serves.** All of `public/` — frames, posters, products,
+  SVGs — is tracked. A `.gitignore` inside a subdirectory applies only to that directory
+  and below; keep asset-excluding patterns scoped there and never at the repo root.
+- **Exclude only the video masters** (`*.mp4`, `*.mov`). Still masters are small and are
+  the provenance record, so they are committed. Match extensions exactly — `*.jpg` does
+  not cover `.jpeg`.
+- **Cache the sequence.** Ship `public/_headers` with
+  `Cache-Control: public, max-age=31536000, immutable` for `/frames/*`, `/posters/*` and
+  `/products/*`. Frame filenames never change content; returning visitors must not
+  re-download the whole sequence.
+
+### The parity check — run it before saying a site is deployable
+
+Compilation in a working tree proves nothing about a fresh clone. Reconstruct exactly
+what the clone will contain, build it from zero, and serve it:
+
+```sh
+T=$(mktemp -d)
+{ git ls-files -z; git ls-files --others --exclude-standard -z; } | cpio -0 -pdm --quiet "$T"
+cd "$T" && npm install && npm run build --workspace sites/<slug>
+cd sites/<slug>/dist && python3 -m http.server 4500
+```
+
+Then load it and confirm: **zero 4xx responses**, the canvas scrubs, every product image
+loads, `_headers` and `frames/manifest.json` are present, and the frame counts in `dist`
+match the manifest. `index.html` should be byte-identical to the local build. This is the
+only check that actually proves Netlify will serve what you see.
 
 ## Cross-session notes
 

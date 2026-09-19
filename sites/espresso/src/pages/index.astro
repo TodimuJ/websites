@@ -1,0 +1,222 @@
+---
+import "../styles/tokens.css";
+import Nav from "../components/Nav.astro";
+import ScrollStage from "../components/ScrollStage.astro";
+import ProductGrid from "../components/ProductGrid.astro";
+import { site } from "../content/site";
+const { meta, method, origin, subscription, footer, brand } = site;
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{meta.title}</title>
+    <meta name="description" content={meta.description} />
+    <meta name="theme-color" content="#100C09" />
+    <link rel="icon" href={brand.symbol} type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    />
+  </head>
+
+  <body id="top">
+    <Nav />
+
+    <main>
+      <h1 class="visually-hidden">{brand.name} — {brand.tagline}</h1>
+
+      <ScrollStage />
+
+      <!-- Method -->
+      <section id="method" class="method">
+        <div class="wrap">
+          <p class="eyebrow">{method.eyebrow}</p>
+          <h2>{method.heading}</h2>
+          <p class="method__body measure">{method.body}</p>
+          <dl class="facts">
+            {method.facts.map((f) => (
+              <div class="fact">
+                <dt>{f.k}</dt>
+                <dd class="fact__v">{f.v}</dd>
+                <dd class="fact__note">{f.note}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      <!-- This season's lot -->
+      <section id="origin" class="origin">
+        <div class="wrap origin__grid">
+          <div class="origin__copy">
+            <p class="eyebrow">{origin.eyebrow}</p>
+            <h2>{origin.heading}</h2>
+            <p class="measure">{origin.body}</p>
+          </div>
+          <dl class="spec">
+            {origin.spec.map(([k, v]) => (
+              <div class="spec__row">
+                <dt>{k}</dt>
+                <dd>{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      <ProductGrid />
+
+      <!-- Subscription -->
+      <section id="subscription" class="sub">
+        <div class="wrap sub__grid">
+          <div>
+            <p class="eyebrow">{subscription.eyebrow}</p>
+            <h2>{subscription.heading}</h2>
+            <p class="measure sub__body">{subscription.body}</p>
+          </div>
+          <div class="sub__card">
+            <p class="sub__price">
+              {subscription.price}
+              <span class="sub__cadence">{subscription.cadence}</span>
+            </p>
+            <ul class="sub__list" role="list">
+              {subscription.includes.map((i) => <li>{i}</li>)}
+            </ul>
+            <button class="btn btn--primary sub__cta" type="button" data-checkout-cta>
+              {subscription.cta.label}
+            </button>
+            <p class="sub__smallprint" data-checkout-note>{subscription.smallprint}</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <div class="wrap foot__grid">
+        <div class="foot__brand">
+          <span class="foot__word">{brand.name}</span>
+          <p class="foot__note">{footer.note}</p>
+          <p class="foot__legal">{footer.legal}</p>
+        </div>
+        {footer.columns.map((c) => (
+          <nav class="foot__col" aria-label={c.title}>
+            <p class="foot__title">{c.title}</p>
+            <ul role="list">
+              {c.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+            </ul>
+          </nav>
+        ))}
+      </div>
+    </footer>
+
+    <style>
+      main { position: relative; }
+
+      section { padding: var(--s-9) 0; }
+      section h2 { font-size: var(--step-3); max-width: 20ch; margin-top: var(--s-3); }
+
+      .method { border-top: 1px solid var(--hairline); }
+      .method__body { color: var(--paper-dim); margin-top: var(--s-4); }
+
+      .facts {
+        margin: var(--s-7) 0 0;
+        display: grid; gap: var(--s-5);
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+      }
+      .fact { border-top: 1px solid var(--hairline); padding-top: var(--s-4); }
+      .fact dt {
+        font-family: var(--font-mono); font-size: var(--step--1);
+        letter-spacing: var(--tracking-mid); text-transform: uppercase;
+        color: var(--paper-faint);
+      }
+      .fact__v {
+        margin: var(--s-2) 0 var(--s-2);
+        font-family: var(--font-display); font-size: var(--step-2); color: var(--crema);
+      }
+      .fact__note { margin: 0; color: var(--paper-dim); font-size: var(--step-0); }
+
+      .origin { background: var(--ink-sunken); }
+      .origin__grid {
+        display: grid; gap: var(--s-7);
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+        align-items: start;
+      }
+      .origin__copy p { color: var(--paper-dim); margin-top: var(--s-4); }
+      .spec { margin: 0; display: grid; gap: 0; }
+      .spec__row {
+        display: flex; justify-content: space-between; gap: var(--s-4);
+        padding: var(--s-4) 0; border-bottom: 1px solid var(--hairline);
+      }
+      .spec__row dt {
+        font-family: var(--font-mono); font-size: var(--step--1);
+        letter-spacing: var(--tracking-mid); text-transform: uppercase;
+        color: var(--paper-faint);
+      }
+      .spec__row dd { margin: 0; text-align: right; }
+
+      .sub { border-top: 1px solid var(--hairline); }
+      .sub__grid {
+        display: grid; gap: var(--s-7);
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+        align-items: start;
+      }
+      .sub__body { color: var(--paper-dim); margin-top: var(--s-4); }
+      .sub__card {
+        background: var(--ink-raised);
+        border: 1px solid rgba(201, 143, 82, 0.4);
+        border-radius: var(--radius-lg);
+        padding: var(--s-6);
+        display: grid; gap: var(--s-4);
+      }
+      .sub__price {
+        font-family: var(--font-display); font-size: var(--step-3); color: var(--crema);
+        display: grid; gap: var(--s-1);
+      }
+      .sub__cadence {
+        font-family: var(--font-mono); font-size: var(--step--1);
+        letter-spacing: var(--tracking-mid); text-transform: uppercase;
+        color: var(--paper-faint);
+      }
+      .sub__list { margin: 0; padding-left: 1.1em; color: var(--paper-dim); display: grid; gap: var(--s-2); }
+      .sub__cta { width: 100%; }
+      .sub__smallprint { font-size: var(--step--1); color: var(--paper-faint); }
+
+      .foot { border-top: 1px solid var(--hairline); padding: var(--s-8) 0 calc(var(--s-8) + env(safe-area-inset-bottom)); }
+      .foot__grid {
+        display: grid; gap: var(--s-6);
+        grid-template-columns: minmax(min(100%, 22rem), 2fr) repeat(auto-fit, minmax(8rem, 1fr));
+      }
+      .foot__word { font-family: var(--font-mono); letter-spacing: var(--tracking-wide); }
+      .foot__note { margin-top: var(--s-3); color: var(--paper-dim); font-size: var(--step-0); max-width: 42ch; }
+      .foot__legal { margin-top: var(--s-4); color: var(--paper-faint); font-size: var(--step--1); }
+      .foot__title {
+        font-family: var(--font-mono); font-size: var(--step--1);
+        letter-spacing: var(--tracking-mid); text-transform: uppercase;
+        color: var(--paper-faint); margin-bottom: var(--s-3);
+      }
+      .foot__col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
+      .foot__col a { color: var(--paper-dim); text-decoration: none; }
+      .foot__col a:hover { color: var(--crema); }
+
+    </style>
+
+    <script>
+      // Checkout has no backend yet. Say plainly that nothing happened —
+      // never show a confirmation for something that did not occur.
+      const cta = document.querySelector<HTMLButtonElement>("[data-checkout-cta]");
+      const note = document.querySelector<HTMLElement>("[data-checkout-note]");
+      cta?.addEventListener("click", () => {
+        if (!note) return;
+        note.textContent =
+          "Checkout isn\u2019t connected yet — no subscription was created and nothing " +
+          "was charged.";
+        note.setAttribute("role", "status");
+      });
+    </script>
+  </body>
+</html>

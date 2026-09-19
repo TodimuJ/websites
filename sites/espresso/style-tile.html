@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NINE BAR — style tile</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="src/styles/tokens.css" />
+<style>
+  body { padding: var(--s-7) 0 var(--s-9); }
+  .tile { display: grid; gap: var(--s-8); }
+  .row { display: grid; gap: var(--s-4); }
+  .rule { border: 0; border-top: 1px solid var(--hairline); margin: 0; }
+  .label { font-family: var(--font-mono); font-size: var(--step--1); letter-spacing: var(--tracking-wide);
+           text-transform: uppercase; color: var(--paper-faint); }
+  .swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: var(--s-3); }
+  .sw { border: 1px solid var(--hairline); border-radius: var(--radius); overflow: hidden; }
+  .sw__chip { height: 76px; }
+  .sw__meta { padding: var(--s-3); display: grid; gap: 2px; }
+  .sw__name { font-size: var(--step--1); }
+  .sw__hex { font-family: var(--font-mono); font-size: var(--step--1); color: var(--paper-faint); }
+  .logo-row { display: flex; align-items: center; gap: var(--s-6); flex-wrap: wrap; }
+  .logo-lockup { display: inline-flex; align-items: center; gap: var(--s-3); }
+  .logo-lockup svg { width: 44px; height: 44px; color: var(--crema); }
+  .logo-word { font-family: var(--font-mono); font-size: var(--step-1); letter-spacing: var(--tracking-wide); }
+  .sizes { display: flex; align-items: center; gap: var(--s-5); }
+  .sizes svg { color: var(--crema); }
+  .card { max-width: 20rem; background: var(--ink-raised); border: 1px solid var(--hairline);
+          border-radius: var(--radius-lg); overflow: hidden; }
+  .card img { width: 100%; display: block; aspect-ratio: 1; object-fit: cover; }
+  .card__b { padding: var(--s-5); display: grid; gap: var(--s-2); }
+  .card__r { display: flex; justify-content: space-between; align-items: baseline; }
+  .card__p { font-family: var(--font-mono); color: var(--crema); }
+  .imagery { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: var(--s-3); }
+  .imagery img { width: 100%; border-radius: var(--radius); display: block; }
+  .buttons { display: flex; gap: var(--s-3); flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="wrap tile">
+
+  <div class="row">
+    <p class="label">Identity</p>
+    <div class="logo-row">
+      <span class="logo-lockup">
+        <img src="public/logo-symbol.svg" alt="" style="width:44px;height:44px" />
+        <span class="logo-word">NINE BAR</span>
+      </span>
+      <span class="sizes">
+        <img src="public/logo-symbol.svg" alt="" style="width:32px;height:32px" />
+        <img src="public/logo-symbol.svg" alt="" style="width:24px;height:24px" />
+        <img src="public/logo-symbol.svg" alt="" style="width:16px;height:16px" />
+      </span>
+    </div>
+    <p style="color:var(--paper-dim);max-width:52ch">
+      Nine ticks, not twelve — the mark states the pressure spec and avoids reading as a clock.
+      Hand-authored SVG, so it is a true vector master and inherits <code>currentColor</code>.
+      The wordmark is live HTML type, never an image.
+    </p>
+  </div>
+
+  <hr class="rule" />
+
+  <div class="row">
+    <p class="label">Palette</p>
+    <div class="swatches">
+      <div class="sw"><div class="sw__chip" style="background:#100C09"></div><div class="sw__meta"><span class="sw__name">Ink</span><span class="sw__hex">#100C09</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:#C98F52"></div><div class="sw__meta"><span class="sw__name">Crema</span><span class="sw__hex">#C98F52</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:#3A2318"></div><div class="sw__meta"><span class="sw__name">Espresso</span><span class="sw__hex">#3A2318</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:#8C8E90"></div><div class="sw__meta"><span class="sw__name">Steel</span><span class="sw__hex">#8C8E90</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:#F2EDE6"></div><div class="sw__meta"><span class="sw__name">Paper</span><span class="sw__hex">#F2EDE6</span></div></div>
+    </div>
+  </div>
+
+  <hr class="rule" />
+
+  <div class="row">
+    <p class="label">Type</p>
+    <p class="eyebrow">Eyebrow · IBM Plex Mono · uppercase · 0.22em</p>
+    <h1 style="font-size:var(--step-4)">It begins as fruit.</h1>
+    <h2 style="font-size:var(--step-3)">Twenty-six seconds, four days, one farm.</h2>
+    <h3 style="font-size:var(--step-2)">Finca Aurelia</h3>
+    <p style="max-width:var(--measure);color:var(--paper-dim)">
+      Body copy in Inter. We buy one lot at a time and roast it the week it ships. No
+      blending to a house profile, no holding stock until it moves.
+    </p>
+    <p style="font-family:var(--font-mono);color:var(--crema)">£36 · 9 bar · 26 sec</p>
+  </div>
+
+  <hr class="rule" />
+
+  <div class="row">
+    <p class="label">Controls</p>
+    <div class="buttons">
+      <a class="btn btn--primary" href="#">Start a subscription</a>
+      <a class="btn btn--ghost" href="#">See the coffee</a>
+    </div>
+  </div>
+
+  <hr class="rule" />
+
+  <div class="row">
+    <p class="label">Product card</p>
+    <div class="card">
+      <img src="public/products/single-origin.webp" alt="" />
+      <div class="card__b">
+        <div class="card__r"><h3 style="font-size:var(--step-1)">Finca Aurelia</h3><span class="card__p">£16</span></div>
+        <p class="label">Coffee · 250 g</p>
+        <p style="color:var(--paper-dim)">The single-origin lot. Washed Caturra, roasted for espresso.</p>
+      </div>
+    </div>
+    <p style="color:var(--paper-faint);font-size:var(--step--1);max-width:52ch">
+      Packaging is generated unprinted on purpose. Every name and price is HTML over the
+      image, so nothing user-visible is baked into pixels.
+    </p>
+  </div>
+
+  <hr class="rule" />
+
+  <div class="row">
+    <p class="label">Imagery direction</p>
+    <div class="imagery">
+      <img src="public/posters/desktop.webp" alt="" />
+      <img src="public/posters/desktop-final.webp" alt="" />
+      <img src="public/products/cup.webp" alt="" />
+    </div>
+    <p style="color:var(--paper-dim);max-width:52ch">
+      One warm key at roughly 2700K, deep falloff to near-black, no fill. Macro, shallow
+      depth of field, specular highlights doing the work. Never a flat-lit product shot.
+    </p>
+  </div>
+
+</div>
+</body>
+</html>

@@ -60,7 +60,7 @@ editable without touching markup.
 ```ts
 export const site = {
   brand: { name: "NINE BAR", symbol: "/logo-symbol.svg", wordmark: "/logo.svg" },
-  meta: { title: "…", description: "…", demo: true },
+  meta: { title: "…", description: "…" },
 
   chapters: [
     { id: "hero",    at: [0.00, 0.18], align: "left",   eyebrow: "…",
@@ -87,12 +87,14 @@ export const site = {
 
   nav:  [{ label: "Collection", href: "#collection" }],
   cta:  { label: "Shop the collection", href: "#collection" },
-  footer: { note: "Demo site. Products and imagery are AI-generated.", links: [] },
+  footer: { note: "…", legal: "© <year> <BRAND>", links: [] },
 };
 ```
 
-If `meta.demo` is true, render a small persistent demo marker. Do not dress a demo as a
-real trading business.
+Write the footer as a real brand would: a short brand line and a copyright. No demo
+marker, no "this site is a demonstration" disclaimer, and no `noindex` — these sites are
+built to become real storefronts. Do not invent testimonials, ratings, awards,
+certifications, press quotes or addresses; ask the user or omit the section.
 
 ## `ScrollStage.astro`
 
@@ -123,9 +125,17 @@ const scrollVh = 520; // total container height in vh; active travel = this - 10
 </style>
 
 <script>
-  import { ScrollEngine } from "@sites/scroll-engine";
+  import { ScrollEngine, type SequenceSpec } from "@sites/scroll-engine";
   import { site } from "../content/site";
-  import manifest from "../../public/frames/manifest.json";
+
+  // Vite refuses to import from public/ in CLIENT code ("Assets in public directory
+  // cannot be imported from JavaScript"). Import it in the frontmatter above, serialise
+  // it into the page with
+  //   <script type="application/json" id="seq-manifest" set:html={JSON.stringify(manifest)} />
+  // and read it back here.
+  const manifest = JSON.parse(
+    document.getElementById("seq-manifest")!.textContent!,
+  ) as { desktop: SequenceSpec; mobile: SequenceSpec };
 
   const canvas = document.getElementById("seq") as HTMLCanvasElement;
   const scroller = document.getElementById("stage") as HTMLElement;
@@ -183,8 +193,10 @@ a clear offering, the product collection with working filters and detail views, 
 action, and a footer. Decide sections from the brief — do not mechanically append every
 standard landing-page block.
 
-Forms need a real destination or an explicitly labelled demo behaviour. **Never show a
-"sent" confirmation if nothing was sent.**
+Forms and checkouts need a real destination, or copy that states plainly that the
+backend is not connected yet. **Never show a "sent" or "ordered" confirmation when
+nothing happened** — that is about not lying to a visitor, and it applies just as much to
+a real storefront as to a work in progress.
 
 ## Dev and verification
 

@@ -30,9 +30,12 @@ none silently; if one is impossible, say so.
 4. **Native scrolling only.** Forward, backward and jump-scroll must all work.
 5. **The site must make sense with the animation off.** Reduced-motion, load failure and
    low-end devices get a composed poster plus normal page flow.
-6. **Never fabricate credibility.** No invented testimonials, customer counts, awards,
-   addresses or press quotes. Invented *products* are fine for a demo; invented *social
-   proof* is not. Mark demo sites as demos.
+6. **Build every site as a real storefront.** Never add a "Demo" badge, a "this is a
+   demonstration site" footer or a `noindex` tag unless the user asks for one. Invented
+   products, brand names and imagery are the normal starting point. What you must not
+   invent is anything a customer would take as evidence — testimonials, customer counts,
+   ratings, awards, certifications, press quotes, physical addresses. Ask the user for
+   those or leave the section out. An action that did not happen never reports success.
 7. **Never impersonate a real brand.** Building "in the register of" an existing premium
    brand is fine; reproducing its name, wordmark, or trade dress is not. Invent the brand.
 8. **Report what you actually verified.** Compilation is not proof of smooth playback.

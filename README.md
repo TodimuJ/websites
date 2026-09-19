@@ -30,6 +30,9 @@ With options:
 Prose works identically — *"build the espresso one, keep it cheap but give me 10-second
 scenes"* resolves to the same thing.
 
+**[USAGE.md](USAGE.md)** has the full flag reference and ~20 worked recipes — the fastest
+way in if you'd rather read examples than specs.
+
 ---
 
 ## Layout

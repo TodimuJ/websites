@@ -1,0 +1,136 @@
+---
+interface Props {
+  id: string;
+  at: [number, number];
+  align: "left" | "right" | "centre";
+  /** Vertical placement over the frame. "bottom" is for scenes with no clean third. */
+  position?: "centre" | "bottom";
+  /** Which scrim the stage should rake while this chapter is showing. */
+  scrim?: "left" | "right" | "up";
+  eyebrow?: string;
+  heading: string;
+  body?: string;
+  /** Optional spec/credential line under the body, e.g. the formula claims. */
+  meta?: string;
+  cta?: { label: string; href: string };
+  secondary?: { label: string; href: string };
+}
+const {
+  id, at, align, position = "centre", scrim = "left",
+  eyebrow, heading, body, meta, cta, secondary,
+} = Astro.props;
+---
+
+<div
+  class:list={[`chapter chapter--${align} chapter--v-${position}`, { "chapter--has-cta": !!cta }]}
+  data-chapter
+  data-at={JSON.stringify(at)}
+  data-scrim={scrim}
+  id={`ch-${id}`}
+>
+  <div class="chapter__inner">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h2 class="chapter__heading">{heading}</h2>
+    {body && <p class="chapter__body measure">{body}</p>}
+    {meta && <p class="chapter__meta">{meta}</p>}
+    {(cta || secondary) && (
+      <div class="chapter__actions">
+        {cta && <a class="btn btn--primary" href={cta.href}>{cta.label}</a>}
+        {secondary && <a class="btn btn--ghost" href={secondary.href}>{secondary.label}</a>}
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  .chapter {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    align-items: center;
+    padding: calc(var(--nav-h) + var(--sp-6)) var(--gutter) var(--sp-8);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 520ms var(--ease), transform 520ms var(--ease),
+                visibility 0s linear 520ms;
+    transform: translateY(14px);
+  }
+  .chapter.is-on {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
+  }
+  /* Only the visible chapter may be clicked. */
+  .chapter.is-on .chapter__actions { pointer-events: auto; }
+
+  .chapter__inner {
+    max-width: var(--wrap);
+    width: 100%;
+    margin-inline: auto;
+    display: grid;
+    gap: var(--sp-4);
+    justify-items: start;
+  }
+  /* Vertical placement. "bottom" sits the copy low over the dark part of a
+     full-frame macro, where no clean left/right third exists. */
+  .chapter--v-bottom {
+    align-items: end;
+    padding-bottom: calc(var(--sp-8) + env(safe-area-inset-bottom));
+  }
+  /* Bottom-placed copy runs wider and shorter, so it occupies the dark band rather
+     than growing up into the subject. */
+  .chapter--v-bottom .chapter__heading { max-width: 22ch; }
+  .chapter--v-bottom .chapter__body { max-width: 52ch; }
+
+  .chapter--left .chapter__inner { text-align: left; }
+  .chapter--right .chapter__inner { justify-items: end; text-align: right; }
+  .chapter--centre .chapter__inner { justify-items: center; text-align: center; }
+
+  .chapter__heading {
+    font-size: var(--step-4);
+    max-width: 15ch;
+    text-shadow: 0 2px 40px rgba(13, 13, 13, 0.92);
+  }
+  .chapter__body {
+    color: var(--ink-muted);
+    font-size: var(--step-1);
+    text-shadow: 0 1px 24px rgba(13, 13, 13, 0.94);
+  }
+  .chapter__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    margin-top: var(--sp-3);
+  }
+
+  @media (max-width: 767px) {
+    /* Portrait: copy sits low, clear of the subject and the fixed nav, and every
+       chapter goes left-aligned regardless of its desktop rail. */
+    .chapter { align-items: end; padding-bottom: calc(var(--sp-9) + env(safe-area-inset-bottom)); }
+    .chapter--right .chapter__inner,
+    .chapter--centre .chapter__inner { justify-items: start; text-align: left; }
+    /* mobile.md §2 — the opening screen carries the nav, ONE headline, ONE action
+       and the scroll cue. The secondary button and the decorative eyebrow both
+       compete with the image at this width, so neither survives. */
+    .chapter__actions .btn--ghost { display: none; }
+    .chapter--has-cta .eyebrow { display: none; }
+    .chapter__heading { max-width: 12ch; }
+    .chapter__body { font-size: var(--step-0); }
+    .chapter__actions { width: 100%; }
+    .chapter__actions .btn { flex: 1 1 auto; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chapter { transition: none; }
+  }
+
+  .chapter__meta {
+    margin-top: var(--sp-4);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: var(--tracking-mid);
+    color: var(--ink-dim);
+  }
+</style>

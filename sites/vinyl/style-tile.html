@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LATHE &amp; LACQUER — style tile</title>
+<link rel="stylesheet" href="src/styles/tokens.css">
+<style>
+  body { padding: var(--sp-8) 0; }
+  .tile + .tile { margin-top: var(--sp-9); padding-top: var(--sp-8); border-top: 1px solid var(--line); }
+  .tile__label { font-size: var(--step--1); letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase; color: var(--ink-dim); margin-bottom: var(--sp-5); }
+  .swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: var(--sp-4); }
+  .sw__chip { height: 5.5rem; border-radius: var(--r-md); border: 1px solid var(--line); }
+  .sw__name { margin-top: var(--sp-3); font-size: var(--step--1); }
+  .sw__hex { font-family: var(--font-mono); font-size: var(--step--1); color: var(--ink-dim); }
+  .mark { display: flex; align-items: center; gap: var(--sp-5); }
+  .mark svg { width: 56px; height: 56px; color: var(--ink); }
+  .mark__word { font-size: var(--step-2); }
+  .specimens > * + * { margin-top: var(--sp-5); }
+  .buttons { display: flex; flex-wrap: wrap; gap: var(--sp-4); align-items: center; }
+  .card { max-width: 22rem; border: 1px solid var(--line); border-radius: var(--r-md);
+    background: var(--bg-raised); overflow: hidden; }
+  .card__art { aspect-ratio: 1; background:
+    radial-gradient(circle at 50% 50%, var(--label-cream) 0 11%, #111 11.5% 12.5%, #141414 13% 100%),
+    linear-gradient(135deg, var(--oxblood), #2a0e10);
+    display: grid; place-items: center; }
+  .card__body { padding: var(--sp-5); }
+  .card__row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-4); margin-top: var(--sp-2); }
+  .direction { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem,1fr)); gap: var(--sp-4); }
+  .direction div { aspect-ratio: 16/10; border-radius: var(--r-md); border: 1px solid var(--line); padding: var(--sp-4);
+    font-size: var(--step--1); color: var(--ink-dim); display: flex; align-items: flex-end; }
+  .d1 { background: linear-gradient(100deg, #000 0 40%, #1b1b1b 62%, #000 100%); }
+  .d2 { background: radial-gradient(ellipse at 30% 40%, #3a1416 0 20%, #120708 70%, #000 100%); }
+  .d3 { background: linear-gradient(190deg, #0a1018 0 55%, #1d2b3a 100%); }
+  .d4 { background: radial-gradient(ellipse at 70% 30%, rgba(224,164,74,.5) 0 8%, rgba(224,164,74,.14) 30%, #0d0d0d 72%); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section class="tile">
+    <p class="tile__label">Mark</p>
+    <div class="mark">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-linecap="round">
+          <path d="M32 6.5a25.5 25.5 0 1 1 0 51 25.5 25.5 0 0 1-21-11" stroke-width="3"/>
+          <path d="M32 14.5a17.5 17.5 0 1 1 0 35 17.5 17.5 0 0 1-14.4-7.6" stroke-width="3"/>
+          <path d="M32 22.5a9.5 9.5 0 1 1 0 19 9.5 9.5 0 0 1-7.8-4.1" stroke-width="3"/>
+        </g>
+        <circle cx="32" cy="32" r="2.6" fill="currentColor"/>
+        <path d="M57 7.5 41.5 23l-3.6-3.6L53.4 3.9z" fill="currentColor"/>
+        <path d="m39.8 21.2 3 3-4.6 2z" fill="currentColor"/>
+      </svg>
+      <div>
+        <p class="wordmark mark__word">Lathe &amp; Lacquer</p>
+        <p class="matrix">Three groove walls, one cutting head. Drawn as SVG, never generated.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tile">
+    <p class="tile__label">Palette</p>
+    <div class="swatches">
+      <div><div class="sw__chip" style="background:var(--black)"></div><p class="sw__name">Black</p><p class="sw__hex">#0D0D0D</p></div>
+      <div><div class="sw__chip" style="background:var(--oxblood)"></div><p class="sw__name">Oxblood</p><p class="sw__hex">#6B1F22</p></div>
+      <div><div class="sw__chip" style="background:var(--label-cream)"></div><p class="sw__name">Label cream</p><p class="sw__hex">#E8DFC8</p></div>
+      <div><div class="sw__chip" style="background:var(--tungsten)"></div><p class="sw__name">Tungsten</p><p class="sw__hex">#E0A44A</p></div>
+      <div><div class="sw__chip" style="background:var(--dust)"></div><p class="sw__name">Dust</p><p class="sw__hex">#9A9287</p></div>
+    </div>
+  </section>
+
+  <section class="tile specimens">
+    <p class="tile__label">Type</p>
+    <h1>The groove is the sound.</h1>
+    <h2>Cut on a lathe. Pressed at 180 grams.</h2>
+    <p class="measure">Every title is cut from the original tape to a lacquer master on a
+      Neumann lathe, plated in three steps, and pressed on virgin vinyl. Nothing is sourced
+      from a digital file. You can hear the difference at the end of a side, where a
+      badly-cut record gives up and a well-cut one does not.</p>
+    <p class="matrix">L&amp;L-001-A · 33⅓ RPM · 180g · lacquer cut 12.iv</p>
+  </section>
+
+  <section class="tile">
+    <p class="tile__label">Actions</p>
+    <div class="buttons">
+      <a class="btn btn--primary" href="#">Add to basket — £32</a>
+      <a class="btn btn--ghost" href="#">Hear an excerpt</a>
+      <span class="matrix">00:00 ─────●──── 03:42</span>
+    </div>
+  </section>
+
+  <section class="tile">
+    <p class="tile__label">Product card</p>
+    <article class="card">
+      <div class="card__art"></div>
+      <div class="card__body">
+        <p class="matrix">Vol. I · L&amp;L-001</p>
+        <h3>Ancestral Line</h3>
+        <p class="matrix" style="margin-top:var(--sp-1)">Kofi Adjei · 1971</p>
+        <div class="card__row">
+          <span>180g · single LP</span>
+          <strong>£32</strong>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="tile">
+    <p class="tile__label">Imagery direction</p>
+    <div class="direction">
+      <div class="d1">macro groove, one hard raking light</div>
+      <div class="d2">molten PVC, oxblood in the black</div>
+      <div class="d3">the lathe, cold and clinical</div>
+      <div class="d4">tungsten lamp, everything else dark</div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

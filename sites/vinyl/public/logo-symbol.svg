@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Lathe &amp; Lacquer">
+  <!-- Three groove walls and the cutting head crossing them. Drawn, never generated:
+       a raster wordmark would put type into pixels, which this repo forbids. -->
+  <g fill="none" stroke="currentColor" stroke-linecap="round">
+    <path d="M32 6.5a25.5 25.5 0 1 1 0 51 25.5 25.5 0 0 1-21-11" stroke-width="3"/>
+    <path d="M32 14.5a17.5 17.5 0 1 1 0 35 17.5 17.5 0 0 1-14.4-7.6" stroke-width="3"/>
+    <path d="M32 22.5a9.5 9.5 0 1 1 0 19 9.5 9.5 0 0 1-7.8-4.1" stroke-width="3"/>
+  </g>
+  <circle cx="32" cy="32" r="2.6" fill="currentColor"/>
+  <!-- the cutting head: a wedge dropping into the groove from the upper right -->
+  <path d="M57 7.5 41.5 23l-3.6-3.6L53.4 3.9z" fill="currentColor"/>
+  <path d="m39.8 21.2 3 3-4.6 2z" fill="currentColor"/>
+</svg>

@@ -1,0 +1,86 @@
+---
+import Base from "../layouts/Base.astro";
+import ScrollStage from "../components/ScrollStage.astro";
+import ReleaseGrid from "../components/ReleaseGrid.astro";
+import { site } from "../content/site";
+
+const { cutting, subscribe, pressing, checkout } = site;
+---
+
+<Base title={site.meta.title} description={site.meta.description} skipTo="#series" skipLabel="Skip the story">
+  <ScrollStage />
+  <ReleaseGrid />
+
+  <section id="cutting" class="band band--raised">
+    <div class="wrap band__grid">
+      <div>
+        <p class="eyebrow">{cutting.eyebrow}</p>
+        <h2>{cutting.heading}</h2>
+        {cutting.body.map((para) => <p class="measure band__body">{para}</p>)}
+      </div>
+      <dl class="facts">
+        {cutting.facts.map(([k, v]) => (
+          <div class="facts__row"><dt>{k}</dt><dd>{v}</dd></div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section id="subscribe" class="band">
+    <div class="wrap band__grid">
+      <div>
+        <p class="eyebrow">{subscribe.eyebrow}</p>
+        <h2>{subscribe.heading}</h2>
+        <p class="measure band__body">{subscribe.body}</p>
+        <p class="sub__price">{subscribe.price}</p>
+        <p class="matrix">{subscribe.note}</p>
+        <div class="band__actions">
+          <a class="btn btn--primary" href={subscribe.cta.href}>{subscribe.cta.label}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pressing" class="band band--raised">
+    <div class="wrap band__grid">
+      <div>
+        <p class="eyebrow">{pressing.eyebrow}</p>
+        <h2>{pressing.heading}</h2>
+        <p class="measure band__body">{pressing.body}</p>
+        <div class="band__actions">
+          <a class="btn btn--ghost" href={`mailto:${checkout.email}`} id="pressing-form">
+            {pressing.cta.label}
+          </a>
+        </div>
+      </div>
+      <dl class="facts">
+        {pressing.facts.map(([k, v]) => (
+          <div class="facts__row"><dt>{k}</dt><dd>{v}</dd></div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- There is no payment backend. The site says so rather than staging a cart that
+       cannot complete — an action that did not happen never reports success. -->
+  <section id="ordering" class="band band--narrow">
+    <div class="wrap">
+      <h2 class="order__heading">{checkout.heading}</h2>
+      <p class="measure band__body">{checkout.body}</p>
+      <div class="band__actions">
+        <a class="btn btn--primary" href={`mailto:${checkout.email}`}>{checkout.email}</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .sub__price {
+    margin-top: var(--sp-5);
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--step-2);
+    color: var(--accent);
+  }
+  .order__heading { font-size: var(--step-2); }
+</style>

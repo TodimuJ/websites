@@ -22,6 +22,17 @@
         "sites/lip-gloss"
       ],
       "port": 4323
+    },
+    {
+      "name": "vinyl",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--workspace",
+        "sites/vinyl"
+      ],
+      "port": 4324
     }
   ]
 }

@@ -1,0 +1,250 @@
+/**
+ * LATHE & LACQUER — design tokens. Every component reads from here; nothing hardcodes
+ * a colour, a size or a radius. Palette is the vinyl brief's, unchanged.
+ */
+
+:root {
+  /* Palette */
+  --black: #0d0d0d;
+  --oxblood: #6b1f22;
+  --label-cream: #e8dfc8;
+  --tungsten: #e0a44a;
+  --dust: #9a9287;
+
+  /* Derived surfaces. A dark room with one warm lamp — the canvas is the light source,
+     so every surface sits under it rather than competing. */
+  --bg: var(--black);
+  --bg-raised: #171514;
+  --bg-sunk: #070707;
+  --line: #292524;
+  --line-strong: #3c3532;
+
+  /* Ink */
+  --ink: var(--label-cream);
+  --ink-muted: #b3ab9b;
+  --ink-dim: var(--dust);
+  --ink-on-light: var(--black);
+
+  /* Accent — tungsten is the lamp, oxblood is the sleeve. Tungsten leads. */
+  --accent: var(--tungsten);
+  --accent-deep: var(--oxblood);
+  --accent-wash: rgba(224, 164, 74, 0.13);
+  --accent-deep-wash: rgba(107, 31, 34, 0.24);
+
+  /* Type — mid-century grotesk for the page, a wide slab for the wordmark.
+     The slab stack degrades through Rockwell -> Roboto Slab -> Georgia; the drawn
+     symbol in public/logo-symbol.svg is what carries the mark where a font cannot. */
+  --font-sans: "Helvetica Neue", "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-slab: "Rockwell", "Roboto Slab", "Bookman Old Style", Georgia, serif;
+  --font-mono: "SF Mono", "Roboto Mono", ui-monospace, monospace;
+
+  --step--1: clamp(0.76rem, 0.74rem + 0.1vw, 0.82rem);
+  --step-0: clamp(0.95rem, 0.9rem + 0.25vw, 1.06rem);
+  --step-1: clamp(1.18rem, 1.08rem + 0.5vw, 1.45rem);
+  --step-2: clamp(1.5rem, 1.3rem + 1vw, 2.1rem);
+  --step-3: clamp(2rem, 1.6rem + 2vw, 3.2rem);
+  --step-4: clamp(2.6rem, 1.9rem + 3.4vw, 4.8rem);
+
+  --tracking-wordmark: 0.3em;
+  --tracking-eyebrow: 0.24em;
+  --tracking-tight: -0.015em;
+  --tracking-mid: 0.09em;
+
+  --leading-tight: 1.06;
+  --leading-snug: 1.25;
+  --leading-body: 1.6;
+
+  /* Nav height — the pinned stage and the timecode cue both key off this. */
+  --nav-h: 64px;
+
+  /* Chapter scrims. */
+  --scrim: linear-gradient(90deg, rgba(13,13,13,0.95) 0%, rgba(13,13,13,0.78) 42%, rgba(13,13,13,0) 78%);
+  --scrim-right: linear-gradient(270deg, rgba(13,13,13,0.95) 0%, rgba(13,13,13,0.78) 42%, rgba(13,13,13,0) 78%);
+  --scrim-up: linear-gradient(0deg, rgba(13,13,13,0.96) 0%, rgba(13,13,13,0.74) 46%, rgba(13,13,13,0) 100%);
+
+  /* Space */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+  --sp-8: 4.5rem;
+  --sp-9: 7rem;
+  --sp-10: 10rem;
+
+  --measure: 34rem;
+  --wrap: 78rem;
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+
+  /* Radii — a record is round but a sleeve is not. Type furniture stays square-ish;
+     only the primary button and the timecode pill are round. */
+  --r-sm: 2px;
+  --r-md: 4px;
+  --r-lg: 8px;
+  --r-pill: 999px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-fast: 160ms;
+  --dur: 420ms;
+  --dur-slow: 900ms;
+}
+
+@media (max-width: 767px) {
+  :root { --nav-h: 56px; }
+}
+
+/* The whole page is a dark room by design. There is no light mode to offer, so
+   prefers-color-scheme is deliberately not branched on. */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  background: var(--bg);
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  font-weight: 500;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+}
+
+h1 { font-size: var(--step-4); }
+h2 { font-size: var(--step-3); }
+h3 { font-size: var(--step-1); }
+
+p { margin: 0; }
+a { color: inherit; }
+img { display: block; max-width: 100%; height: auto; }
+
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.measure { max-width: var(--measure); }
+
+.eyebrow {
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+/* The wordmark. Slab, wide, always uppercase. */
+.wordmark {
+  font-family: var(--font-slab);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wordmark);
+  text-transform: uppercase;
+}
+
+/* Catalogue numbers, matrix codes, timecodes — everything etched in the runout. */
+.matrix {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-mid);
+  color: var(--ink-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 0.85em 1.7em;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  font-size: var(--step-0);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+
+.btn--primary { background: var(--tungsten); color: var(--ink-on-light); }
+.btn--primary:hover { background: #f0b862; transform: translateY(-1px); }
+
+.btn--ghost { border-color: var(--line-strong); color: var(--ink); }
+.btn--ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
+
+:where(a, button, input, textarea, select, summary):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+.sr-only,
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------------
+   Shared section furniture. Used by the home page and by every release page, so
+   it lives here rather than scoped inside one of them.
+   --------------------------------------------------------------------------- */
+
+.band { padding-block: var(--sp-9); border-top: 1px solid var(--line); }
+.band--raised { background: var(--bg-raised); }
+.band--narrow { padding-block: var(--sp-8); }
+
+.band__grid {
+  display: grid;
+  gap: var(--sp-7);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .band__grid { grid-template-columns: 1fr; gap: var(--sp-6); }
+  .band { padding-block: var(--sp-8); }
+}
+
+.band__body { margin-top: var(--sp-5); color: var(--ink-muted); }
+.band__actions { margin-top: var(--sp-6); }
+
+.facts { margin: 0; }
+.facts__row {
+  display: grid;
+  grid-template-columns: minmax(0, 10rem) minmax(0, 1fr);
+  gap: var(--sp-4);
+  padding-block: var(--sp-4);
+  border-bottom: 1px solid var(--line);
+}
+.facts__row:first-child { border-top: 1px solid var(--line); }
+.facts dt {
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-mid);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.facts dd { margin: 0; color: var(--ink); }
+
+@media (max-width: 560px) {
+  .facts__row { grid-template-columns: 1fr; gap: var(--sp-1); }
+}

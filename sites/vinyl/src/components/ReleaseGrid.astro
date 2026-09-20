@@ -1,0 +1,89 @@
+---
+import { site } from "../content/site";
+const { series, products } = site;
+---
+
+<section id="series" class="series">
+  <div class="wrap">
+    <header class="series__head">
+      <p class="eyebrow">{series.eyebrow}</p>
+      <h2>{series.heading}</h2>
+      <p class="series__body measure">{series.body}</p>
+      <p class="matrix series__note">{series.note}</p>
+    </header>
+
+    <ul class="grid" role="list">
+      {products.map((p) => (
+        <li id={p.id} class="card">
+          <a class="card__media" href={p.href} tabindex="-1" aria-hidden="true">
+            <img
+              class="card__img"
+              src={p.image}
+              width="900" height="900" loading="lazy" decoding="async"
+              alt=""
+            />
+          </a>
+          <div class="card__body">
+            <p class="matrix">{p.volume} · {p.catalog}</p>
+            <div class="card__row">
+              <h3 class="card__name">
+                <a class="card__link" href={p.href}>
+                  {p.title}
+                  <span class="visually-hidden"> — {p.artist}, {p.year}. Read about this release</span>
+                </a>
+              </h3>
+              <p class="card__price">{p.price}</p>
+            </div>
+            <p class="card__meta">{p.artist} · {p.year}</p>
+            <p class="card__blurb">{p.blurb}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .series { padding-block: var(--sp-9); border-top: 1px solid var(--line); }
+  .series__head { display: grid; gap: var(--sp-3); max-width: var(--measure); }
+  .series__body { color: var(--ink-muted); }
+  .series__note { margin-top: var(--sp-2); }
+
+  .grid {
+    list-style: none;
+    margin: var(--sp-8) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-6);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  }
+
+  .card {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    transition: border-color var(--dur-fast) var(--ease);
+  }
+  .card:hover { border-color: var(--line-strong); }
+
+  .card__media { display: block; background: var(--bg-sunk); }
+  .card__img { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; }
+
+  .card__body { padding: var(--sp-5); display: grid; gap: var(--sp-2); align-content: start; }
+  .card__row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: var(--sp-4); margin-top: var(--sp-1);
+  }
+  .card__name { font-size: var(--step-1); }
+  .card__link { text-decoration: none; }
+  .card__link:hover { color: var(--accent); }
+  /* Whole card clickable without nesting interactive elements. */
+  .card__link::after { content: ""; position: absolute; inset: 0; }
+  .card { position: relative; }
+  .card__price { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--ink); }
+  .card__meta { font-size: var(--step--1); color: var(--ink-dim); letter-spacing: var(--tracking-mid); }
+  .card__blurb { margin-top: var(--sp-2); color: var(--ink-muted); font-size: var(--step-0); }
+</style>

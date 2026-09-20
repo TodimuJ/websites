@@ -1,0 +1,107 @@
+---
+import Base from "../../layouts/Base.astro";
+import { site } from "../../content/site";
+
+export function getStaticPaths() {
+  return site.products.map((p) => ({ params: { release: p.id }, props: { release: p } }));
+}
+
+const { release } = Astro.props;
+const { checkout, cutting } = site;
+---
+
+<Base
+  title={`${release.title} — ${release.artist} (${release.year}) · ${site.brand.name}`}
+  description={release.blurb}
+  skipTo="#tracks"
+  skipLabel="Skip to the tracklist"
+>
+  <article class="release">
+    <div class="wrap release__grid">
+      <img
+        class="release__art"
+        src={release.image}
+        width="900" height="900"
+        alt={`The sleeve of ${release.title} by ${release.artist} — an abstract mid-century painted composition.`}
+      />
+      <div class="release__head">
+        <p class="matrix">{release.volume} · {release.catalog}</p>
+        <h1 class="release__title">{release.title}</h1>
+        <p class="release__artist">{release.artist} · {release.year}</p>
+        <p class="measure release__blurb">{release.blurb}</p>
+        <p class="release__price">{release.price}</p>
+        <div class="band__actions">
+          <a class="btn btn--primary" href={`mailto:${checkout.email}?subject=${encodeURIComponent(release.catalog + " — " + release.title)}`}>
+            Order by email
+          </a>
+          <a class="btn btn--ghost" href="/#series">All three volumes</a>
+        </div>
+        <p class="matrix release__caveat">{checkout.body}</p>
+      </div>
+    </div>
+
+    <section id="tracks" class="band">
+      <div class="wrap band__grid">
+        <div>
+          <p class="eyebrow">Tracklist</p>
+          <ol class="tracks" role="list">
+            {release.tracks.map(([pos, name, len]) => (
+              <li class="track">
+                <span class="matrix track__pos">{pos}</span>
+                <span class="track__name">{name}</span>
+                <span class="matrix track__len">{len}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <dl class="facts">
+          {cutting.facts.map(([k, v]) => (
+            <div class="facts__row"><dt>{k}</dt><dd>{v}</dd></div>
+          ))}
+        </dl>
+      </div>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .release { padding-top: calc(var(--nav-h) + var(--sp-8)); }
+  .release__grid {
+    display: grid;
+    gap: var(--sp-8);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+  @media (max-width: 860px) { .release__grid { grid-template-columns: 1fr; gap: var(--sp-6); } }
+
+  .release__art {
+    width: 100%; height: auto; aspect-ratio: 1;
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--bg-sunk);
+  }
+  .release__head { display: grid; gap: var(--sp-3); justify-items: start; }
+  .release__title { font-size: var(--step-4); }
+  .release__artist { color: var(--ink-muted); letter-spacing: var(--tracking-mid); }
+  .release__blurb { margin-top: var(--sp-3); color: var(--ink-muted); }
+  .release__price {
+    margin-top: var(--sp-4);
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--step-2);
+    color: var(--accent);
+  }
+  .release__caveat { margin-top: var(--sp-5); max-width: var(--measure); }
+
+  .tracks { list-style: none; margin: var(--sp-5) 0 0; padding: 0; }
+  .track {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr) auto;
+    gap: var(--sp-4);
+    align-items: baseline;
+    padding-block: var(--sp-4);
+    border-bottom: 1px solid var(--line);
+  }
+  .track:first-child { border-top: 1px solid var(--line); }
+  .track__name { color: var(--ink); }
+</style>

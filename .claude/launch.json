@@ -4,8 +4,24 @@
     {
       "name": "forged-knife",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--workspace", "sites/forged-knife"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--workspace",
+        "sites/forged-knife"
+      ],
       "port": 4322
+    },
+    {
+      "name": "lip-gloss",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--workspace",
+        "sites/lip-gloss"
+      ],
+      "port": 4323
     }
   ]
 }

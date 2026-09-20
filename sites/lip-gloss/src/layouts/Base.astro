@@ -1,0 +1,99 @@
+---
+import "../styles/tokens.css";
+import Nav from "../components/Nav.astro";
+import { site } from "../content/site";
+
+interface Props {
+  title: string;
+  description: string;
+  /** Where the nav's skip link should jump to on this page. */
+  skipTo?: string;
+  skipLabel?: string;
+}
+const { title, description, skipTo, skipLabel } = Astro.props;
+
+// Footer links point at sections of the home page. Same rule as the nav: on the home
+// page they stay bare fragments so they scroll; anywhere else they need the path, or
+// they resolve against the shade page and land nowhere.
+const home = Astro.url.pathname === "/";
+const to = (href: string) => (home || !href.startsWith("#") ? href : `/${href}`);
+---
+
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#0b0708" />
+    <link rel="icon" href={site.brand.symbol} type="image/svg+xml" />
+  </head>
+
+  <body id="top">
+    <Nav skipTo={skipTo} skipLabel={skipLabel} />
+    <main>
+      <slot />
+    </main>
+
+    <footer class="foot">
+      <div class="wrap foot__grid">
+        <div>
+          <p class="foot__mark">{site.brand.name}</p>
+          <p class="measure foot__note">{site.footer.note}</p>
+        </div>
+        {site.footer.columns.map((col) => (
+          <nav class="foot__col" aria-label={col.title}>
+            <p class="eyebrow">{col.title}</p>
+            <ul>
+              {col.links.map((l) => (
+                <li><a href={to(l.href)}>{l.label}</a></li>
+              ))}
+            </ul>
+          </nav>
+        ))}
+      </div>
+      <div class="wrap foot__legal">
+        <p>{site.footer.legal}</p>
+      </div>
+    </footer>
+
+    <style is:global>
+      .foot {
+        padding-top: var(--sp-8);
+        padding-bottom: var(--sp-6);
+        border-top: 1px solid var(--line);
+        background: var(--bg-sunk);
+      }
+      .foot__grid {
+        display: grid;
+        gap: var(--sp-7);
+        grid-template-columns: minmax(0, 1.6fr) repeat(2, minmax(0, 1fr));
+      }
+      @media (max-width: 720px) {
+        .foot__grid { grid-template-columns: 1fr 1fr; }
+        .foot__grid > :first-child { grid-column: 1 / -1; }
+      }
+      .foot__mark {
+        font-size: var(--step-1);
+        letter-spacing: var(--tracking-wordmark);
+        color: var(--ink);
+      }
+      .foot__note { margin-top: var(--sp-4); color: var(--ink-dim); font-size: var(--step--1); }
+      .foot__col ul { list-style: none; margin: var(--sp-4) 0 0; padding: 0; }
+      .foot__col li + li { margin-top: var(--sp-3); }
+      .foot__col a { color: var(--ink-muted); text-decoration: none; }
+      .foot__col a:hover { color: var(--accent-bright); }
+      .foot__legal {
+        margin-top: var(--sp-7);
+        padding-top: var(--sp-5);
+        border-top: 1px solid var(--line);
+        font-size: var(--step--1);
+        color: var(--ink-dim);
+      }
+    </style>
+  </body>
+</html>

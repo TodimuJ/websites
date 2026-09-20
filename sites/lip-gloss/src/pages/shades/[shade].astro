@@ -1,0 +1,315 @@
+---
+import Base from "../../layouts/Base.astro";
+import { site } from "../../content/site";
+
+// One page per shade that carries a `page` block. Adding detail copy to another shade
+// in site.ts is all it takes to give that shade a page — nothing here needs editing.
+export function getStaticPaths() {
+  return site.products
+    .filter((p) => "page" in p && p.page)
+    .map((p) => ({ params: { shade: p.id }, props: { id: p.id } }));
+}
+
+const { id } = Astro.props;
+const product = site.products.find((p) => p.id === id)!;
+const d = (product as any).page;
+const { checkout } = site;
+
+const pairs = (d.pairs as string[])
+  .map((pid) => site.products.find((p) => p.id === pid))
+  .filter(Boolean) as typeof site.products[number][];
+---
+
+<Base
+  title={`${product.name} — ${product.category} lip gloss | ${site.brand.name}`}
+  description={d.lede}
+  skipTo="#content"
+  skipLabel="Skip to the shade"
+>
+  <nav class="crumb" aria-label="Breadcrumb">
+    <div class="wrap">
+      <ol>
+        <li><a href="/">{site.brand.name}</a></li>
+        <li><a href="/#shades">Shades</a></li>
+        <li aria-current="page">{product.name}</li>
+      </ol>
+    </div>
+  </nav>
+
+  <section class="lede" id="content">
+    <div class="wrap lede__grid">
+      <figure class="lede__media">
+        <img
+          src={product.image}
+          width="900" height="900"
+          alt={`${product.name} in a clear glass tube with a brushed metal cap.`}
+        />
+      </figure>
+
+      <div class="lede__body">
+        <p class="eyebrow">{d.eyebrow}</p>
+        <h1 class="lede__name">{product.name}</h1>
+        <p class="lede__price">{product.price} <span>· {product.unit}</span></p>
+        <p class="lede__text">{d.lede}</p>
+
+        <dl class="notes">
+          {d.notes.map(([k, v]: [string, string]) => (
+            <div class="notes__row">
+              <dt>{k}</dt>
+              <dd>{v}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <div class="lede__actions">
+          <a class="btn btn--primary" href="#ordering">
+            Add {product.name} to bag — {product.price}
+          </a>
+          <a class="btn btn--ghost" href="/#shades">All six shades</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="prose">
+    <div class="wrap prose__grid">
+      <header>
+        <p class="eyebrow">The shade</p>
+        <h2>{d.story.heading}</h2>
+      </header>
+      <div class="prose__body">
+        {d.story.body.map((para: string) => <p>{para}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap band__grid">
+      <div>
+        <p class="eyebrow">Wearing it</p>
+        <h2>{d.wear.heading}</h2>
+        <ol class="steps">
+          {d.wear.steps.map((step: string, i: number) => (
+            <li>
+              <span class="steps__n">{String(i + 1).padStart(2, "0")}</span>
+              <p>{step}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <dl class="facts">
+        {d.specs.map(([k, v]: [string, string]) => (
+          <div class="facts__row">
+            <dt>{k}</dt>
+            <dd>{v}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section class="band band--raised">
+    <div class="wrap band__grid">
+      <div>
+        <p class="eyebrow">Ingredients</p>
+        <h2>{d.ingredients.heading}</h2>
+        <p class="measure band__body">{d.ingredients.body}</p>
+      </div>
+      <ul class="inci">
+        {d.ingredients.list.map((line: string) => <li>{line}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <p class="eyebrow">Questions</p>
+      <h2>Before you buy</h2>
+      <div class="faq">
+        {d.faq.map((item: { q: string; a: string }) => (
+          <details class="faq__item">
+            <summary>{item.q}</summary>
+            <p>{item.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--raised">
+    <div class="wrap">
+      <p class="eyebrow">Wears well with</p>
+      <h2>Two more from the range</h2>
+      <ul class="pairs" role="list">
+        {pairs.map((p) => (
+          <li class="pair">
+            {"page" in p && (p as any).page ? (
+              <a href={(p as any).href}>
+                <img src={p.image} width="900" height="900" alt="" loading="lazy" />
+                <span class="pair__name">{p.name}</span>
+              </a>
+            ) : (
+              <a href={`/#${p.id}`}>
+                <img src={p.image} width="900" height="900" alt="" loading="lazy" />
+                <span class="pair__name">{p.name}</span>
+              </a>
+            )}
+            <span class="pair__meta">{p.category} · {p.price}</span>
+            <p class="pair__blurb">{p.blurb}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- No payment provider is wired up, so the page says so rather than showing a
+       confirmation it cannot honour. -->
+  <section id="ordering" class="band band--narrow">
+    <div class="wrap">
+      <h2>{checkout.heading}</h2>
+      <p class="measure band__body">{checkout.body}</p>
+      <p class="band__actions">
+        <a class="btn btn--primary" href={`mailto:${checkout.email}?subject=${encodeURIComponent(product.name + " — " + product.price)}`}>
+          Email {checkout.email}
+        </a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .crumb {
+    padding-block: var(--sp-5);
+    border-bottom: 1px solid var(--line);
+    font-size: var(--step--1);
+  }
+  .crumb ol { display: flex; flex-wrap: wrap; gap: var(--sp-3); list-style: none; margin: 0; padding: 0; }
+  .crumb li { color: var(--ink-dim); }
+  .crumb li + li::before { content: "/"; margin-right: var(--sp-3); color: var(--line-strong); }
+  .crumb a { color: var(--ink-muted); text-decoration: none; }
+  .crumb a:hover { color: var(--accent-bright); }
+
+  .lede { padding-block: var(--sp-8); }
+  .lede__grid {
+    display: grid;
+    gap: var(--sp-7);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    align-items: start;
+  }
+  .lede__media {
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    background: var(--bg-raised);
+  }
+  .lede__media img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+  .lede__name { font-size: var(--step-4); margin-top: var(--sp-3); }
+  .lede__price {
+    margin-top: var(--sp-3);
+    font-family: var(--font-mono);
+    font-size: var(--step-1);
+    color: var(--accent-bright);
+  }
+  .lede__price span { color: var(--ink-dim); font-size: var(--step-0); }
+  .lede__text { margin-top: var(--sp-5); color: var(--ink-muted); max-width: var(--measure); }
+  .lede__actions { display: flex; flex-wrap: wrap; gap: var(--sp-4); margin-top: var(--sp-6); }
+
+  .notes { margin: var(--sp-6) 0 0; }
+  .notes__row {
+    display: grid;
+    grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
+    gap: var(--sp-4);
+    padding-block: var(--sp-3);
+    border-bottom: 1px solid var(--line);
+  }
+  .notes__row:first-child { border-top: 1px solid var(--line); }
+  .notes dt {
+    font-size: var(--step--1);
+    letter-spacing: var(--tracking-mid);
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+  .notes dd { margin: 0; }
+
+  .prose { padding-block: var(--sp-8); border-top: 1px solid var(--line); }
+  .prose__grid {
+    display: grid;
+    gap: var(--sp-7);
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    align-items: start;
+  }
+  .prose__body p { color: var(--ink-muted); max-width: var(--measure); }
+  .prose__body p + p { margin-top: var(--sp-5); }
+
+  .steps { list-style: none; margin: var(--sp-6) 0 0; padding: 0; counter-reset: s; }
+  .steps li { display: grid; grid-template-columns: 3rem 1fr; gap: var(--sp-4); padding-block: var(--sp-4); border-top: 1px solid var(--line); }
+  .steps__n { font-family: var(--font-mono); color: var(--accent); font-size: var(--step--1); }
+  .steps p { color: var(--ink-muted); }
+
+  .inci { list-style: none; margin: 0; padding: 0; }
+  .inci li {
+    padding-block: var(--sp-3);
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+  }
+  .inci li:first-child { border-top: 1px solid var(--line); }
+
+  .faq { margin-top: var(--sp-6); max-width: 52rem; }
+  .faq__item { border-top: 1px solid var(--line); }
+  .faq__item:last-child { border-bottom: 1px solid var(--line); }
+  .faq__item summary {
+    cursor: pointer;
+    padding-block: var(--sp-4);
+    font-size: var(--step-1);
+    list-style: none;
+  }
+  .faq__item summary::-webkit-details-marker { display: none; }
+  .faq__item summary::after { content: "+"; float: right; color: var(--accent); }
+  .faq__item[open] summary::after { content: "−"; }
+  .faq__item summary:hover { color: var(--accent-bright); }
+  .faq__item p { padding-bottom: var(--sp-5); color: var(--ink-muted); max-width: var(--measure); }
+
+  .pairs {
+    display: grid;
+    gap: var(--sp-5);
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    list-style: none;
+    margin: var(--sp-6) 0 0;
+    padding: 0;
+  }
+  .pair a { display: block; text-decoration: none; }
+  .pair img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+  }
+  .pair__name { display: block; margin-top: var(--sp-3); font-size: var(--step-1); }
+  .pair a:hover .pair__name { color: var(--accent-bright); }
+  .pair__meta {
+    display: block;
+    margin-top: var(--sp-2);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: var(--tracking-mid);
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+  .pair__blurb { margin-top: var(--sp-3); color: var(--ink-muted); font-size: var(--step--1); }
+
+  @media (max-width: 860px) {
+    .lede__grid, .prose__grid { grid-template-columns: 1fr; gap: var(--sp-6); }
+    .lede { padding-block: var(--sp-6); }
+    .lede__media { max-width: 26rem; }
+  }
+
+  @media (max-width: 560px) {
+    /* Two narrow columns push the value hard right and strand it; stack instead. */
+    .notes__row { grid-template-columns: 1fr; gap: var(--sp-1); }
+    .steps li { grid-template-columns: 2rem 1fr; gap: var(--sp-3); }
+  }
+</style>

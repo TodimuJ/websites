@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GLOSSARIUM — style tile</title>
+<link rel="stylesheet" href="src/styles/tokens.css" />
+<style>
+  body { padding: var(--sp-8) 0; }
+  .tile { display: grid; gap: var(--sp-8); }
+  section { border-top: 1px solid var(--line); padding-top: var(--sp-5); }
+  h3 { color: var(--ink-dim); font-size: var(--step--1); letter-spacing: var(--tracking-eyebrow);
+       text-transform: uppercase; font-weight: 400; margin-bottom: var(--sp-5); }
+  .swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--sp-4); }
+  .sw { border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); }
+  .sw__chip { height: 92px; }
+  .sw__meta { padding: var(--sp-3); font-family: var(--font-mono); font-size: var(--step--1); }
+  .sw__meta b { display: block; font-weight: 500; font-family: var(--font-sans); letter-spacing: var(--tracking-mid); }
+  .sw__meta span { color: var(--ink-dim); }
+  .wordmark { font-size: var(--step-2); letter-spacing: var(--tracking-wordmark); }
+  .lockup { display: flex; align-items: center; gap: var(--sp-4); }
+  .lockup img { width: 34px; height: 34px; color: var(--nude); }
+  .specimens > * + * { margin-top: var(--sp-5); }
+  .buttons { display: flex; gap: var(--sp-4); flex-wrap: wrap; }
+  .card { max-width: 320px; border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; background: var(--bg-raised); }
+  .card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+  .card__body { padding: var(--sp-4); }
+  .card__row { display: flex; justify-content: space-between; align-items: baseline; }
+  .card__price { font-family: var(--font-mono); color: var(--accent-bright); }
+  .card__meta { font-family: var(--font-mono); font-size: var(--step--1); color: var(--ink-dim);
+                letter-spacing: var(--tracking-mid); text-transform: uppercase; margin-top: var(--sp-2); }
+  .card__blurb { margin-top: var(--sp-3); color: var(--ink-muted); font-size: var(--step--1); }
+  .note { color: var(--ink-dim); font-size: var(--step--1); max-width: var(--measure); }
+</style>
+</head>
+<body>
+<div class="wrap tile">
+
+  <header>
+    <div class="lockup">
+      <img src="public/logo-symbol.svg" alt="" />
+      <p class="wordmark">GLOSSARIUM</p>
+    </div>
+    <p class="note" style="margin-top:var(--sp-4)">
+      High-shine lip gloss · six permanent shades · the real tokens from
+      <code>src/styles/tokens.css</code>, not a screenshot.
+    </p>
+  </header>
+
+  <section>
+    <h3>Palette</h3>
+    <div class="swatches">
+      <div class="sw"><div class="sw__chip" style="background:var(--wet-black);border-bottom:1px solid var(--line)"></div><div class="sw__meta"><b>Wet black</b><span>#0B0708 · page</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--nude)"></div><div class="sw__meta"><b>Nude</b><span>#D7A98C · accent bright</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--rose-gold)"></div><div class="sw__meta"><b>Rose gold</b><span>#C98B6E · Dune 04</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--flesh)"></div><div class="sw__meta"><b>Flesh</b><span>#EFCDBB · primary button</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--shine)"></div><div class="sw__meta"><b>Shine</b><span>#FFF6EF · ink</span></div></div>
+    </div>
+  </section>
+
+  <section class="specimens">
+    <h3>Type — tight modern sans, no serif anywhere</h3>
+    <h1>You are looking at one drop.</h1>
+    <h2>Thick enough to fold.</h2>
+    <h3 style="margin:0;color:var(--ink);letter-spacing:var(--tracking-tight);text-transform:none;font-size:var(--step-1);font-weight:500">Six shades. One formula.</h3>
+    <p class="eyebrow">Glossarium · Shade no. 04</p>
+    <p class="measure">Real body, no stick. Castor seed and squalane in a wet-look base — no
+      plumping tingle, no grit, no tack. Six shades from clear to deep berry, all in the
+      same base, all in clear glass.</p>
+    <p class="note" style="font-family:var(--font-mono);letter-spacing:var(--tracking-mid)">
+      VEGAN · NON-STICKY · 8H SHINE · FRAGRANCE-FREE</p>
+  </section>
+
+  <section>
+    <h3>Buttons</h3>
+    <div class="buttons">
+      <a class="btn btn--primary" href="#">Add Dune 04 to bag — $22</a>
+      <a class="btn btn--ghost" href="#">Shop the shade range</a>
+    </div>
+  </section>
+
+  <section>
+    <h3>Product card</h3>
+    <div class="card">
+      <img src="public/products/dune-04.webp" alt="" />
+      <div class="card__body">
+        <div class="card__row"><b style="font-weight:500">Dune 04</b><span class="card__price">$22</span></div>
+        <p class="card__meta">Nude · 6 ml</p>
+        <p class="card__blurb">The hero. A warm rose-gold nude that reads golden in daylight
+          and amber indoors.</p>
+      </div>
+    </div>
+    <p class="note" style="margin-top:var(--sp-4)">
+      Product imagery here is the committed placeholder gradient — see
+      production-notes.md §6. It is replaced by the real still on delivery.
+    </p>
+  </section>
+
+  <section>
+    <h3>Imagery direction</h3>
+    <p class="note">Extreme macro on a single material under one large softbox from the
+      upper left, everything else falling to near-black. Rose-gold nude throughout: pale
+      peach-cream on the lit ridge, warm rose-gold in the mid-tones, translucent amber in
+      the mass. Fine metallic flake as scattered points of light, never as noise. No text,
+      no labels, no printing in any generated pixel — an unlabelled tube is correct.</p>
+  </section>
+
+</div>
+</body>
+</html>

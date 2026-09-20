@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" role="img" aria-label="GLOSSARIUM">
+  <!-- A single bead of gloss resting on a surface: flattened base, meniscus pulled to
+       the upper right, one floating highlight. Drawn by hand so it stays a true vector
+       master and carries no generated text. -->
+  <path
+    d="M24 9.5c6.9 0 13.2 6.4 13.2 13.9 0 7.3-5.9 12.6-13.2 12.6S10.8 30.7 10.8 23.4C10.8 15.9 17.1 9.5 24 9.5Z"
+    fill="currentColor" />
+  <path d="M17.8 17.6c1.6-1.9 3.6-3.1 5.6-3.5" stroke="#0b0708" stroke-width="2.2"
+    stroke-linecap="round" opacity="0.9" />
+  <path d="M8 39.2h32" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+</svg>

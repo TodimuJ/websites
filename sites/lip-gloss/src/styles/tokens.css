@@ -1,0 +1,230 @@
+/**
+ * GLOSSARIUM — design tokens. Every component reads from here; nothing hardcodes a
+ * colour, a size or a radius. Palette is the lip-gloss brief's, unchanged.
+ */
+
+:root {
+  /* Palette */
+  --wet-black: #0b0708;
+  --nude: #d7a98c;
+  --rose-gold: #c98b6e;
+  --flesh: #efcdbb;
+  --shine: #fff6ef;
+
+  /* Derived surfaces — the site is dark so the canvas is the brightest thing on it */
+  --bg: var(--wet-black);
+  --bg-raised: #15100f;
+  --bg-sunk: #070505;
+  --line: #2a2121;
+  --line-strong: #3d2f2c;
+
+  /* Ink */
+  --ink: var(--shine);
+  --ink-muted: #bfa99d;
+  --ink-dim: #8a7369;
+  --ink-on-light: var(--wet-black);
+
+  /* Accent */
+  --accent: var(--rose-gold);
+  --accent-bright: var(--nude);
+  --accent-wash: rgba(201, 139, 110, 0.14);
+
+  /* Type — tight modern sans, wide tracking on the wordmark. No serif anywhere. */
+  --font-sans: "Helvetica Neue", "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "SF Mono", "Roboto Mono", ui-monospace, monospace;
+
+  --step--1: clamp(0.76rem, 0.74rem + 0.1vw, 0.82rem);
+  --step-0: clamp(0.95rem, 0.9rem + 0.25vw, 1.06rem);
+  --step-1: clamp(1.18rem, 1.08rem + 0.5vw, 1.45rem);
+  --step-2: clamp(1.5rem, 1.3rem + 1vw, 2.1rem);
+  --step-3: clamp(2rem, 1.6rem + 2vw, 3.2rem);
+  --step-4: clamp(2.6rem, 1.9rem + 3.4vw, 4.8rem);
+
+  --tracking-wordmark: 0.42em;
+  --tracking-eyebrow: 0.24em;
+  --tracking-tight: -0.02em;
+  --tracking-mid: 0.09em;
+
+  /* Nav height — the pinned stage and the scroll cue both key off this. */
+  --nav-h: 64px;
+
+  /* Chapter scrims. Copy sits left on three of the four chapters and right on the
+     closing one, so both rakes are defined and Chapter picks per beat. */
+  --scrim: linear-gradient(90deg, rgba(11,7,8,0.94) 0%, rgba(11,7,8,0.76) 42%, rgba(11,7,8,0) 78%);
+  --scrim-right: linear-gradient(270deg, rgba(11,7,8,0.94) 0%, rgba(11,7,8,0.76) 42%, rgba(11,7,8,0) 78%);
+  --scrim-up: linear-gradient(0deg, rgba(11,7,8,0.95) 0%, rgba(11,7,8,0.72) 46%, rgba(11,7,8,0) 100%);
+
+  --sp-10: 10rem;
+
+
+  --leading-tight: 1.05;
+  --leading-snug: 1.25;
+  --leading-body: 1.6;
+
+  /* Space */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+  --sp-8: 4.5rem;
+  --sp-9: 7rem;
+
+  --measure: 34rem;
+  --wrap: 78rem;
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+
+  /* Radii — gloss is round; nothing here is a hard corner except the canvas */
+  --r-sm: 6px;
+  --r-md: 12px;
+  --r-lg: 22px;
+  --r-pill: 999px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-fast: 160ms;
+  --dur: 420ms;
+  --dur-slow: 900ms;
+}
+
+@media (max-width: 767px) {
+  :root { --nav-h: 56px; }
+}
+
+/* The whole page is dark by design — this is a wet-black site. There is no light mode
+   to offer, so prefers-color-scheme is deliberately not branched on. */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  background: var(--bg);
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  font-weight: 500;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+}
+
+h1 { font-size: var(--step-4); }
+h2 { font-size: var(--step-3); }
+h3 { font-size: var(--step-1); }
+
+p { margin: 0; }
+a { color: inherit; }
+img { display: block; max-width: 100%; height: auto; }
+
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.measure { max-width: var(--measure); }
+
+.eyebrow {
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 0.85em 1.7em;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  font-size: var(--step-0);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+
+.btn--primary { background: var(--flesh); color: var(--ink-on-light); }
+.btn--primary:hover { background: var(--shine); transform: translateY(-1px); }
+
+.btn--ghost { border-color: var(--line-strong); color: var(--ink); }
+.btn--ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
+
+:where(a, button, input, summary):focus-visible {
+  outline: 2px solid var(--accent-bright);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+.sr-only,
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------------
+   Shared section furniture. Used by the home page and by every shade page, so
+   it lives here rather than scoped inside one of them.
+   --------------------------------------------------------------------------- */
+
+.band { padding-block: var(--sp-9); border-top: 1px solid var(--line); }
+.band--raised { background: var(--bg-raised); }
+.band--narrow { padding-block: var(--sp-8); }
+
+.band__grid {
+  display: grid;
+  gap: var(--sp-7);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .band__grid { grid-template-columns: 1fr; gap: var(--sp-6); }
+  .band { padding-block: var(--sp-8); }
+}
+
+.band__body { margin-top: var(--sp-5); color: var(--ink-muted); }
+.band__actions { margin-top: var(--sp-6); }
+
+.facts { margin: 0; }
+.facts__row {
+  display: grid;
+  grid-template-columns: minmax(0, 10rem) minmax(0, 1fr);
+  gap: var(--sp-4);
+  padding-block: var(--sp-4);
+  border-bottom: 1px solid var(--line);
+}
+.facts__row:first-child { border-top: 1px solid var(--line); }
+.facts dt {
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-mid);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.facts dd { margin: 0; color: var(--ink); }
+
+@media (max-width: 560px) {
+  .facts__row { grid-template-columns: 1fr; gap: var(--sp-1); }
+}

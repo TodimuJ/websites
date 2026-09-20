@@ -1,0 +1,67 @@
+---
+import Base from "../layouts/Base.astro";
+import ScrollStage from "../components/ScrollStage.astro";
+import ProductGrid from "../components/ProductGrid.astro";
+import { site } from "../content/site";
+---
+
+<Base title={site.meta.title} description={site.meta.description} skipTo="#formula">
+  <h1 class="sr-only">{site.brand.name} — {site.brand.tagline}</h1>
+
+  <ScrollStage />
+
+  <!-- The formula. Reads as the next chapter of the story on a phone, where the
+       pinned stage has already handed off. -->
+  <section id={site.formula.id} class="band">
+    <div class="wrap band__grid">
+      <div>
+        <p class="eyebrow">{site.formula.eyebrow}</p>
+        <h2>{site.formula.heading}</h2>
+        <p class="measure band__body">{site.formula.body}</p>
+      </div>
+      <dl class="facts">
+        {site.formula.facts.map(([k, v]) => (
+          <div class="facts__row">
+            <dt>{k}</dt>
+            <dd>{v}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <ProductGrid />
+
+  <section id={site.about.id} class="band band--raised">
+    <div class="wrap band__grid">
+      <div>
+        <p class="eyebrow">{site.about.eyebrow}</p>
+        <h2>{site.about.heading}</h2>
+        <p class="measure band__body">{site.about.body}</p>
+        <p class="measure band__body">{site.about.body2}</p>
+      </div>
+      <dl class="facts">
+        {site.about.facts.map(([k, v]) => (
+          <div class="facts__row">
+            <dt>{k}</dt>
+            <dd>{v}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- No payment provider is wired up, so the site says so instead of showing a
+       confirmation it cannot honour. -->
+  <section id="ordering" class="band band--narrow">
+    <div class="wrap">
+      <h2>{site.checkout.heading}</h2>
+      <p class="measure band__body">{site.checkout.body}</p>
+      <p class="band__actions">
+        <a class="btn btn--primary" href={`mailto:${site.checkout.email}`}>
+          Email {site.checkout.email}
+        </a>
+      </p>
+    </div>
+  </section>
+</Base>

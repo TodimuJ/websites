@@ -1,0 +1,191 @@
+---
+import { site } from "../content/site";
+const { collection, products } = site;
+---
+
+<section id="shades" class="collection">
+  <div class="wrap">
+    <header class="collection__head">
+      <p class="eyebrow">{collection.eyebrow}</p>
+      <h2>{collection.heading}</h2>
+      <p class="collection__note measure">{collection.note}</p>
+
+      <div class="filters" role="group" aria-label="Filter the shade range">
+        {collection.filters.map((f, i) => (
+          <button
+            type="button"
+            class="filter"
+            data-filter={f}
+            aria-pressed={i === 0 ? "true" : "false"}
+          >{f}</button>
+        ))}
+      </div>
+    </header>
+
+    <ul class="grid" role="list">
+      {products.map((p) => (
+        <li id={p.id} class:list={["card", { "card--featured": "featured" in p && p.featured }]} data-category={p.category}>
+          {"href" in p && p.href ? (
+            <a class="card__media" href={p.href} tabindex="-1" aria-hidden="true">
+              <img
+                class="card__img"
+                src={p.image}
+                width="900" height="900" loading="lazy" decoding="async"
+                alt=""
+              />
+            </a>
+          ) : (
+            <img
+              class="card__img"
+              src={p.image}
+              width="900" height="900" loading="lazy" decoding="async"
+              alt={`${p.name} — ${p.blurb}`}
+            />
+          )}
+          <div class="card__body">
+            <div class="card__row">
+              <h3 class="card__name">
+                {"href" in p && p.href ? (
+                  <a class="card__link" href={p.href}>
+                    {p.name}
+                    <span class="visually-hidden"> — read about this shade</span>
+                  </a>
+                ) : p.name}
+              </h3>
+              <p class="card__price">{p.price}</p>
+            </div>
+            <p class="card__meta">{p.category} · {p.unit}</p>
+            <p class="card__blurb">{p.blurb}</p>
+
+            <details class="card__detail">
+              <summary>Details</summary>
+              <ul role="list">
+                {p.detail.map((d) => <li>{d}</li>)}
+              </ul>
+            </details>
+
+            {"href" in p && p.href && (
+              <a class="card__more" href={p.href}>Read about this shade &rarr;</a>
+            )}
+          </div>
+        </li>
+      ))}
+    </ul>
+    <p class="collection__empty" hidden>Nothing in that category.</p>
+  </div>
+</section>
+
+<style>
+  .collection { padding: var(--sp-9) 0; border-top: 1px solid var(--line); }
+  .collection__head { display: grid; gap: var(--sp-4); margin-bottom: var(--sp-7); }
+  .collection__head h2 { font-size: var(--step-3); max-width: 18ch; }
+  .collection__note { color: var(--ink-muted); }
+
+  .filters { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: var(--sp-2); }
+  .filter {
+    min-height: 44px;
+    padding: 0 var(--sp-4);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: var(--tracking-mid);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 160ms var(--ease), color 160ms var(--ease),
+                background-color 160ms var(--ease);
+  }
+  .filter:hover { color: var(--ink); border-color: var(--line-strong); }
+  .filter[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #FFF6F0; }
+
+  .grid {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; gap: var(--sp-5);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  }
+
+  .card {
+    display: grid;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .card--featured { border-color: rgba(216, 85, 31, 0.55); }
+  .card[hidden] { display: none; }
+
+  .card__img { width: 100%; height: auto; display: block; aspect-ratio: 1; object-fit: cover; }
+  .card__media { display: block; }
+  .card__media .card__img { transition: transform 420ms var(--ease), opacity 220ms var(--ease); }
+  .card:hover .card__media .card__img { transform: scale(1.03); }
+
+  /* The whole card is not a link — the name is, so the price, the details
+     disclosure and the filter buttons all stay independently operable. */
+  .card__link { text-decoration: none; }
+  .card__link:hover { color: var(--accent-bright); }
+  .card__more {
+    margin-top: var(--sp-1);
+    justify-self: start;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: var(--tracking-mid);
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    display: inline-flex; align-items: center; min-height: 44px;
+    transition: color 160ms var(--ease);
+  }
+  .card__more:hover { color: var(--accent-bright); }
+  .card__body { padding: var(--sp-5); display: grid; gap: var(--sp-2); align-content: start; }
+  .card__row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-3); }
+  .card__name { font-size: var(--step-1); }
+  .card__price { font-family: var(--font-mono); color: var(--accent-bright); }
+  .card__meta {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: var(--tracking-mid);
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+  .card__blurb { color: var(--ink-muted); font-size: var(--step-0); }
+
+  .card__detail { margin-top: var(--sp-2); }
+  .card__detail summary {
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: var(--tracking-mid);
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .card__detail summary:hover { color: var(--accent-bright); }
+  .card__detail ul { margin: 0 0 var(--sp-2); padding-left: 1.1em; color: var(--ink-muted); font-size: var(--step-0); }
+  .card__detail li + li { margin-top: var(--sp-1); }
+
+  .collection__empty { margin-top: var(--sp-5); color: var(--ink-dim); }
+</style>
+
+<script>
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>(".filter")];
+  const cards = [...document.querySelectorAll<HTMLLIElement>(".card")];
+  const empty = document.querySelector<HTMLElement>(".collection__empty");
+
+  for (const btn of buttons) {
+    btn.addEventListener("click", () => {
+      const want = btn.dataset.filter!;
+      for (const b of buttons) b.setAttribute("aria-pressed", String(b === btn));
+      let shown = 0;
+      for (const card of cards) {
+        const on = want === "All" || card.dataset.category === want;
+        card.hidden = !on;
+        if (on) shown++;
+      }
+      if (empty) empty.hidden = shown > 0;
+    });
+  }
+</script>

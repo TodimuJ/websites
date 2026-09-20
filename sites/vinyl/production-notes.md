@@ -2,9 +2,9 @@
 
 `sites/vinyl` · built from `briefs/vinyl.md`
 
-**Status: Gate 2 open.** Brand, tokens, style tile and scaffold are in place. No credits
-spent — every figure below came from `get_cost` preflights, which submit nothing. The
-generation route and model tier are awaiting the user's decision.
+**Status: complete and running on generated footage.** All assets generated on Higgsfield,
+both sequences extracted and measured, pacing and chapter placement re-derived from the
+real frames, and the parity check passes from a clean clone. Total spend 317 credits.
 
 ---
 
@@ -282,3 +282,127 @@ Balance at Gate 2: **1,200.4** (Plus). After the probe: **1,167.4**.
 A preset recommendation ("IN THE DARK", `24bae836-2c4a-48e0-89b6-49fcc0b21612`) was
 offered on the first submission and **declined** — a preset would have changed the look and
 invalidated the A/B, which was the entire purpose of the probe.
+
+
+## 7 — Delivered sequences, measured
+
+| | frames | fps | width | total | per frame |
+|---|---|---|---|---|---|
+| desktop | **362** | 12 | 1280 | **8.0 MB** | 22.5 KB |
+| portrait | **302** | 10 | 720 | **7.0 MB** | 23.7 KB |
+
+Source: four clips per orientation, 12.04s + 6.04s + 6.04s + 6.04s = 30.17s.
+Clip boundaries land at desktop frames 144 / 216 / 289 and portrait 120 / 180 / 241.
+
+**Against the Gate 2 estimate.** Desktop was predicted at ~12MB and came in at **8.0MB** —
+better, because the frames are almost entirely black. Portrait was predicted at ~4MB and
+came in at **7.0MB**, which is **75% over**. The portrait crop keeps proportionally more of
+the lit subject in frame than the landscape one, so it compresses worse per pixel. Stated
+rather than absorbed.
+
+**What that 7MB actually costs a visitor.** It is the *full-scroll* total, not the load
+cost. The engine fetches on demand with a lookahead of 12 frames and a concurrency cap of
+6, so a first view pulls ~13 frames (~310KB) and a visitor only downloads what they
+actually scroll past. Frames are served `immutable` with a one-year max-age, so a return
+visit downloads nothing.
+
+**Levers not taken, and why.** WebP q64 saves 11.5% and q58 saves 15.5%, measured on
+representative portrait frames — small savings against real banding risk in near-black
+gradients, which is the whole palette here. Dropping portrait to 8fps would cut 19% with no
+per-frame quality loss but costs temporal smoothness on the slowest beat. Neither was
+applied. Both remain available if the portrait figure matters more than scrub quality.
+
+## 8 — Verification
+
+**Seam continuity, measured.** Mean absolute pixel difference across each seam, against a
+baseline of two genuinely adjacent frames inside one continuous clip:
+
+| seam | desktop | portrait |
+|---|---|---|
+| A_last → reversed-B first | 1.21 | 1.90 |
+| reversed-B last → C first | 0.34 | 0.25 |
+| C_last → D first | 1.06 | — |
+| **baseline: adjacent frames inside clip A** | **7.30** | — |
+
+Every seam changes *less* than ordinary consecutive frames do. They are not merely hidden;
+they are below the noise floor of the motion around them.
+
+**Scrub behaviour, verified in the browser** (not inferred from a successful build):
+
+- Frames advance across all nine beats — sampled canvas luma 49 → 37 → 73 → 23 → 50 → 23 →
+  17 → 74 → 70 across scroll 0 → 1.
+- The timecode runs forward (00:00 → 01:31), **reverses** through the middle
+  (02:13 → 01:50 → 01:15 → 00:45), then forward again to 03:42.
+- **Reverse scrolling retraces exactly.** Scrolling back to 0.65 / 0.40 / 0.10 reproduced
+  luma 23 / 23 / 37 and times 01:15 / 02:13 / 00:36 — identical to the forward pass. The
+  mapping is a pure function of scroll position, as required.
+- Chapters toggle at their ranges and the scrim rake follows the active chapter.
+- Portrait verified at 375x812: vertical sequence loads (no desktop frames requested),
+  hero copy and CTA sit bottom-left clear of the subject, timecode owns the bottom edge.
+- Zero failed resources on a clean load in both orientations.
+
+**Parity check — passes.** A fresh `git clone`, `npm install`, `npm run build` from zero,
+served on :4500. All 13 key routes return 200: home, all three release pages,
+`frames/manifest.json`, first and last frame of both sequences, both posters, a product
+image, the logo and `_headers`. `dist` frame counts (362 / 302) match the manifest exactly.
+`index.html` is **byte-identical** to the local build. The served clone scrubs identically
+and reports zero failed resources.
+
+## 9 — Market: USD and United States
+
+At the user's instruction all prices and locations are US. Prices carry the same numerals
+into dollars, matching the precedent set when lip-gloss moved market: Vol. I $32,
+Vol. II $28, Vol. III $34, subscription $30 a quarter. "Free UK delivery over £60" became
+"Free US shipping over $60"; "Cut and pressed in England" became "Cut and pressed in the
+United States"; "Overseas" became "International"; `catalogue` became `catalog` throughout
+the user-visible copy. The Neumann VMS-70 reference stays — it is a German lathe used in
+cutting rooms everywhere, not a location claim.
+
+## 10 — Known limitations, stated plainly
+
+- **No payment backend.** The site says so in its own Ordering section and on every release
+  page, and offers email instead. There is no cart and no confirmation screen, because no
+  order is ever placed.
+- **The slab wordmark is a font stack**, not a webfont: `Rockwell` → `Roboto Slab` →
+  `Bookman Old Style` → Georgia. On a system with none of the first three it renders
+  Georgia. **Unverified on Linux.** The drawn symbol in `public/logo-symbol.svg` is vector
+  and unaffected.
+- **`style-tile.html` has still not been rendered with its stylesheet applied.** It was
+  written against the real tokens, but every visual check in §8 was done against the live
+  Astro site instead, which is the stronger check. The tile remains unverified.
+- **The model id returned for the stills was `nano_banana_2`, not the requested
+  `nano_banana_pro`.** Output is correct and text-free; the substitution is the server's.
+- **Everything about the label is invented** — the name, the three titles, the artists, the
+  years, the catalogue numbers, the tracklists and the manufacturing claims. No real brand
+  is impersonated.
+
+## 11 — Cost ledger, final
+
+| Date | Job | Model | Credits | Job ID |
+|---|---|---|---|---|
+| 2026-09-20 | preflights (`get_cost`, nothing submitted) | various | 0 | — |
+| 2026-09-20 | Probe — scene 01, 6s | `seedance_2_0_mini` | 6 | `8bf1d278-cad1-4c5a-a88b-05b38a11301d` |
+| 2026-09-20 | Probe — scene 01, 6s | `seedance_2_0` std | 27 | `6910a476-7875-4a3c-b3a0-939c7193d368` |
+| 2026-09-20 | Anchor 01 landscape | `nano_banana_pro` 2k | 2 | `6c9a0144-291f-4aec-be67-3c694fd9a0df` |
+| 2026-09-20 | Anchor 01 portrait | `nano_banana_pro` 2k | 2 | `8d0bdd7f-c985-4d8e-bb1c-24da9e4af685` |
+| 2026-09-20 | Anchor 03 landscape | `nano_banana_pro` 2k | 2 | `ccfcb9c4-0071-4ec5-84d7-a4b59aed9f6a` |
+| 2026-09-20 | Anchor 03 portrait | `nano_banana_pro` 2k | 2 | `d4022438-6d61-455b-961e-565bfeff58ea` |
+| 2026-09-20 | Sleeve — Ancestral Line | `nano_banana_pro` 2k | 2 | `00aad616-6430-44ab-9f9d-f9a1a5488586` |
+| 2026-09-20 | Sleeve — Night Water | `nano_banana_pro` 2k | 2 | `6eea0b03-5c0f-431b-bdc6-1b2cfe73f31a` |
+| 2026-09-20 | Sleeve — Harmattan Suite | `nano_banana_pro` 2k | 2 | `225179ac-ed39-4ad2-9a64-def883f09e02` |
+| 2026-09-20 | Clip A landscape, 12s | `seedance_2_0` std | 54 | `84071870-f056-4031-8249-fecfa3a0eefa` |
+| 2026-09-20 | Clip A portrait, 12s | `seedance_2_0` std | 54 | `484e9765-face-4739-bc56-a2636f6d27ed` |
+| 2026-09-20 | Clip B landscape, 6s | `seedance_2_0` std | 27 | `3a2d3b16-626b-495f-9b1b-e85166c8e5b8` |
+| 2026-09-20 | Clip B portrait, 6s | `seedance_2_0` std | 27 | `76fddd34-b6db-4efc-b11d-2330666abd08` |
+| 2026-09-20 | Clip C landscape, 6s | `seedance_2_0` std | 27 | `b73ee590-3c66-4372-86a4-3b2edbce9f40` |
+| 2026-09-20 | Clip C portrait, 6s | `seedance_2_0` std | 27 | `1015bba7-76d9-4b85-bd27-9403d9378b66` |
+| 2026-09-20 | Clip D portrait, 6s | `seedance_2_0` std | 27 | `9ecc07a7-4072-4b58-8811-2d4023b0bf8c` |
+| 2026-09-20 | Clip D landscape, 6s | `seedance_2_0` std | 27 | `0cb5a07b-cc6f-4508-8897-9572999f557c` |
+| | | **Total spent** | **317** | |
+
+**Estimated vs actual.** Gate 2 quoted **284** for the build plus **33** already spent on
+the probe — **317 forecast, 317 actual, zero retakes.** Balance confirmed by `balance`:
+1,200.4 before, **883.4** after.
+
+Every clip was accepted on its first generation. The economy tier's one-retake budget
+(a further 270 worst case) was not touched.

@@ -1,0 +1,347 @@
+---
+import Chapter from "./Chapter.astro";
+import { site } from "../content/site";
+import manifest from "../../public/frames/manifest.json";
+
+// Until footage lands the manifest carries count 0. In that state the sequence is never
+// requested and everyone gets the composed-still path — the same one reduced-motion
+// visitors always get.
+const hasSequence = manifest.desktop.count > 0 && manifest.mobile.count > 0;
+---
+
+<section
+  id="stage"
+  class="scroller"
+  class:list={{ "is-static": !hasSequence }}
+  aria-label="A CLACK keyboard assembling itself, from one keycap to a finished board"
+>
+  <div class="pin" data-scrim="left" data-tone="light">
+    <canvas id="seq" aria-hidden="true"></canvas>
+    <div class="scrim" aria-hidden="true"></div>
+
+    <noscript>
+      <picture>
+        <source media="(max-width: 767px)" srcset={manifest.mobile.poster} />
+        <img class="poster-fallback" src={manifest.desktop.poster} alt="" />
+      </picture>
+    </noscript>
+
+    {site.chapters.map((c, i) => <Chapter {...c} level={i === 0 ? 1 : 2} />)}
+
+    <script type="application/json" id="seq-manifest" set:html={JSON.stringify(manifest)}></script>
+
+    <!-- The scroll indicator is a key-travel depth gauge: 0.0 mm at the top of the
+         stroke, 2.0 mm at actuation, 3.6 mm bottomed out. It reads like the spec sheet
+         this audience already knows. Decorative — the same information is in the
+         chapters — so it stays out of the a11y tree. -->
+    <div class="depth" aria-hidden="true">
+      <span class="depth__mm">0.00 mm</span>
+      <span class="depth__track">
+        <span class="depth__act"></span>
+        <span class="depth__head"></span>
+      </span>
+      <span class="depth__total">3.60 mm</span>
+    </div>
+
+    <div class="cue" aria-hidden="true">
+      <span class="cue__label">Scroll</span>
+      <span class="cue__line"></span>
+    </div>
+  </div>
+</section>
+
+<!-- Reduced motion, no-JS, load failure and the pre-footage state all land here: the
+     same story as readable copy in normal flow, with every action still reachable. -->
+<section class="story-static" aria-label="How a CLACK keyboard is assembled">
+  <div class="wrap">
+    <picture>
+      <source
+        media="(max-width: 767px)"
+        srcset={manifest.mobile.poster}
+        width={manifest.mobile.width}
+        height={manifest.mobile.height}
+      />
+      <img
+        class="story-static__poster"
+        loading="lazy"
+        src={manifest.desktop.poster}
+        width={manifest.desktop.width}
+        height={manifest.desktop.height}
+        alt="A finished 65% mechanical keyboard in a bead-blasted silver aluminium case, with blank pale grey and white keycaps and two blue accent keys, resting on a pale grey desk."
+      />
+    </picture>
+    <div class="story-static__copy">
+      {site.chapters.map((c, i) => (
+        <div class="story-static__beat">
+          {c.eyebrow && <p class="eyebrow">{c.eyebrow}</p>}
+          {/* Only one of the two paths is ever rendered (the other is display:none,
+              which removes it from the a11y tree), so each exposes exactly one h1. */}
+          {i === 0 ? <h1>{c.heading}</h1> : <h2>{c.heading}</h2>}
+          {c.body && <p class="measure">{c.body}</p>}
+          {c.cta && <a class="btn btn--primary" href={c.cta.href}>{c.cta.label}</a>}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .scroller { position: relative; height: 620vh; } /* active pinned travel = 5.2 viewports */
+  @media (max-width: 767px) {
+    .scroller { height: 520vh; } /* 4.2 active — thumbs cover less distance per effort */
+  }
+
+  .pin {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+    background: var(--bg);
+    /* The stage itself crossfades to the housing colour under the dark chapter, so the
+       letterbox edges of a cover-fit canvas never flash paper-white against dark frames. */
+    transition: background 620ms var(--ease);
+  }
+  .pin[data-tone="dark"] { background: var(--housing); }
+
+  #seq { width: 100%; height: 100%; display: block; }
+
+  .poster-fallback {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
+  }
+
+  /* Legibility behind the copy rail. Rake follows the ACTIVE chapter, and flips to the
+     dark scrim for the one chapter that sits inside the switch housing. */
+  .scrim {
+    position: absolute; inset: 0;
+    background: var(--scrim-left);
+    pointer-events: none;
+    transition: background 520ms var(--ease), opacity 520ms var(--ease);
+  }
+  .pin[data-scrim="right"] .scrim { background: var(--scrim-right); }
+  .pin[data-scrim="up"] .scrim { background: var(--scrim-up); }
+  .pin[data-tone="dark"] .scrim { background: var(--scrim-left-dark); }
+  .pin[data-tone="dark"][data-scrim="up"] .scrim { background: var(--scrim-up-dark); }
+  /* No chapter showing — let the footage carry the frame alone. */
+  .pin[data-scrim="none"] .scrim { opacity: 0; }
+
+  @media (max-width: 767px) {
+    /* Portrait copy sits over the subject, not beside it, so the scrim goes bottom-up in
+       every chapter regardless of its desktop rail. */
+    .scrim,
+    .pin[data-scrim="up"] .scrim,
+    .pin[data-scrim="right"] .scrim {
+      background: linear-gradient(
+        0deg,
+        rgba(245, 246, 248, 0.98) 0%,
+        rgba(245, 246, 248, 0.9) 30%,
+        rgba(245, 246, 248, 0.56) 54%,
+        rgba(245, 246, 248, 0) 88%
+      );
+    }
+    .pin[data-tone="dark"] .scrim,
+    .pin[data-tone="dark"][data-scrim="up"] .scrim,
+    .pin[data-tone="dark"][data-scrim="right"] .scrim {
+      background: linear-gradient(
+        0deg,
+        rgba(16, 18, 21, 0.97) 0%,
+        rgba(16, 18, 21, 0.88) 30%,
+        rgba(16, 18, 21, 0.5) 54%,
+        rgba(16, 18, 21, 0) 88%
+      );
+    }
+  }
+
+  /* The depth gauge. Mono, tabular, bottom-right. The actuation tick sits at 2.0/3.6
+     of the track, so the head crossing it lines up with the spark in the footage. */
+  .depth {
+    position: absolute;
+    right: var(--gutter);
+    bottom: calc(var(--sp-5) + env(safe-area-inset-bottom));
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: var(--tracking-mid);
+    color: var(--ink-dim);
+    transition: color 520ms var(--ease);
+  }
+  .depth__track {
+    position: relative;
+    display: block;
+    width: 148px;
+    height: 1px;
+    background: var(--line-strong);
+  }
+  /* The actuation point, at 2.0mm of 3.6mm travel. */
+  .depth__act {
+    position: absolute;
+    top: -3px;
+    left: 55.55%;
+    width: 1px; height: 7px;
+    background: var(--chrome);
+  }
+  .depth__head {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 7px; height: 7px;
+    margin-top: -3.5px; margin-left: -3.5px;
+    border-radius: var(--r-pill);
+    background: var(--ink-dim);
+    transition: background 200ms var(--ease);
+  }
+  /* Past actuation the readout goes spark blue — the gauge agrees with the footage. */
+  .depth.is-actuated { color: var(--spark); }
+  .depth.is-actuated .depth__head { background: var(--spark); }
+
+  .pin[data-tone="dark"] .depth { color: rgba(242, 244, 247, 0.6); }
+  .pin[data-tone="dark"] .depth__track { background: rgba(242, 244, 247, 0.25); }
+  .pin[data-tone="dark"] .depth.is-actuated { color: var(--spark); }
+
+  @media (max-width: 767px) {
+    .depth { left: var(--gutter); right: var(--gutter); justify-content: space-between; }
+    .depth__track { flex: 1; width: auto; }
+  }
+
+  .cue {
+    position: absolute;
+    left: 50%; bottom: calc(var(--sp-4) + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    display: grid; justify-items: center; gap: var(--sp-2);
+    opacity: 0.7;
+    transition: opacity 400ms var(--ease);
+  }
+  .cue.is-gone { opacity: 0; }
+  .cue__label {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+  .cue__line {
+    width: 1px; height: 38px;
+    background: linear-gradient(180deg, var(--ink-dim), transparent);
+  }
+  @media (max-width: 767px) {
+    /* The depth gauge owns the bottom edge on a phone; the cue would collide with it. */
+    .cue { display: none; }
+  }
+
+  .story-static { display: none; padding: calc(var(--nav-h) + var(--sp-8)) 0 var(--sp-8); }
+  .story-static__poster {
+    width: 100%; height: auto; display: block;
+    border-radius: var(--r-md);
+    margin-bottom: var(--sp-7);
+  }
+  .story-static__copy { display: grid; gap: var(--sp-7); }
+  .story-static__beat { display: grid; gap: var(--sp-3); justify-items: start; }
+  .story-static__beat h1,
+  .story-static__beat h2 { font-size: var(--step-3); }
+  .story-static__beat p { color: var(--ink-muted); }
+
+  /* Pre-footage: no sequence exists, so the stage is removed outright rather than
+     leaving an empty viewport, and the readable story carries the page. */
+  .scroller.is-static { height: 0; }
+  .scroller.is-static .pin { display: none; }
+  .scroller.is-static ~ .story-static { display: block; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroller { height: 100svh; }
+    .cue, .depth { display: none; }
+    .pin :global(.chapter) { display: none; }
+    .story-static { display: block; }
+  }
+</style>
+
+<noscript>
+  <style>
+    .scroller { height: 100svh; }
+    .cue, .depth { display: none; }
+    .story-static { display: block; }
+  </style>
+</noscript>
+
+<script>
+  import { ScrollEngine, type SequenceSpec } from "@sites/scroll-engine";
+  import { site } from "../content/site";
+
+  // Vite refuses to import from public/ in client code, so the manifest is serialised
+  // into the document by the frontmatter above and read back here.
+  const manifest = JSON.parse(
+    document.getElementById("seq-manifest")!.textContent!,
+  ) as { desktop: SequenceSpec; mobile: SequenceSpec };
+
+  const canvas = document.getElementById("seq") as HTMLCanvasElement | null;
+  const scroller = document.getElementById("stage") as HTMLElement | null;
+  const hasSequence = manifest.desktop.count > 0 && manifest.mobile.count > 0;
+
+  /**
+   * Scroll fraction -> key travel in millimetres. The stroke bottoms out at 3.6 mm and
+   * actuates at 2.0 mm, and the actuation point is pinned to the scroll position where
+   * the footage fires its arc, so the gauge and the picture agree. A pure function of
+   * progress, like the frame mapping — scrolling up retraces exactly.
+   */
+  const SPARK_AT = 0.56; // midpoint of the [0.52, 0.60] spark beat
+  const TOTAL_MM = 3.6;
+  const ACT_MM = 2.0;
+  function depthMm(p: number) {
+    if (p <= SPARK_AT) return (p / SPARK_AT) * ACT_MM;
+    return ACT_MM + ((p - SPARK_AT) / (1 - SPARK_AT)) * (TOTAL_MM - ACT_MM);
+  }
+
+  if (canvas && scroller && hasSequence) {
+    const pin = scroller.querySelector<HTMLElement>(".pin");
+    const chapters = [...document.querySelectorAll<HTMLElement>("[data-chapter]")];
+    const cue = document.querySelector<HTMLElement>(".cue");
+    const depth = document.querySelector<HTMLElement>(".depth");
+    const depthMmEl = depth?.querySelector<HTMLElement>(".depth__mm");
+    const depthHead = depth?.querySelector<HTMLElement>(".depth__head");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Under reduced motion the chapters never toggle, so the static copy carries the
+    // story instead. Keep the overlays out of the a11y tree and the tab order entirely.
+    for (const el of chapters) el.inert = true;
+
+    new ScrollEngine({
+      canvas,
+      scroller,
+      landscape: manifest.desktop,
+      portrait: manifest.mobile,
+      beats: site.beats,
+      onProgress(p) {
+        if (reduced) return;
+        let activeScrim = "none";
+        let activeTone = "light";
+        for (const el of chapters) {
+          const [a, b] = JSON.parse(el.dataset.at!) as [number, number];
+          const on = p >= a && p <= b;
+          if (on) {
+            activeScrim = el.dataset.scrim ?? "left";
+            activeTone = el.dataset.tone ?? "light";
+          }
+          el.classList.toggle("is-on", on);
+          el.inert = !on;
+        }
+        if (pin) {
+          if (pin.dataset.scrim !== activeScrim) pin.dataset.scrim = activeScrim;
+          // The stage background follows the FOOTAGE, not the chapter, so the dark
+          // interior keeps a dark stage even in the gap between chapters (frames
+          // 74-133 measured). Otherwise the page flashes white mid-plunge.
+          const frameIsDark = p > 0.3 && p < 0.68;
+          const tone = frameIsDark ? "dark" : activeTone;
+          if (pin.dataset.tone !== tone) pin.dataset.tone = tone;
+        }
+        cue?.classList.toggle("is-gone", p > 0.04);
+
+        const mm = depthMm(p);
+        if (depthMmEl) depthMmEl.textContent = `${mm.toFixed(2)} mm`;
+        if (depthHead) depthHead.style.left = `${(mm / TOTAL_MM) * 100}%`;
+        depth?.classList.toggle("is-actuated", mm >= ACT_MM);
+      },
+    });
+  }
+</script>

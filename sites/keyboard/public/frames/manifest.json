@@ -1,0 +1,20 @@
+{
+  "desktop": {
+    "pattern": "/frames/desktop/frame-%04d.webp",
+    "count": 241,
+    "width": 1280,
+    "height": 720,
+    "fps": 15,
+    "poster": "/posters/desktop.webp",
+    "bytes": 6886526
+  },
+  "mobile": {
+    "pattern": "/frames/mobile/frame-%04d.webp",
+    "count": 241,
+    "width": 720,
+    "height": 1280,
+    "fps": 15,
+    "poster": "/posters/mobile.webp",
+    "bytes": 4671594
+  }
+}

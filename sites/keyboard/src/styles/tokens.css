@@ -1,0 +1,284 @@
+/**
+ * CLACK — design tokens. Every component reads from here; nothing hardcodes a colour,
+ * a size or a radius.
+ *
+ * The keyboard brief's palette is dark (--deck #18191C). The user asked for a light
+ * theme, so the palette below is a light-ground rebuild of it: a cool studio white page,
+ * anodised-ink type, and the blue of the switch actuation spark as the one accent.
+ * The brief's dark value survives in exactly one place — --housing, the interior of the
+ * switch — which is the only part of the site that is legitimately dark, because it is
+ * the inside of a sealed plastic housing.
+ */
+
+:root {
+  /* Palette — cool studio white + spark blue */
+  --paper: #f5f6f8;      /* page ground */
+  --card: #ffffff;       /* raised surfaces */
+  --ink: #17181b;        /* primary type */
+  --spark: #2e6fd6;      /* the actuation arc; the only accent */
+  --chrome: #a7adb4;     /* the milled aluminium edge */
+  --housing: #101215;    /* inside the switch; the one dark band */
+
+  /* Derived surfaces. A bright bead-blasted studio: everything is a shade of white
+     separated by hairlines rather than by shadow. */
+  --bg: var(--paper);
+  --bg-raised: var(--card);
+  --bg-sunk: #eceef1;
+  --line: #e2e5e9;
+  --line-strong: #cfd4da;
+
+  /* Ink */
+  --ink-muted: #545a62;
+  --ink-dim: #838a93;
+  --ink-on-dark: #f2f4f7;
+  --ink-on-accent: #ffffff;
+
+  /* Accent washes */
+  --accent: var(--spark);
+  --accent-deep: #1d4fa3;
+  --accent-wash: rgba(46, 111, 214, 0.09);
+  --accent-line: rgba(46, 111, 214, 0.32);
+
+  /* Type — mono headings, because this audience reads mono as native. Grotesk body. */
+  --font-sans: "Inter", "Helvetica Neue", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", "Roboto Mono", ui-monospace, "Menlo", monospace;
+
+  --step--1: clamp(0.76rem, 0.74rem + 0.1vw, 0.82rem);
+  --step-0: clamp(0.95rem, 0.9rem + 0.25vw, 1.06rem);
+  --step-1: clamp(1.15rem, 1.05rem + 0.5vw, 1.4rem);
+  --step-2: clamp(1.45rem, 1.25rem + 1vw, 2rem);
+  --step-3: clamp(1.9rem, 1.5rem + 2vw, 3rem);
+  --step-4: clamp(2.4rem, 1.7rem + 3.4vw, 4.4rem);
+
+  --tracking-wordmark: 0.34em;
+  --tracking-eyebrow: 0.22em;
+  --tracking-tight: -0.02em;
+  --tracking-mid: 0.08em;
+
+  --leading-tight: 1.05;
+  --leading-snug: 1.25;
+  --leading-body: 1.62;
+
+  /* Nav height — the pinned stage and the scroll cue both key off this. */
+  --nav-h: 64px;
+
+  /* Chapter scrims. Light page, so the scrim is white and it fades the canvas out
+     under the copy rather than darkening it. */
+  --scrim-left: linear-gradient(90deg, rgba(245,246,248,0.96) 0%, rgba(245,246,248,0.8) 40%, rgba(245,246,248,0) 76%);
+  --scrim-right: linear-gradient(270deg, rgba(245,246,248,0.96) 0%, rgba(245,246,248,0.8) 40%, rgba(245,246,248,0) 76%);
+  --scrim-up: linear-gradient(0deg, rgba(245,246,248,0.97) 0%, rgba(245,246,248,0.76) 44%, rgba(245,246,248,0) 100%);
+
+  /* The dark counterparts, for the one chapter that sits over the switch interior. */
+  --scrim-left-dark: linear-gradient(90deg, rgba(16,18,21,0.94) 0%, rgba(16,18,21,0.72) 42%, rgba(16,18,21,0) 78%);
+  --scrim-up-dark: linear-gradient(0deg, rgba(16,18,21,0.95) 0%, rgba(16,18,21,0.7) 46%, rgba(16,18,21,0) 100%);
+
+  /* Space */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+  --sp-8: 4.5rem;
+  --sp-9: 7rem;
+  --sp-10: 10rem;
+
+  --measure: 34rem;
+  --wrap: 78rem;
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+
+  /* Radii — a keycap has a 1mm corner radius and nothing else on the board is round.
+     Keep everything tight; the only pill is the scroll cue. */
+  --r-sm: 3px;
+  --r-md: 6px;
+  --r-lg: 10px;
+  --r-pill: 999px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-fast: 160ms;
+  --dur: 420ms;
+  --dur-slow: 900ms;
+}
+
+@media (max-width: 767px) {
+  :root { --nav-h: 56px; }
+}
+
+/* The page is a light studio by design, and the generated footage is lit to match it.
+   A dark mode would invert the page away from its own imagery, so it is deliberately
+   not branched on. */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  background: var(--bg);
+  color-scheme: light;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+}
+
+h1 { font-size: var(--step-4); }
+h2 { font-size: var(--step-3); }
+h3 { font-size: var(--step-1); }
+
+p { margin: 0; }
+a { color: inherit; }
+img { display: block; max-width: 100%; height: auto; }
+
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.measure { max-width: var(--measure); }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+/* The wordmark. Mono, wide, always uppercase — the symbol in public/logo-symbol.svg
+   carries the mark where type alone will not. */
+.wordmark {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wordmark);
+  text-transform: uppercase;
+}
+
+/* Spec numbers, part codes, actuation figures — everything printed on a datasheet. */
+.spec {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-mid);
+  color: var(--ink-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 0.85em 1.7em;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: var(--tracking-mid);
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+
+.btn--primary { background: var(--spark); color: var(--ink-on-accent); }
+.btn--primary:hover { background: var(--accent-deep); transform: translateY(-1px); }
+
+.btn--ghost { border-color: var(--line-strong); color: var(--ink); background: var(--card); }
+.btn--ghost:hover { border-color: var(--spark); color: var(--spark); background: var(--accent-wash); }
+
+/* On the dark switch-interior chapter the ghost button has to survive a dark ground.
+   `.chapter--dark` is what the Chapter component actually emits; `.on-dark` is the
+   opt-in hook used by the style tile and anywhere else a dark panel appears. */
+.on-dark .btn--ghost,
+.chapter--dark .btn--ghost {
+  border-color: rgba(242, 244, 247, 0.34);
+  color: var(--ink-on-dark);
+  background: transparent;
+}
+.on-dark .btn--ghost:hover,
+.chapter--dark .btn--ghost:hover {
+  border-color: var(--spark);
+  color: var(--spark);
+  background: rgba(46, 111, 214, 0.16);
+}
+
+:where(a, button, input, textarea, select, summary):focus-visible {
+  outline: 2px solid var(--spark);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+.sr-only,
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------------
+   Shared section furniture. Used by the home page and by every product page, so
+   it lives here rather than scoped inside one of them.
+   --------------------------------------------------------------------------- */
+
+.band { padding-block: var(--sp-9); border-top: 1px solid var(--line); }
+.band--raised { background: var(--card); }
+.band--sunk { background: var(--bg-sunk); }
+.band--narrow { padding-block: var(--sp-8); }
+
+.band__grid {
+  display: grid;
+  gap: var(--sp-7);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .band__grid { grid-template-columns: 1fr; gap: var(--sp-6); }
+  .band { padding-block: var(--sp-8); }
+}
+
+.band__body { margin-top: var(--sp-5); color: var(--ink-muted); }
+.band__actions { margin-top: var(--sp-6); }
+
+.facts { margin: 0; }
+.facts__row {
+  display: grid;
+  grid-template-columns: minmax(0, 10rem) minmax(0, 1fr);
+  gap: var(--sp-4);
+  padding-block: var(--sp-4);
+  border-bottom: 1px solid var(--line);
+}
+.facts__row:first-child { border-top: 1px solid var(--line); }
+.facts dt {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-mid);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.facts dd { margin: 0; color: var(--ink); }
+
+@media (max-width: 560px) {
+  .facts__row { grid-template-columns: 1fr; gap: var(--sp-1); }
+}

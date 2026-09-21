@@ -1,0 +1,128 @@
+---
+import Base from "../layouts/Base.astro";
+import ScrollStage from "../components/ScrollStage.astro";
+import ProductGrid from "../components/ProductGrid.astro";
+import { site } from "../content/site";
+
+const hero = site.products.find((p) => p.hero)!;
+---
+
+<Base>
+  <ScrollStage />
+
+  <!-- The flagship, in normal page flow under the stage. The scroll story sells the
+       idea; this sells the object. -->
+  <section id="board" class="band band--raised">
+    <div class="wrap band__grid">
+      <div>
+        <p class="eyebrow">{hero.kind} · in stock</p>
+        <h2>{hero.name}</h2>
+        <p class="band__body measure">{hero.body}</p>
+        <div class="band__actions">
+          <a class="btn btn--primary" href={`/boards/${hero.slug}/`}>Buy — {hero.price}</a>
+          <a class="btn btn--ghost" href="#collection">See the collection</a>
+        </div>
+        <p class="spec" style="margin-top:var(--sp-5)">{site.commerce.leadTime}</p>
+      </div>
+      <dl class="facts">
+        {hero.specs.map(([k, v]) => (
+          <div class="facts__row"><dt>{k}</dt><dd>{v}</dd></div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section id="build" class="band">
+    <div class="wrap">
+      <p class="eyebrow">{site.build.eyebrow}</p>
+      <h2>{site.build.heading}</h2>
+      <p class="band__body measure">{site.build.body}</p>
+
+      <ol class="steps">
+        {site.build.steps.map((s) => (
+          <li class="step">
+            <p class="spec step__n">{s.n}</p>
+            <h3 class="step__title">{s.title}</h3>
+            <p class="step__body">{s.body}</p>
+          </li>
+        ))}
+      </ol>
+
+      <dl class="facts facts--commerce">
+        <div class="facts__row"><dt>Shipping</dt><dd>{site.commerce.shipping}</dd></div>
+        <div class="facts__row"><dt>Returns</dt><dd>{site.commerce.returns}</dd></div>
+        <div class="facts__row"><dt>Warranty</dt><dd>{site.commerce.warranty}</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <ProductGrid />
+
+  <!-- No payment backend exists, so this says so rather than staging a fake checkout.
+       An action that did not happen never reports success. -->
+  <section class="band band--sunk band--narrow">
+    <div class="wrap">
+      <h2>{site.checkout.heading}</h2>
+      <p class="band__body measure">{site.checkout.body}</p>
+      <form class="notify" method="post" action="#" data-no-backend>
+        <label class="sr-only" for="email">Email address</label>
+        <input id="email" name="email" type="email" required placeholder="you@example.com" />
+        <button class="btn btn--primary" type="submit">{site.checkout.action}</button>
+      </form>
+      <p class="spec notify__status" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .steps {
+    list-style: none;
+    margin: var(--sp-7) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--sp-5);
+  }
+  .step {
+    border-top: 1px solid var(--line-strong);
+    padding-top: var(--sp-4);
+    display: grid;
+    gap: var(--sp-2);
+  }
+  .step__n { color: var(--spark); }
+  .step__title { font-size: var(--step-1); }
+  .step__body { color: var(--ink-muted); font-size: var(--step--1); }
+
+  .facts--commerce { margin-top: var(--sp-8); max-width: 44rem; }
+
+  .notify { display: flex; gap: var(--sp-3); flex-wrap: wrap; margin-top: var(--sp-6); }
+  .notify input {
+    flex: 1 1 18rem;
+    padding: 0.85em 1em;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--card);
+    color: var(--ink);
+    font: inherit;
+    font-size: var(--step-0);
+  }
+  .notify__status { margin-top: var(--sp-3); min-height: 1.4em; }
+  .notify__status.is-shown { color: var(--spark); }
+
+  @media (max-width: 900px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 480px) { .steps { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  // There is no backend. The form does not pretend otherwise: it never shows a success
+  // message, because nothing was submitted anywhere.
+  const form = document.querySelector<HTMLFormElement>("[data-no-backend]");
+  const status = document.querySelector<HTMLElement>(".notify__status");
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!status) return;
+    status.textContent =
+      "Not sent — this storefront has no backend yet, so there is nowhere for it to go.";
+    status.classList.add("is-shown");
+  });
+</script>

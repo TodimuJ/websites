@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLACK — style tile</title>
+<link rel="stylesheet" href="src/styles/tokens.css">
+<style>
+  body { padding: var(--sp-8) 0; }
+  .tile + .tile { margin-top: var(--sp-9); padding-top: var(--sp-8); border-top: 1px solid var(--line); }
+  .tile__label { font-family: var(--font-mono); font-size: var(--step--1);
+    letter-spacing: var(--tracking-eyebrow); text-transform: uppercase;
+    color: var(--ink-dim); margin-bottom: var(--sp-5); }
+  .swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: var(--sp-4); }
+  .sw__chip { height: 5.5rem; border-radius: var(--r-md); border: 1px solid var(--line); }
+  .sw__name { margin-top: var(--sp-3); font-size: var(--step--1); }
+  .sw__hex { font-family: var(--font-mono); font-size: var(--step--1); color: var(--ink-dim); }
+  .mark { display: flex; align-items: center; gap: var(--sp-5); flex-wrap: wrap; }
+  .mark svg { width: 56px; height: 56px; color: var(--ink); }
+  .mark__word { font-size: var(--step-2); }
+  .mark__dark { background: var(--housing); color: var(--ink-on-dark); padding: var(--sp-4) var(--sp-5);
+    border-radius: var(--r-md); display: flex; align-items: center; gap: var(--sp-4); }
+  .mark__dark svg { width: 34px; height: 34px; color: var(--ink-on-dark); }
+  .specimens > * + * { margin-top: var(--sp-5); }
+  .buttons { display: flex; flex-wrap: wrap; gap: var(--sp-4); align-items: center; }
+  .buttons--dark { background: var(--housing); padding: var(--sp-5); border-radius: var(--r-md); margin-top: var(--sp-4); }
+
+  /* One product card, built from the real tokens. The artwork block stands in for the
+     generated still at sites/keyboard/public/products/*.webp — it is drawn with the
+     same palette so a colour problem shows up here, before 240 frames exist. */
+  .card { max-width: 23rem; border: 1px solid var(--line); border-radius: var(--r-md);
+    background: var(--bg-raised); overflow: hidden; }
+  .card__art { aspect-ratio: 4/3; background:
+      linear-gradient(175deg, #fdfdfe 0 42%, #eef0f3 100%);
+    display: grid; place-items: center; }
+  .card__board { width: 74%; aspect-ratio: 16/5.6; border-radius: 4px;
+    background: linear-gradient(180deg, #d6dade 0 14%, #bcc2c8 15% 100%);
+    box-shadow: 0 10px 22px rgba(23,24,27,.14), inset 0 1px 0 #fff;
+    padding: 7% 5%; display: grid; grid-template-columns: repeat(14, 1fr); gap: 3.4%; }
+  .card__board i { display: block; aspect-ratio: 1; border-radius: 1.5px;
+    background: linear-gradient(180deg, #fff 0 45%, #e7eaee 100%); box-shadow: 0 1px 1px rgba(23,24,27,.18); }
+  .card__board i.mod { background: linear-gradient(180deg, #e3e6ea 0 45%, #ccd1d7 100%); }
+  .card__board i.acc { background: linear-gradient(180deg, #4f8ae4 0 45%, var(--spark) 100%); }
+  .card__body { padding: var(--sp-5); }
+  .card__row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-4); margin-top: var(--sp-2); }
+
+  /* Imagery direction — four plates describing how the generated footage must be lit. */
+  .direction { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem,1fr)); gap: var(--sp-4); }
+  .direction div { aspect-ratio: 16/10; border-radius: var(--r-md); border: 1px solid var(--line);
+    padding: var(--sp-4); font-family: var(--font-mono); font-size: var(--step--1);
+    display: flex; align-items: flex-end; }
+  .d1 { background: linear-gradient(170deg, #ffffff 0 45%, #e9ecef 100%); color: var(--ink-muted); }
+  .d2 { background: radial-gradient(ellipse at 44% 38%, #ffffff 0 18%, #eaedf1 58%, #d8dde2 100%); color: var(--ink-muted); }
+  .d3 { background: radial-gradient(ellipse at 52% 46%, rgba(46,111,214,.85) 0 5%, rgba(46,111,214,.22) 17%, #1a1f27 56%, #08090b 100%); color: rgba(242,244,247,.8); }
+  .d4 { background: linear-gradient(200deg, #f4f6f8 0 40%, #dfe4e9 72%, #c9cfd6 100%); color: var(--ink-muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section class="tile">
+    <p class="tile__label">Mark</p>
+    <div class="mark">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <path fill="currentColor" fill-rule="evenodd" d="
+          M14 4 H50 a10 10 0 0 1 10 10 V50 a10 10 0 0 1 -10 10 H14 a10 10 0 0 1 -10 -10 V14 a10 10 0 0 1 10 -10 Z
+          M28.5 18 H35.5 V28.9 H46 V35.1 H35.5 V46 H28.5 V35.1 H18 V28.9 H28.5 Z"/>
+      </svg>
+      <div>
+        <p class="wordmark mark__word">CLACK</p>
+        <p class="spec">A keycap in plan view, cross stem knocked out. Drawn as SVG, never generated.</p>
+      </div>
+      <div class="mark__dark">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <path fill="currentColor" fill-rule="evenodd" d="
+            M14 4 H50 a10 10 0 0 1 10 10 V50 a10 10 0 0 1 -10 10 H14 a10 10 0 0 1 -10 -10 V14 a10 10 0 0 1 10 -10 Z
+            M28.5 18 H35.5 V28.9 H46 V35.1 H35.5 V46 H28.5 V35.1 H18 V28.9 H28.5 Z"/>
+        </svg>
+        <span class="wordmark" style="font-size:var(--step-0)">CLACK</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="tile">
+    <p class="tile__label">Palette — cool studio white + spark blue</p>
+    <div class="swatches">
+      <div><div class="sw__chip" style="background:var(--paper)"></div><p class="sw__name">Paper</p><p class="sw__hex">#F5F6F8</p></div>
+      <div><div class="sw__chip" style="background:var(--card)"></div><p class="sw__name">Card</p><p class="sw__hex">#FFFFFF</p></div>
+      <div><div class="sw__chip" style="background:var(--ink)"></div><p class="sw__name">Ink</p><p class="sw__hex">#17181B</p></div>
+      <div><div class="sw__chip" style="background:var(--spark)"></div><p class="sw__name">Spark</p><p class="sw__hex">#2E6FD6</p></div>
+      <div><div class="sw__chip" style="background:var(--chrome)"></div><p class="sw__name">Chrome</p><p class="sw__hex">#A7ADB4</p></div>
+      <div><div class="sw__chip" style="background:var(--housing)"></div><p class="sw__name">Housing</p><p class="sw__hex">#101215</p></div>
+    </div>
+    <p class="spec" style="margin-top:var(--sp-5)">
+      Housing is the only dark value on the site. It exists because one chapter is
+      physically inside a sealed switch — nothing else uses it.
+    </p>
+  </section>
+
+  <section class="tile">
+    <p class="tile__label">Type — mono headings, grotesk body</p>
+    <div class="specimens">
+      <p class="eyebrow">Actuation · 2.0 mm · 45 g</p>
+      <h1>The sound of a switch, seen</h1>
+      <h2>Sixty-eight keys, one aluminium billet</h2>
+      <h3>Tactile 45 — a bump you can find in the dark</h3>
+      <p class="measure" style="color:var(--ink-muted)">
+        Every CLACK board is milled from a single block of 6063 aluminium, bead-blasted,
+        and anodised silver. The plate floats on a gasket, the switches are lubed by hand,
+        and the keycaps ship blank — because a legend is a label, and a label is someone
+        else telling you what you already know.
+      </p>
+      <p class="spec">SPEC · CLACK-65-SIL · 65% · 1.2 kg · USB-C · hot-swap</p>
+    </div>
+  </section>
+
+  <section class="tile">
+    <p class="tile__label">Buttons</p>
+    <div class="buttons">
+      <a class="btn btn--primary" href="#">Add to cart — $289</a>
+      <a class="btn btn--ghost" href="#">Compare switches</a>
+    </div>
+    <div class="buttons buttons--dark on-dark">
+      <a class="btn btn--primary" href="#">Add to cart — $289</a>
+      <a class="btn btn--ghost" href="#">Compare switches</a>
+    </div>
+  </section>
+
+  <section class="tile">
+    <p class="tile__label">Product card</p>
+    <div class="card">
+      <div class="card__art">
+        <div class="card__board">
+          <i class="acc"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="mod"></i><i class="mod"></i>
+          <i class="mod"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="mod"></i><i></i>
+          <i class="mod"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="acc"></i><i class="acc"></i><i></i>
+        </div>
+      </div>
+      <div class="card__body">
+        <h3>CLACK 65</h3>
+        <p class="spec">Silver anodised · assembled · hot-swap</p>
+        <div class="card__row">
+          <p style="color:var(--ink-muted);font-size:var(--step--1)">Tactile 45, blank Frost caps</p>
+          <p class="wordmark" style="font-size:var(--step-1)">$289</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tile">
+    <p class="tile__label">Imagery direction — how the footage must be lit</p>
+    <div class="direction">
+      <div class="d1">01 · soft white studio void, one raking key light</div>
+      <div class="d2">02 · macro, subject centred, falloff to pale grey</div>
+      <div class="d3">03 · inside the housing — the only dark frame, spark leads</div>
+      <div class="d4">04 · pale desk, long shadow, silver case catches the edge</div>
+    </div>
+    <p class="spec" style="margin-top:var(--sp-5)">
+      No legends on any keycap in any frame. No text, logos or UI rendered into pixels —
+      all type on this site is HTML over the canvas.
+    </p>
+  </section>
+
+</div>
+</body>
+</html>

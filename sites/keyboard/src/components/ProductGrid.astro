@@ -1,0 +1,87 @@
+---
+import { site } from "../content/site";
+const products = site.products;
+---
+
+<section id="collection" class="band">
+  <div class="wrap">
+    <p class="eyebrow">The collection</p>
+    <h2>Seven things, and none of them have legends on.</h2>
+    <p class="band__body measure">
+      Boards ship assembled and tested. Switches and keycaps fit any CLACK board and most
+      others with a standard layout.
+    </p>
+
+    <ul class="grid">
+      {products.map((p) => (
+        <li class:list={["card", { "card--hero": p.hero }]}>
+          <a class="card__link" href={`/boards/${p.slug}/`}>
+            <img
+              class="card__art"
+              src={p.image}
+              width="1200"
+              height="900"
+              loading="lazy"
+              decoding="async"
+              alt={`${p.name} — ${p.summary}`}
+            />
+            <div class="card__body">
+              <p class="spec card__kind">{p.kind}</p>
+              <h3 class="card__name">{p.name}</h3>
+              <p class="card__summary">{p.summary}</p>
+              <p class="card__price wordmark">{p.price}</p>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .grid {
+    list-style: none;
+    margin: var(--sp-7) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--sp-5);
+  }
+  /* The flagship takes two columns — a catalogue with a hero in it should look like one. */
+  .card--hero { grid-column: span 2; }
+
+  .card {
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--card);
+    overflow: hidden;
+    transition: border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+  }
+  .card:hover { border-color: var(--line-strong); transform: translateY(-2px); }
+  .card:focus-within { border-color: var(--spark); }
+
+  .card__link { display: block; text-decoration: none; color: inherit; height: 100%; }
+  .card__art {
+    width: 100%; height: auto; display: block;
+    aspect-ratio: 4 / 3; object-fit: cover;
+    background: var(--bg-sunk);
+  }
+  .card--hero .card__art { aspect-ratio: 8 / 3; }
+
+  .card__body { padding: var(--sp-5); display: grid; gap: var(--sp-2); }
+  .card__kind { color: var(--ink-dim); }
+  .card__name { font-size: var(--step-1); }
+  .card__summary { color: var(--ink-muted); font-size: var(--step--1); }
+  .card__price { font-size: var(--step-1); margin-top: var(--sp-2); }
+
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card--hero { grid-column: span 2; }
+    .card--hero .card__art { aspect-ratio: 16 / 7; }
+  }
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: 1fr; }
+    .card--hero { grid-column: span 1; }
+    .card--hero .card__art { aspect-ratio: 4 / 3; }
+  }
+</style>

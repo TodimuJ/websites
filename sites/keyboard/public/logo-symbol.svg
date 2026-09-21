@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="CLACK">
+  <!--
+    The CLACK symbol: a keycap in plan view with the MX cross stem knocked out of it.
+    Two shapes, one path, even-odd fill — the cross is a hole, not a second colour, so
+    the mark survives on the paper ground, on the dark switch-interior band, and as a
+    16px favicon. Fill is currentColor so it inherits from whatever it sits in.
+  -->
+  <path fill="currentColor" fill-rule="evenodd" d="
+    M14 4 H50 a10 10 0 0 1 10 10 V50 a10 10 0 0 1 -10 10 H14 a10 10 0 0 1 -10 -10 V14 a10 10 0 0 1 10 -10 Z
+    M28.5 18 H35.5 V28.9 H46 V35.1 H35.5 V46 H28.5 V35.1 H18 V28.9 H28.5 Z
+  "/>
+</svg>

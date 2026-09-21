@@ -1,0 +1,125 @@
+---
+/**
+ * One chapter of copy overlaid on the pinned stage. Several of these across one
+ * sequence is what makes a single canvas read as several "hero sections".
+ *
+ * `tone` is the one thing this site adds over the usual chapter: the switch-interior
+ * chapter sits on genuinely dark footage and flips to light-on-dark type. Every other
+ * chapter is ink-on-paper.
+ */
+interface Props {
+  id: string;
+  at: [number, number];
+  align: "left" | "right";
+  position: "top" | "centre" | "bottom";
+  scrim: "left" | "right" | "up";
+  tone: "light" | "dark";
+  eyebrow?: string | null;
+  heading: string;
+  body?: string | null;
+  cta?: { label: string; href: string } | null;
+  secondary?: { label: string; href: string } | null;
+  /** The opening chapter carries the page's <h1>; the rest are <h2>. */
+  level?: 1 | 2;
+}
+
+const { id, at, align, position, scrim, tone, eyebrow, heading, body, cta, secondary,
+  level = 2 } = Astro.props;
+const H = `h${level}` as "h1" | "h2";
+---
+
+<div
+  class:list={["chapter", `chapter--${align}`, `chapter--${position}`, `chapter--${tone}`]}
+  data-chapter={id}
+  data-at={JSON.stringify(at)}
+  data-scrim={scrim}
+  data-tone={tone}
+>
+  <div class="chapter__inner">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <H class="chapter__heading">{heading}</H>
+    {body && <p class="chapter__body measure">{body}</p>}
+    {(cta || secondary) && (
+      <div class="chapter__actions">
+        {cta && <a class="btn btn--primary" href={cta.href}>{cta.label}</a>}
+        {secondary && <a class="btn btn--ghost" href={secondary.href}>{secondary.label}</a>}
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  .chapter {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    padding-inline: var(--gutter);
+    padding-block: calc(var(--nav-h) + var(--sp-6)) var(--sp-8);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 560ms var(--ease), transform 560ms var(--ease),
+      visibility 0s linear 560ms;
+    transform: translateY(14px);
+    pointer-events: none;
+  }
+  .chapter.is-on {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
+    pointer-events: auto;
+  }
+
+  .chapter--left { justify-items: start; }
+  .chapter--right { justify-items: end; }
+  .chapter--top { align-items: start; }
+  .chapter--centre { align-items: center; }
+  .chapter--bottom { align-items: end; }
+
+  .chapter__inner {
+    width: 100%;
+    max-width: var(--measure);
+    display: grid;
+    gap: var(--sp-4);
+    justify-items: start;
+  }
+  .chapter--right .chapter__inner { text-align: right; justify-items: end; }
+
+  .chapter__heading { font-size: var(--step-3); }
+  /* h1 and h2 share the chapter scale — the level is semantic, not visual. */
+  .chapter__body { color: var(--ink-muted); }
+
+  /* The one dark chapter. Type inverts; the accent stays put, because the spark blue
+     was chosen to survive both grounds. */
+  .chapter--dark .chapter__heading { color: var(--ink-on-dark); }
+  .chapter--dark .chapter__body { color: rgba(242, 244, 247, 0.74); }
+  .chapter--dark .eyebrow { color: rgba(242, 244, 247, 0.55); }
+
+  .chapter__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    margin-top: var(--sp-3);
+  }
+  .chapter--right .chapter__actions { justify-content: flex-end; }
+
+  @media (max-width: 767px) {
+    /* Portrait: copy sits over the subject at the bottom, never beside it, and always
+       reads left — a right-aligned rail on a 390px screen is just ragged. */
+    .chapter,
+    .chapter--left,
+    .chapter--right {
+      align-items: end;
+      justify-items: stretch;
+      padding-bottom: calc(var(--sp-8) + env(safe-area-inset-bottom));
+    }
+    .chapter__inner,
+    .chapter--right .chapter__inner {
+      text-align: left;
+      justify-items: start;
+      max-width: none;
+    }
+    .chapter--right .chapter__actions { justify-content: flex-start; }
+    .chapter__heading { font-size: var(--step-2); }
+  }
+</style>

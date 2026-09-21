@@ -1,0 +1,119 @@
+---
+import Base from "../../layouts/Base.astro";
+import { site } from "../../content/site";
+
+export function getStaticPaths() {
+  return site.products.map((p) => ({ params: { product: p.slug }, props: { p } }));
+}
+
+const { p } = Astro.props;
+const others = site.products.filter((o) => o.slug !== p.slug).slice(0, 3);
+---
+
+<Base
+  title={`${p.name} — ${p.price} — ${site.brand.name}`}
+  description={`${p.summary} ${site.commerce.leadTime}`}
+>
+  <article class="detail">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">{site.brand.name}</a>
+        <span aria-hidden="true">/</span>
+        <a href="/#collection">Collection</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{p.name}</span>
+      </nav>
+
+      <div class="detail__grid">
+        <img
+          class="detail__art"
+          src={p.image}
+          width="1200"
+          height="900"
+          alt={`${p.name} — ${p.summary}`}
+        />
+
+        <div class="detail__copy">
+          <p class="eyebrow">{p.kind}</p>
+          <h1>{p.name}</h1>
+          <p class="detail__price wordmark">{p.price}</p>
+          <p class="detail__body measure">{p.body}</p>
+
+          <div class="band__actions">
+            <a class="btn btn--primary" href="/#collection">Add to cart — {p.price}</a>
+            <a class="btn btn--ghost" href="/#build">Shipping &amp; returns</a>
+          </div>
+          <p class="spec" style="margin-top:var(--sp-4)">{site.commerce.leadTime}</p>
+
+          <dl class="facts" style="margin-top:var(--sp-7)">
+            {p.specs.map(([k, v]) => (
+              <div class="facts__row"><dt>{k}</dt><dd>{v}</dd></div>
+            ))}
+          </dl>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <section class="band band--raised">
+    <div class="wrap">
+      <p class="eyebrow">Also in the collection</p>
+      <ul class="more">
+        {others.map((o) => (
+          <li>
+            <a href={`/boards/${o.slug}/`}>
+              <img src={o.image} width="1200" height="900" loading="lazy" alt={`${o.name} — ${o.summary}`} />
+              <h3>{o.name}</h3>
+              <p class="spec">{o.price}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .detail { padding-block: calc(var(--nav-h) + var(--sp-8)) var(--sp-9); }
+
+  .crumbs {
+    display: flex; gap: var(--sp-3); align-items: center;
+    font-family: var(--font-mono); font-size: var(--step--1);
+    letter-spacing: var(--tracking-mid); color: var(--ink-dim);
+    margin-bottom: var(--sp-7);
+  }
+  .crumbs a { text-decoration: none; color: var(--ink-dim); }
+  .crumbs a:hover { color: var(--spark); }
+
+  .detail__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: var(--sp-8);
+    align-items: start;
+  }
+  .detail__art {
+    width: 100%; height: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--bg-sunk);
+  }
+  .detail__copy { display: grid; gap: var(--sp-3); justify-items: start; }
+  .detail__price { font-size: var(--step-2); }
+  .detail__body { color: var(--ink-muted); margin-top: var(--sp-2); }
+
+  .more {
+    list-style: none; margin: var(--sp-6) 0 0; padding: 0;
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-5);
+  }
+  .more a { text-decoration: none; color: inherit; display: grid; gap: var(--sp-2); }
+  .more img {
+    width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover;
+    border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg-sunk);
+  }
+  .more h3 { font-size: var(--step-0); margin-top: var(--sp-2); }
+
+  @media (max-width: 860px) {
+    .detail__grid { grid-template-columns: 1fr; gap: var(--sp-6); }
+    .more { grid-template-columns: 1fr; }
+  }
+</style>

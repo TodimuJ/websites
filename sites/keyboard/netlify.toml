@@ -1,0 +1,23 @@
+# Netlify config for THIS site only.
+#
+# Netlify's recommended monorepo setup, which lets one repo feed many Netlify sites:
+#   Package directory : sites/keyboard      <- set in the Netlify UI; Netlify reads THIS file
+#   Base directory    : (leave empty = repo root)
+#
+# Base must stay at the repo root because this is an npm workspace: dependencies install
+# there and `@sites/scroll-engine` cannot resolve from inside the site directory.
+# `publish` is relative to the BASE directory, so it keeps the full path.
+#
+# Every new site gets its own copy of this file. There is deliberately no netlify.toml
+# at the repo root — one there would override the UI settings of every site built from
+# this repo, including sites it was never meant to configure.
+
+[build]
+  command = "npm run build --workspace sites/keyboard"
+  publish = "sites/keyboard/dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Caching lives in sites/keyboard/public/_headers so it travels with the site and works on
+# any host. Deliberately not duplicated here — one source of truth.

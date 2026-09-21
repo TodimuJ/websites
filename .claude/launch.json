@@ -33,6 +33,17 @@
         "sites/vinyl"
       ],
       "port": 4324
+    },
+    {
+      "name": "keyboard",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--workspace",
+        "sites/keyboard"
+      ],
+      "port": 4325
     }
   ]
 }

@@ -1,0 +1,99 @@
+---
+import "../styles/tokens.css";
+import Nav from "../components/Nav.astro";
+import { site } from "../content/site";
+
+interface Props { title?: string; description?: string; }
+const { title = site.meta.title, description = site.meta.description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="theme-color" content="#f5f6f8" />
+  <link rel="icon" href="/logo-symbol.svg" type="image/svg+xml" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/posters/desktop.webp" />
+  <meta name="twitter:card" content="summary_large_image" />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <Nav />
+  <main id="main">
+    <slot />
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">
+      <div class="foot__grid">
+        <div class="foot__brand">
+          <svg class="foot__symbol" viewBox="0 0 64 64" aria-hidden="true">
+            <path fill="currentColor" fill-rule="evenodd" d="M14 4 H50 a10 10 0 0 1 10 10 V50 a10 10 0 0 1 -10 10 H14 a10 10 0 0 1 -10 -10 V14 a10 10 0 0 1 10 -10 Z M28.5 18 H35.5 V28.9 H46 V35.1 H35.5 V46 H28.5 V35.1 H18 V28.9 H28.5 Z"/>
+          </svg>
+          <p class="wordmark foot__word">{site.brand.name}</p>
+          <p class="spec foot__tag">{site.brand.tagline}</p>
+          <p class="spec foot__addr">{site.footer.address}</p>
+        </div>
+        {site.footer.columns.map((col) => (
+          <div>
+            <p class="eyebrow">{col.title}</p>
+            <ul class="foot__list">
+              {col.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <p class="spec foot__legal">{site.footer.legal}</p>
+    </div>
+  </footer>
+</body>
+</html>
+
+<style>
+  .skip {
+    position: absolute; left: -9999px; top: 0; z-index: 100;
+    background: var(--spark); color: var(--ink-on-accent);
+    padding: var(--sp-3) var(--sp-4); border-radius: 0 0 var(--r-md) 0;
+  }
+  .skip:focus { left: 0; }
+
+  .foot {
+    border-top: 1px solid var(--line);
+    background: var(--bg-sunk);
+    padding-block: var(--sp-8) var(--sp-6);
+  }
+  .foot__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+    gap: var(--sp-6);
+  }
+  .foot__symbol { width: 26px; height: 26px; color: var(--ink); }
+  .foot__word { font-size: var(--step-1); margin-top: var(--sp-3); }
+  .foot__tag { margin-top: var(--sp-2); }
+  .foot__addr { margin-top: var(--sp-4); max-width: 22rem; }
+
+  .foot__list { list-style: none; margin: var(--sp-4) 0 0; padding: 0; display: grid; gap: var(--sp-3); }
+  .foot__list a {
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+    text-decoration: none;
+  }
+  .foot__list a:hover { color: var(--spark); }
+
+  .foot__legal {
+    margin-top: var(--sp-8);
+    padding-top: var(--sp-5);
+    border-top: 1px solid var(--line);
+  }
+
+  @media (max-width: 860px) {
+    .foot__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .foot__brand { grid-column: 1 / -1; }
+  }
+</style>

@@ -20,7 +20,7 @@
 The completed board at three-quarter view on a dark desk, backlight steady, one hand leaving frame. Copy right-hand side.
 
 ## Products
-65% and TKL, assembled or barebones; switch options; two keycap colourways. £120–£340.
+65% and TKL, assembled or barebones; switch options; two keycap colourways. $120–$340.
 
 ## Difficulty
 **Medium–Hard.** The safer version of the EV lesson — rigid geometry, but small, dark and forgiving.

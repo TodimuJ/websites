@@ -23,7 +23,7 @@ Structure the scroll as **time-reversal, then return** — it makes the page fee
 The turntable in warm lamplight, record spinning, everything else dark. Copy lower-left.
 
 ## Products
-A 3-title reissue series (180g), a subscription, and a pressing service enquiry. £28–£34 per title.
+A 3-title reissue series (180g), a subscription, and a pressing service enquiry. $28–$34 per title.
 
 ## Difficulty
 **Medium.** The reversal is conceptually ambitious but every beat is materially forgiving.

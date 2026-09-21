@@ -39,6 +39,12 @@ none silently; if one is impossible, say so.
 8. **Report what you actually verified.** Compilation is not proof of smooth playback.
 9. **Never silently degrade.** If a chosen model can't do what the storyboard needs, or a
    budget forces a compromise, say so and let the user choose.
+10. **The market is the United States and the currency is USD.** Every price is written
+    `$NN`. Shipping, returns, provenance and address copy name the United States. The
+    document is `lang="en-US"`. `£`, `GBP`, `€`, "United Kingdom", "UK", "London" and
+    "England" must not appear in any site's source or output. This is a default, not a
+    preference — if the user asks for a different market, follow them and record it in
+    `production-notes.md`; otherwise do not ask and do not improvise.
 
 ## Phases
 

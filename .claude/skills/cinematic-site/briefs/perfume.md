@@ -23,7 +23,7 @@ A fragrance's note pyramid is **literally vertical**. Top notes at the top of th
 Bottle on black stone, frozen plume of gold particulate above and right. Deep negative space left for copy.
 
 ## Products
-The hero EDP in 50ml and 100ml, a 10ml travel spray, a discovery set of 3. Luxury tier (£95–£240).
+The hero EDP in 50ml and 100ml, a 10ml travel spray, a discovery set of 3. Luxury tier ($95–$240).
 
 ## Difficulty
 **Medium.** Fully abstract morphing — no rigid geometry to betray the model. Forgiving to generate, hard to art-direct.

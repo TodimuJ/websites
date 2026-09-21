@@ -20,7 +20,7 @@
 Amber dropper bottle on stone, single leaf, daylight. The calmest ending in the library — copy centred below.
 
 ## Products
-Hero serum 30ml · cleansing oil · barrier cream · the 3-step set. £34–£96.
+Hero serum 30ml · cleansing oil · barrier cream · the 3-step set. $34–$96.
 
 ## Difficulty
 **Medium.** Two scale inversions instead of one, and growth time-lapse is well-represented in training data.

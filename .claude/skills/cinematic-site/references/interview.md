@@ -16,6 +16,10 @@ The archetype questions are **derived from the subject, not looked up.** A brief
 - **Never ask a question whose answer you would ignore.** If you're going to pick the hero
   shade yourself, don't stage a question about it.
 - One free-text follow-up is allowed if answers genuinely conflict. Otherwise stop asking.
+- **Currency and market are not interview topics.** Prices are USD and the market is the
+  United States unless the user raises it first. A brief's price band is a *tier signal*,
+  not a currency instruction — read `$180–$620` as "premium", and never carry a currency
+  symbol out of a brief into a site.
 - If the user says *"choose for me"*, *"build a template"*, *"you decide"*, or answers
   "Other → whatever you think": skip to Phase 2 with your own defaults and record every
   one as an assumption in `production-notes.md`.
@@ -32,7 +36,9 @@ Ask for every site. Where a brief exists, phrase options using its own candidate
    alternate (usually the same story in a lighter or warmer register), and "surprise me".
 3. **Catalogue.** How many SKUs (hero only / hero + 3 / hero + 6 / full collection), and
    whether prices show. If yes, ask the **tier** — accessible / premium / luxury — not a
-   number.
+   number. **Do not ask about currency or market.** Both are fixed: US dollars, United
+   States (`SKILL.md` non-negotiable 10). Asking would violate the rule below about never
+   asking a question whose answer you would ignore.
 4. **Primary action.** Buy / join the waitlist / reserve or book / enquire. Determines the
    CTA everywhere and whether a cart affordance is needed.
 

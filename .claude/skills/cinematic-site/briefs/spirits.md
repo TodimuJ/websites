@@ -20,7 +20,7 @@
 Tumbler raised, amber lit from behind, oak and darkness beyond. Copy sits low-left in the shadow.
 
 ## Products
-The single cask (70cl), a 12-year, a 3×20cl tasting set. £65–£320. **Age-gate interstitial required** — ask the user about target market before building it.
+The single cask (70cl), a 12-year, a 3×20cl tasting set. $65–$320. **Age-gate interstitial required** — ask the user about target market before building it.
 
 ## Difficulty
 **Medium.** Ice and refraction are almost impossible to make look cheap.

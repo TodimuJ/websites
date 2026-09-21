@@ -20,7 +20,7 @@
 Close crop, one mouth, glossed, single specular highlight. Copy sits to the right in clean dark space.
 
 ## Products
-6-shade range across nude / berry / clear / bronze, one hero shade named in the story. £18–£26.
+6-shade range across nude / berry / clear / bronze, one hero shade named in the story. $18–$26.
 
 ## Difficulty
 **Easy–Medium.** Second build. The scale reveal is the whole idea and it is cheap to achieve.

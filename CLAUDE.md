@@ -26,6 +26,14 @@ something seems unexplained, it is in `SKILL.md` or one of `references/`.
   and sizes, and anything left unverified.
 - Frames live in `sites/<slug>/public/frames/{desktop,mobile}/` with a `manifest.json`
   written from the actual files on disk.
+- **Every site is a US site: prices in USD, locations in the United States.** Prices are
+  written `"$NN"`; shipping, returns and provenance copy names the United States; the
+  document is `lang="en-US"` in both the layout and `style-tile.html`. `£`, `GBP`, `€`,
+  "United Kingdom", "UK", "London" and "England" must not appear in a site's source or
+  its build. A brief's price band is a **tier signal, not a currency** — read `$180–$620`
+  as "premium" and set your own ladder inside it. Do not ask the user about market or
+  currency; if they name a different one, follow them and record it in
+  `production-notes.md`. `references/qa.md` has the one-line grep that proves it.
 
 ## Things that will bite you
 

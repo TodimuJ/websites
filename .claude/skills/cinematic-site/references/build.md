@@ -81,7 +81,7 @@ export const site = {
   ],
 
   products: [
-    { id: "…", name: "…", price: "£…", category: "…", image: "/products/….webp",
+    { id: "…", name: "…", price: "$…", category: "…", image: "/products/….webp",
       blurb: "…", detail: ["…", "…"] },
   ],
 
@@ -90,6 +90,26 @@ export const site = {
   footer: { note: "…", legal: "© <year> <BRAND>", links: [] },
 };
 ```
+
+## Market and locale — USD and the United States, always
+
+`SKILL.md` non-negotiable 10 applies to every string you write. It is easy to satisfy and
+easy to leak, so it is spelled out here.
+
+- **Prices are `"$NN"`.** Never `£`, `GBP`, `€` or a bare number. A brief's band is a tier
+  signal, not a currency: read `$180–$620` as "premium" and set your own ladder inside it.
+- **`<html lang="en-US">`** on the layout and on `style-tile.html`. Not `en`, not `en-GB` —
+  an explicit US locale, so screen readers and browser translation get the right dialect.
+- **Shipping, returns and provenance copy names the United States**: "Free US shipping
+  over $60", "Made in the USA", "Cut and pressed in the United States". Never "Free UK
+  delivery", "Royal Mail", "VAT", "United Kingdom", "London" or "England".
+- **US spelling and conventions in user-visible copy**: color not colour, catalog not
+  catalogue, gray not grey. Sizes may stay metric where the product genuinely is
+  (180g vinyl, 30ml serum, 210mm gyuto) — that reads as specification, not as locale.
+- **`"International is charged at cost"`** is the phrasing for non-US shipping, not
+  "Overseas".
+
+Grep your own output before you call the site done — `qa.md` has the check.
 
 Write the footer as a real brand would: a short brand line and a copyright. No demo
 marker, no "this site is a demonstration" disclaimer, and no `noindex` — these sites are

@@ -20,7 +20,7 @@
 The two tomato halves separating, blade still in motion, shallow depth of field. Copy sits upper-left on the dark ground.
 
 ## Products
-Gyuto 210mm · santoku 165mm · petty 120mm · 3-knife roll · whetstone. Premium (£180–£620).
+Gyuto 210mm · santoku 165mm · petty 120mm · 3-knife roll · whetstone. Premium ($180–$620).
 
 ## Difficulty
 **Medium–Hard.** Fourth build. Three genuine material states in one continuous move.

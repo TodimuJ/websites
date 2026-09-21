@@ -20,7 +20,7 @@
 The full cup on marble, steam catching the rim light, crema pattern legible, negative space above-left for the closing headline and CTA.
 
 ## Products
-Single-origin bag · seasonal blend bag · 3-bag subscription · ceramic tulip cup · tamper. Accessible-premium tier (£14–£48).
+Single-origin bag · seasonal blend bag · 3-bag subscription · ceramic tulip cup · tamper. Accessible-premium tier ($14–$48).
 
 ## Difficulty
 **Easy.** Best first build — macro liquid is where video models are strongest and this will look expensive for the fewest generations.

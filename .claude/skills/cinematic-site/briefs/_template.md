@@ -20,7 +20,8 @@ The "you leave with it" shot, described precisely. This is the last thing the vi
 sees and the most important sentence in the brief.
 
 ## Products
-3-6 SKUs with names and a price tier.
+3-6 SKUs with names and a price tier. **Prices are US dollars.** Write the band as
+`$low–$high` — never `£`, `€` or any other currency. See the market rule in `SKILL.md`.
 
 ## Difficulty
 Easy / Medium / Hard, and what specifically is hard.

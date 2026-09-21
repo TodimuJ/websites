@@ -16,6 +16,26 @@ du -sh public/frames/desktop public/frames/mobile
 Frame-count mismatch against the manifest is the highest-frequency bug in this pattern
 and shows up as a frozen final frame or a black flash. Check it every time.
 
+### Market check — must return nothing
+
+`SKILL.md` non-negotiable 10 fixes the market to the United States and the currency to
+USD. Run this against the **built output**, not just the source, because a stray symbol in
+a layout or a style tile will not show up in `site.ts`:
+
+```sh
+# 1. no non-USD currency, no UK locations, anywhere in source or build
+grep -rnE '£|€|GBP|\bUK\b|United Kingdom|London|England|Royal Mail|\bVAT\b' \
+  sites/<slug>/src sites/<slug>/dist sites/<slug>/style-tile.html
+
+# 2. the document declares a US locale — not "en", not "en-GB"
+grep -rn 'html lang=' sites/<slug>/src sites/<slug>/style-tile.html
+```
+
+The first command must print **nothing**. The second must print `lang="en-US"` on every
+line. Both are one-line checks and both have caught real leaks: a site can be entirely USD
+in `site.ts` and still ship `lang="en-GB"` from its layout, or still carry `£` in a style
+tile that was written before the content file was converted.
+
 ## In a browser, by scrolling it
 
 Desktop at 1440 and 1920, mobile at 320/375/393/430, plus one short viewport.

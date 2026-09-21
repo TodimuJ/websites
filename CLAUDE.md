@@ -93,8 +93,17 @@ Compilation in a working tree proves nothing about a fresh clone. Reconstruct ex
 what the clone will contain, build it from zero, and serve it:
 
 ```sh
-T=$(mktemp -d)
+# `pwd -P` is required, not cosmetic: on macOS /var is a symlink to private/var, so the
+# path `mktemp -d` returns always traverses one and `cpio -pdm` refuses to "extract
+# through symlink" and copies NOTHING. It is a no-op on Linux, so it is always safe.
+T=$(cd "$(mktemp -d)" && pwd -P)
 { git ls-files -z; git ls-files --others --exclude-standard -z; } | cpio -0 -pdm --quiet "$T"
+
+# Prove the copy happened before blaming the build. Without this, an empty tree surfaces
+# later as `npm install` failing with "Could not read package.json", which reads like a
+# workspace bug rather than a copy that never ran.
+test "$(find "$T" -type f | wc -l)" -gt 0 || { echo "parity: copy produced an EMPTY tree"; exit 1; }
+
 cd "$T" && npm install && npm run build --workspace sites/<slug>
 cd sites/<slug>/dist && python3 -m http.server 4500
 ```

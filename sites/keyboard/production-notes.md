@@ -434,11 +434,14 @@ a 785 px viewport. Neither is in visible-stepping territory.
   `_incoming/`. Video masters are correctly gitignored. This matches the vinyl precedent
   (70 MB) and the repo rule that still masters are the provenance record, but the PNGs
   are 5–8 MB each and the repo is now the place to consider Git LFS.
-- **A bug in the skill's own parity command:** `T=$(mktemp -d)` returns a `/var/folders/…`
-  path that is itself a symlink on macOS, and `cpio -pdm` refuses to "extract through
-  symlink" — producing a **silently empty tree** that then fails at `npm install` with a
-  confusing missing-package.json error. `T=$(cd "$(mktemp -d)" && pwd -P)` fixes it. The
-  check as written in `references/qa.md` cannot pass on this machine.
+- **A bug in the skill's own parity command:** `/var` is a symlink to `private/var` on
+  macOS, so the `/var/folders/…` path `mktemp -d` returns always traverses one, and
+  `cpio -pdm` refuses to "extract through symlink" and copies **nothing**. The failure is
+  loud — `--quiet` does not suppress it and cpio prints one error line per file — but the
+  lines are identical, and the visible consequence lands later as `npm install` failing
+  with `Could not read package.json`, which reads like a workspace bug rather than a copy
+  that never happened. `T=$(cd "$(mktemp -d)" && pwd -P)` fixes it, and is a no-op on
+  Linux. The check as written in `references/qa.md` and `CLAUDE.md` cannot pass on macOS.
 
 ## 9 — Handing it over
 

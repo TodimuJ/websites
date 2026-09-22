@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="#C8A55C" stroke-width="2.2" stroke-linejoin="miter">
+  <!-- PYRITE: a single pyrite cube in isometric line. Pyrite grows as near-perfect cubes;
+       the mark is the crystal, not a letter. -->
+  <path d="M32 5 L55.4 18.5 V45.5 L32 59 L8.6 45.5 V18.5 Z"/>
+  <path d="M8.6 18.5 L32 32 L55.4 18.5 M32 32 V59"/>
+</svg>

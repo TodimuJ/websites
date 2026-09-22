@@ -1,0 +1,334 @@
+---
+import Chapter from "./Chapter.astro";
+import { site } from "../content/site";
+import manifest from "../../public/frames/manifest.json";
+
+// Until footage lands the manifest carries count 0; the sequence is then never requested
+// and everyone gets the composed-still path, the same one reduced-motion visitors get.
+const hasSequence = manifest.desktop.count > 0 && manifest.mobile.count > 0;
+const { card } = site;
+---
+
+<section
+  id="stage"
+  class="scroller"
+  class:list={{ "is-static": !hasSequence }}
+  aria-label="A matte black PYRITE card turning through threads of gold light, then becoming gold"
+>
+  <div class="pin">
+    <canvas id="seq" aria-hidden="true"></canvas>
+    <canvas class="filaments" aria-hidden="true"></canvas>
+    <div class="scrim" aria-hidden="true"></div>
+
+    <noscript>
+      <picture>
+        <source media="(max-width: 767px)" srcset={manifest.mobile.poster} />
+        <img class="poster-fallback" src={manifest.desktop.poster} alt="" />
+      </picture>
+    </noscript>
+
+    <!-- The engraving. Laid out flat at ID-1 proportion and projected onto the card face
+         in the footage during each held pose. Decorative: the same words are in copy. -->
+    {(["onyx", "aurum"] as const).map((metal) => (
+      <div class:list={["face", `face--${metal}`]} data-face={metal} aria-hidden="true">
+        <span class="face__word">{card.wordmark}</span>
+        {metal === "onyx" && <img class="face__sym" src={site.brand.symbol} alt="" />}
+        <span class="face__num">{card.number}</span>
+        <span class="face__valid">VALID THRU {card.validThru}</span>
+        <span class="face__name">{card.holder}</span>
+        <span class="face__since">{card.since}</span>
+      </div>
+    ))}
+
+    {site.chapters.map((c, i) => <Chapter {...c} level={i === 0 ? 1 : 2} />)}
+
+    <script type="application/json" id="seq-manifest" set:html={JSON.stringify(manifest)}></script>
+
+    <!-- The materials rail: a selector that happens to be driven by scroll. -->
+    <div class="rail" aria-hidden="true">
+      <div class="rail__row">
+        <span class="rail__stop">{site.metals.tiers[0].index} <em>{site.metals.tiers[0].name}</em></span>
+        <span class="rail__track"><span class="rail__fill"></span></span>
+        <span class="rail__stop">{site.metals.tiers[1].index} <em>{site.metals.tiers[1].name}</em></span>
+      </div>
+      <p class="rail__hint">{site.rail.hint}</p>
+    </div>
+
+    <p class="timecode" aria-hidden="true"><span>{site.rail.film}</span><span class="timecode__t">00:00:00</span></p>
+
+    <div class="cue" aria-hidden="true">
+      <span class="cue__label">{site.rail.cue}</span>
+      <span class="cue__line"></span>
+    </div>
+  </div>
+</section>
+
+<!-- Reduced motion, no-JS, load failure and the pre-footage state all land here: the
+     same story as readable copy in normal flow, with every action still reachable. -->
+<section class="story-static" aria-label="The PYRITE card">
+  <div class="wrap">
+    <picture>
+      <source media="(max-width: 767px)" srcset={manifest.mobile.still} width={manifest.mobile.width} height={manifest.mobile.height} />
+      <img class="story-static__poster" src={manifest.desktop.still} width={manifest.desktop.width} height={manifest.desktop.height} alt={site.staticAlt} />
+    </picture>
+    <div class="story-static__copy">
+      {site.chapters.map((c, i) => (
+        <div class="story-static__beat">
+          {c.eyebrow && <p class="eyebrow">{c.eyebrow}</p>}
+          {i === 0 ? <h1 class="display">{c.heading}</h1> : <h2 class="h2">{c.heading}</h2>}
+          {c.body && <p class="body">{c.body}</p>}
+          {c.cta && <a class="btn btn--primary" href={c.cta.href}>{c.cta.label}</a>}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .scroller { position: relative; height: 800vh; } /* 7.0 viewports of active travel */
+  @media (max-width: 767px) { .scroller { height: 640vh; } } /* 5.4 — thumbs travel less */
+
+  .pin { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--void); }
+  #seq, .filaments { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  /* The overlay threads must never cross the card: the card is real footage and a line
+     drawn over its face reads instantly as a composite. The card lives in the right-centre
+     band of every landscape frame (measured) and the middle band of every portrait one,
+     so the overlay is masked to the copy side and the edges. */
+  .filaments {
+    mix-blend-mode: screen; pointer-events: none;
+    -webkit-mask-image: linear-gradient(90deg, #000 0 36%, transparent 48% 89%, #000 97%);
+    mask-image: linear-gradient(90deg, #000 0 36%, transparent 48% 89%, #000 97%);
+  }
+  @media (max-width: 767px) {
+    .filaments {
+      -webkit-mask-image: linear-gradient(180deg, #000 0 26%, transparent 36% 76%, #000 86%);
+      mask-image: linear-gradient(180deg, #000 0 26%, transparent 36% 76%, #000 86%);
+    }
+  }
+
+  .poster-fallback { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+  /* Legibility for the left copy rail, only while a chapter is showing. */
+  .scrim {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      linear-gradient(90deg, rgba(8,7,10,.78) 0%, rgba(8,7,10,.5) 34%, rgba(8,7,10,0) 58%),
+      linear-gradient(180deg, rgba(8,7,10,.55) 0%, rgba(8,7,10,0) 18%, rgba(8,7,10,0) 82%, rgba(8,7,10,.7) 100%);
+    opacity: 0; transition: opacity 900ms var(--ease-out);
+  }
+  .pin.has-copy .scrim { opacity: 1; }
+  @media (max-width: 767px) {
+    .scrim { background:
+      linear-gradient(180deg, rgba(8,7,10,.86) 0%, rgba(8,7,10,.55) 26%, rgba(8,7,10,0) 46%),
+      linear-gradient(0deg, rgba(8,7,10,.6) 0%, rgba(8,7,10,0) 22%); }
+  }
+
+  /* ─── Engraving ─────────────────────────────────────────────────────────── */
+  .face {
+    position: absolute; left: 0; top: 0;
+    width: 856px; height: 540px;           /* 85.6 × 54.0 — ID-1, in tenths of a mm */
+    transform-origin: 0 0;
+    opacity: 0; pointer-events: none;
+    will-change: transform, opacity;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+  }
+  .face > * { position: absolute; white-space: nowrap; }
+  .face__word { left: 62px; top: 52px; font-family: var(--font-display); font-weight: 500; font-size: 50px; letter-spacing: 0.4em; }
+  .face__sym { right: 58px; top: 46px; width: 62px; height: 62px; }
+  .face__num { left: 62px; top: 312px; font-size: 38px; letter-spacing: 0.1em; font-weight: 500; }
+  .face__valid { left: 62px; top: 368px; font-size: 16px; letter-spacing: 0.22em; }
+  .face__name { left: 62px; bottom: 74px; font-size: 26px; letter-spacing: 0.16em; font-weight: 500; }
+  .face__since { left: 62px; bottom: 48px; font-size: 13px; letter-spacing: 0.28em; }
+
+  /* Onyx: gold leaf engraved into black. */
+  .face--onyx > span {
+    background: linear-gradient(170deg, #f1dca6 0%, #c8a55c 45%, #8a6a35 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 1px 0 rgba(0,0,0,.6));
+  }
+  .face--onyx .face__valid, .face--onyx .face__since { opacity: .7; }
+  /* Aurum: cut into the gold, so it reads as a darker recess with a lit lower lip. */
+  .face--aurum > span {
+    color: rgba(74, 52, 18, 0.72);
+    text-shadow: 0 1px 0 rgba(255, 238, 196, 0.45), 0 -1px 0 rgba(40, 26, 6, 0.25);
+    mix-blend-mode: multiply;
+  }
+
+  /* ─── Rail, timecode, cue ───────────────────────────────────────────────── */
+  .rail {
+    position: absolute; left: 50%; bottom: calc(var(--sp-6) + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    display: grid; justify-items: center; gap: var(--sp-3);
+    opacity: 0; transition: opacity 700ms var(--ease-out);
+  }
+  .rail.is-on { opacity: 1; }
+  .rail__row { display: flex; align-items: center; gap: var(--sp-4); }
+  .rail__stop {
+    font-family: var(--font-mono); font-size: var(--step--2); letter-spacing: var(--tracking-label);
+    color: var(--ink-dim); transition: color 500ms var(--ease-out); white-space: nowrap;
+  }
+  .rail__stop em { font-family: var(--font-display); font-size: 1.05rem; letter-spacing: 0.02em; text-transform: none; margin-left: .35em; }
+  .rail__stop.is-active { color: var(--gold); }
+  .rail__track { position: relative; width: clamp(80px, 16vw, 200px); height: 1px; background: var(--line-strong); }
+  .rail__fill { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--gold); box-shadow: 0 0 8px rgba(200,165,92,.8); }
+  .rail__hint {
+    margin: 0; font-family: var(--font-mono); font-size: var(--step--2); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--ink-dim);
+    opacity: 0; transition: opacity 600ms var(--ease-out);
+  }
+  .rail__hint.is-on { opacity: 1; }
+
+  .timecode {
+    position: absolute; right: var(--gutter); bottom: calc(var(--sp-6) + env(safe-area-inset-bottom));
+    margin: 0; display: flex; gap: var(--sp-4);
+    font-family: var(--font-mono); font-size: var(--step--2); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--ink-dim); font-variant-numeric: tabular-nums;
+  }
+  .timecode__t { color: var(--gold); }
+
+  .cue {
+    position: absolute; left: 50%; bottom: calc(var(--sp-5) + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    display: grid; justify-items: center; gap: var(--sp-3);
+    transition: opacity 500ms var(--ease-out);
+  }
+  .cue.is-gone { opacity: 0; }
+  .cue__label { font-family: var(--font-mono); font-size: var(--step--2); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--ink-dim); }
+  .cue__line { width: 1px; height: 44px; background: linear-gradient(180deg, var(--gold), transparent); animation: cue 2.4s var(--ease-out) infinite; transform-origin: top; }
+  @keyframes cue { 0% { transform: scaleY(0); opacity: 1; } 70% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
+
+  @media (max-width: 767px) {
+    .timecode { display: none; }
+    .rail { bottom: calc(var(--sp-5) + env(safe-area-inset-bottom)); }
+    .rail__hint { max-width: 18rem; text-align: center; line-height: 1.8; }
+  }
+
+  /* ─── Static path ───────────────────────────────────────────────────────── */
+  .story-static { display: none; padding: calc(var(--nav-h) + var(--sp-7)) 0 var(--sp-8); }
+  .story-static__poster { width: 100%; height: auto; margin-bottom: var(--sp-8); border: 1px solid var(--line); }
+  .story-static__copy { display: grid; gap: var(--sp-8); }
+  .story-static__beat { display: grid; gap: var(--sp-4); justify-items: start; max-width: 40rem; }
+
+  .scroller.is-static { height: 0; }
+  .scroller.is-static .pin { display: none; }
+  .scroller.is-static ~ .story-static { display: block; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroller { height: 0; }
+    .pin { display: none; }
+    .story-static { display: block; }
+  }
+</style>
+
+<noscript>
+  <style>
+    .scroller { height: 0 !important; }
+    .pin { display: none !important; }
+    .story-static { display: block !important; }
+  </style>
+</noscript>
+
+<script>
+  import { ScrollEngine, type SequenceSpec } from "@sites/scroll-engine";
+  import { site, type Face } from "../content/site";
+  import { startFilaments } from "../scripts/filaments";
+  import { project } from "../scripts/engrave";
+
+  // Vite refuses to import from public/ in client code, so the manifest is serialised
+  // into the document above and read back here.
+  const manifest = JSON.parse(document.getElementById("seq-manifest")!.textContent!) as {
+    desktop: SequenceSpec & { fps: number }; mobile: SequenceSpec & { fps: number };
+  };
+
+  const canvas = document.getElementById("seq") as HTMLCanvasElement | null;
+  const scroller = document.getElementById("stage") as HTMLElement | null;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const hasSequence = manifest.desktop.count > 0 && manifest.mobile.count > 0;
+
+  if (canvas && scroller && hasSequence && !reduced) {
+    const pin = scroller.querySelector<HTMLElement>(".pin")!;
+    const chapters = [...pin.querySelectorAll<HTMLElement>("[data-chapter]")];
+    const faces = [...pin.querySelectorAll<HTMLElement>("[data-face]")];
+    const rail = pin.querySelector<HTMLElement>(".rail")!;
+    const railFill = pin.querySelector<HTMLElement>(".rail__fill")!;
+    const railStops = [...pin.querySelectorAll<HTMLElement>(".rail__stop")];
+    const railHint = pin.querySelector<HTMLElement>(".rail__hint")!;
+    const tc = pin.querySelector<HTMLElement>(".timecode__t")!;
+    const cue = pin.querySelector<HTMLElement>(".cue")!;
+    const setFilaments = startFilaments(pin.querySelector<HTMLCanvasElement>(".filaments")!, pin);
+
+    for (const el of chapters) el.inert = true;
+
+    const portrait = () => window.innerWidth < 768;
+    const spec = () => (portrait() ? manifest.mobile : manifest.desktop);
+    const facePoses = () => (portrait() ? site.faces.portrait : site.faces.landscape);
+
+    /** Re-project each engraving onto its measured corners for the current viewport. */
+    // A metal can be held more than once; each engraving element tracks whichever of its
+    // poses is active and re-projects only when that changes (or the viewport does).
+    const placed = new Map<HTMLElement, Face | null>();
+    function place(el: HTMLElement, pose: Face) {
+      const s = spec();
+      project(el, 856, 540, pose.corners, s.width, s.height, pin.clientWidth, pin.clientHeight);
+      placed.set(el, pose);
+    }
+    window.addEventListener("resize", () => placed.clear(), { passive: true });
+
+    /** 0 outside [a,b], 1 inside, with a short linear fade at each end. Pure in p. */
+    const window01 = (p: number, [a, b]: [number, number], fade = 0.012) =>
+      Math.max(0, Math.min(1, (p - a) / fade, (b - p) / fade));
+
+    const { rail: RAIL, switchAt: SWITCH_AT, hint: HINT, blur: BLUR } = site.timing;
+
+    new ScrollEngine({
+      canvas,
+      scroller,
+      landscape: manifest.desktop,
+      portrait: manifest.mobile,
+      beats: site.beats,
+      onProgress(p, frame) {
+        let anyOn = false;
+        for (const el of chapters) {
+          const at = JSON.parse(el.dataset.at!) as [number, number];
+          const on = p >= at[0] && p <= at[1];
+          anyOn ||= on;
+          if (el.classList.contains("is-on") !== on) {
+            el.classList.toggle("is-on", on);
+            el.inert = !on;
+          }
+        }
+        pin.classList.toggle("has-copy", anyOn);
+
+        for (const el of faces) {
+          let best: Face | null = null, op = 0;
+          for (const f of facePoses()) {
+            if (f.metal !== el.dataset.face) continue;
+            const o = window01(p, f.at);
+            if (o > op) { op = o; best = f; }
+          }
+          if (best && placed.get(el) !== best) place(el, best);
+          el.style.opacity = String(op);
+        }
+
+        const inRail = p >= RAIL[0] && p <= RAIL[1];
+        rail.classList.toggle("is-on", inRail);
+        railFill.style.width = `${Math.max(0, Math.min(1, (p - RAIL[0]) / (SWITCH_AT - RAIL[0]))) * 100}%`;
+        railStops[0].classList.toggle("is-active", p < SWITCH_AT);
+        railStops[1].classList.toggle("is-active", p >= SWITCH_AT);
+        railHint.classList.toggle("is-on", p >= HINT[0] && p <= HINT[1]);
+
+        // The footage's own light fills the frame in the blur-through; the overlay steps back.
+        const inBlur = window01(p, BLUR, 0.03);
+        setFilaments(1 - 0.75 * inBlur);
+
+        const fps = spec().fps || 24;
+        const secs = Math.floor(frame / fps);
+        const ff = String(frame % fps).padStart(2, "0");
+        tc.textContent = `00:${String(secs).padStart(2, "0")}:${ff}`;
+
+        cue.classList.toggle("is-gone", p > 0.03);
+      },
+    });
+  }
+</script>

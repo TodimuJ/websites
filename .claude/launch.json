@@ -44,6 +44,17 @@
         "sites/keyboard"
       ],
       "port": 4325
+    },
+    {
+      "name": "metal-card",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--workspace",
+        "sites/metal-card"
+      ],
+      "port": 4326
     }
   ]
 }

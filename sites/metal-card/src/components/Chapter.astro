@@ -1,0 +1,122 @@
+---
+/**
+ * One chapter of copy over the pinned stage. Four of these across one sequence is what
+ * makes a single canvas read as four hero sections. Every chapter sits in the left rail,
+ * because the card lives right of centre in every frame of the film.
+ */
+interface Props {
+  id: string;
+  at: [number, number];
+  eyebrow?: string | null;
+  heading: string;
+  headingItalic?: string;
+  body?: string | null;
+  cta?: { label: string; href: string } | null;
+  secondary?: { label: string; href: string } | null;
+  aside?: string | null;
+  specs?: [string, string][] | null;
+  level?: 1 | 2;
+}
+const { id, at, eyebrow, heading, headingItalic, body, cta, secondary, aside, specs, level = 2 } = Astro.props;
+const H = `h${level}` as "h1" | "h2";
+---
+
+<div class:list={["chapter", `chapter--${id}`]} data-chapter={id} data-at={JSON.stringify(at)}>
+  <div class="chapter__inner">
+    {eyebrow && <p class="eyebrow chapter__eyebrow"><span class="chapter__tick" aria-hidden="true"></span>{eyebrow}</p>}
+    <H class:list={["chapter__heading", level === 1 && "is-hero"]}>
+      {heading}{headingItalic && <><br /><em class="metal">{headingItalic}</em></>}
+    </H>
+    {body && <p class="chapter__body">{body}</p>}
+    {specs && (
+      <dl class="specs">
+        {specs.map(([k, v]) => <div><dt class="label">{k}</dt><dd>{v}</dd></div>)}
+      </dl>
+    )}
+    {(cta || aside || secondary) && (
+      <div class="chapter__actions">
+        {cta && <a class="btn btn--primary" href={cta.href}>{cta.label}</a>}
+        {secondary && <a class="btn btn--quiet" href={secondary.href}>{secondary.label} →</a>}
+        {aside && <p class="label chapter__aside">{aside}</p>}
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  .chapter {
+    position: absolute; inset: 0;
+    display: grid; align-items: center;
+    width: min(100% - 2 * var(--gutter), var(--wrap));
+    margin-inline: auto;
+    padding-block: calc(var(--nav-h) + var(--sp-6)) var(--sp-9);
+    pointer-events: none;
+    visibility: hidden;
+    transition: visibility 0s linear 900ms;
+  }
+  .chapter.is-on { visibility: visible; transition-delay: 0s; }
+  .chapter.is-on .chapter__inner { pointer-events: auto; }
+
+  .chapter__inner { max-width: var(--measure); display: grid; gap: var(--sp-5); justify-items: start; }
+  .chapter--hero .chapter__inner { max-width: 40rem; }
+
+  /* Staggered reveal: each line rises out of the dark in turn. */
+  .chapter__inner > * {
+    opacity: 0; transform: translateY(18px); filter: blur(6px);
+    transition: opacity 900ms var(--ease-out), transform 900ms var(--ease-out), filter 900ms var(--ease-out);
+  }
+  .chapter.is-on .chapter__inner > * { opacity: 1; transform: none; filter: none; }
+  .chapter.is-on .chapter__inner > :nth-child(2) { transition-delay: 90ms; }
+  .chapter.is-on .chapter__inner > :nth-child(3) { transition-delay: 180ms; }
+  .chapter.is-on .chapter__inner > :nth-child(4) { transition-delay: 270ms; }
+  .chapter.is-on .chapter__inner > :nth-child(5) { transition-delay: 360ms; }
+
+  .chapter__eyebrow { display: inline-flex; align-items: center; gap: var(--sp-3); }
+  .chapter__tick { width: 28px; height: 1px; background: var(--gold); }
+
+  .chapter__heading {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: var(--step-3); line-height: 1.08; letter-spacing: var(--tracking-display);
+    margin: 0; color: var(--parchment);
+    text-wrap: balance;
+  }
+  .chapter__heading.is-hero { font-size: var(--step-4); line-height: 1.0; }
+  .chapter__body { margin: 0; color: var(--ink-muted); font-size: var(--step-0); max-width: 30rem; text-wrap: pretty; }
+
+  .specs {
+    margin: var(--sp-2) 0 0; width: 100%;
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+  }
+  .specs div { padding: var(--sp-4) var(--sp-4) var(--sp-4) 0; border-bottom: 1px solid var(--line); }
+  .specs dd { margin: var(--sp-2) 0 0; font-family: var(--font-display); font-size: var(--step-1); line-height: 1.1; color: var(--parchment); }
+
+  .chapter__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-5) var(--sp-6); margin-top: var(--sp-3); }
+  .chapter__aside { color: var(--ink-dim); }
+
+  @media (max-width: 767px) {
+    /* Portrait: the card sits lower-middle, so copy takes the quiet top of the frame.
+       While the film is running only the heading shows; the imagery holds the screen. */
+    .chapter { align-items: start; padding-top: calc(var(--nav-h) + var(--sp-6)); }
+    .chapter__inner { gap: var(--sp-4); }
+    .chapter__heading { font-size: var(--step-2); }
+    .chapter__heading.is-hero { font-size: clamp(2.3rem, 10.5vw, 3rem); }
+    .chapter--hero .chapter__body, .chapter__aside,
+    .chapter--onyx .chapter__body, .chapter--aurum .chapter__body { display: none; }
+    .specs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .specs div { padding: var(--sp-3) var(--sp-2) var(--sp-3) 0; }
+    .specs dt { font-size: 0.55rem; letter-spacing: 0.18em; }
+    .specs dd { font-size: 0.95rem; }
+    /* The close shares the quiet top band: the card starts at ~39% of the portrait frame
+       (measured), and the product must stay fully visible below the copy, never under it. */
+    .chapter--close .chapter__eyebrow, .chapter--close .btn--quiet { display: none; }
+    .chapter--close .chapter__body { font-size: 0.98rem; line-height: 1.5; }
+    .chapter--close .chapter__actions { margin-top: 0; }
+  }
+  @media (max-width: 767px) and (max-height: 720px) {
+    .chapter--close .chapter__body { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .chapter__inner > * { transition: none; filter: none; transform: none; }
+  }
+</style>

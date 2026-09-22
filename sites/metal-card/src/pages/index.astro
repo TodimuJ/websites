@@ -1,0 +1,216 @@
+---
+import Base from "../layouts/Base.astro";
+import ScrollStage from "../components/ScrollStage.astro";
+import { site } from "../content/site";
+const { object, privileges, metals, request } = site;
+---
+
+<Base>
+  <ScrollStage />
+
+  <!-- The object: how it is made. -->
+  <section id="object" class="band">
+    <div class="wrap object">
+      <div class="object__copy reveal">
+        <p class="eyebrow"><span class="tick"></span>{object.eyebrow}</p>
+        <h2 class="h2">{object.heading}</h2>
+        <p class="body">{object.body}</p>
+        <dl class="facts">
+          {object.facts.map(([k, v]) => <div><dt class="label">{k}</dt><dd>{v}</dd></div>)}
+        </dl>
+      </div>
+      <div class="object__plates">
+        {object.images.map((im, i) => (
+          <figure class:list={["plate", "reveal", `plate--${i}`]}>
+            <img src={im.src} alt={im.alt} width="1200" height="1490" loading="lazy" decoding="async" />
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Privileges -->
+  <section id="privileges" class="band band--sunk">
+    <div class="wrap">
+      <div class="head reveal">
+        <p class="eyebrow"><span class="tick"></span>{privileges.eyebrow}</p>
+        <h2 class="h2">{privileges.heading}</h2>
+        <p class="body">{privileges.body}</p>
+      </div>
+      <ol class="privs">
+        {privileges.items.map((p) => (
+          <li class="priv reveal">
+            <span class="priv__n">{p.n}</span>
+            <h3 class="priv__title">{p.title}</h3>
+            <p class="priv__body">{p.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- The metals -->
+  <section id="metals" class="band">
+    <div class="wrap">
+      <div class="head head--split reveal">
+        <div>
+          <p class="eyebrow"><span class="tick"></span>{metals.eyebrow}</p>
+          <h2 class="h2">{metals.heading}</h2>
+        </div>
+        <p class="body">{metals.body}</p>
+      </div>
+      <div class="tiers">
+        {metals.tiers.map((t) => (
+          <article class:list={["tier", "reveal", `tier--${t.id}`]}>
+            <div class="tier__art">
+              <img src={t.image} alt={t.alt} width="1200" height="1490" loading="lazy" decoding="async" />
+            </div>
+            <div class="tier__body">
+              <p class="label tier__index">Metal {t.index}</p>
+              <h3 class="tier__name metal">{t.name}</h3>
+              <p class="tier__line">{t.line}</p>
+              <dl class="facts facts--tight">
+                {t.specs.map(([k, v]) => <div><dt class="label">{k}</dt><dd>{v}</dd></div>)}
+              </dl>
+              <div class="tier__foot">
+                <p class="label">{metals.feeNote}</p>
+                <a class="btn btn--primary" href={t.cta.href}>{t.cta.label}</a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Request. There is no backend: the form says so and never shows a confirmation. -->
+  <section id="request" class="band band--sunk band--request">
+    <div class="wrap request">
+      <div class="reveal">
+        <p class="eyebrow"><span class="tick"></span>{request.eyebrow}</p>
+        <h2 class="h2">{request.heading}</h2>
+        <p class="body">{request.body}</p>
+      </div>
+      <form class="form reveal" data-no-backend novalidate>
+        <label class="field"><span class="label">{request.fields.name}</span><input name="name" autocomplete="name" required /></label>
+        <label class="field"><span class="label">{request.fields.email}</span><input name="email" type="email" autocomplete="email" required /></label>
+        <label class="field"><span class="label">{request.fields.referral}</span><input name="referral" /></label>
+        <fieldset class="field field--radios">
+          <legend class="label">{request.fields.metal}</legend>
+          {request.metals.map((m, i) => (
+            <label class="radio"><input type="radio" name="metal" value={m} checked={i === 0} /><span>{m}</span></label>
+          ))}
+        </fieldset>
+        <button class="btn btn--primary form__submit" type="submit">{request.action}</button>
+        <p class="form__status label" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .band { padding-block: clamp(5rem, 12vw, 10rem); position: relative; }
+  .band--sunk { background: var(--bg-sunk); border-block: 1px solid var(--line); }
+  .tick { display: inline-block; width: 28px; height: 1px; background: var(--gold); vertical-align: middle; margin-right: var(--sp-3); }
+  .eyebrow { margin-bottom: var(--sp-5); }
+  .h2 { max-width: 20ch; text-wrap: balance; }
+  .body { margin-top: var(--sp-5); text-wrap: pretty; }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 1100ms var(--ease-out), transform 1100ms var(--ease-out); }
+  .reveal.is-in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+  .facts { margin: var(--sp-7) 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .facts div { padding: var(--sp-4) var(--sp-4) var(--sp-4) 0; border-bottom: 1px solid var(--line); }
+  .facts dd { margin: var(--sp-2) 0 0; font-family: var(--font-display); font-size: var(--step-1); line-height: 1.15; }
+  .facts--tight { margin-top: var(--sp-5); }
+  .facts--tight dd { font-size: 1.2rem; }
+
+  /* Object */
+  .object { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(2rem, 7vw, 7rem); align-items: center; }
+  .object__plates { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-5); align-items: start; }
+  .plate { margin: 0; border: 1px solid var(--line); overflow: hidden; background: var(--bg-raised); }
+  .plate img { aspect-ratio: 4 / 5; object-fit: cover; width: 100%; transition: transform 1600ms var(--ease-out); }
+  .plate:hover img { transform: scale(1.03); }
+  .plate--1 { margin-top: var(--sp-9); }
+
+  /* Privileges */
+  .head { max-width: 44rem; }
+  .head--split { max-width: none; display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-7); align-items: end; }
+  .head--split .body { margin-top: 0; }
+  .privs { list-style: none; margin: var(--sp-8) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .priv { padding: var(--sp-6) var(--sp-6) var(--sp-7) 0; border-bottom: 1px solid var(--line); display: grid; gap: var(--sp-3); align-content: start; }
+  .priv + .priv { padding-left: var(--sp-6); border-left: 1px solid var(--line); }
+  .priv:nth-child(3n + 1) { padding-left: 0; border-left: 0; }
+  .priv__n { font-family: var(--font-display); font-style: italic; font-size: var(--step-1); color: var(--gold); }
+  .priv__title { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: var(--step-1); line-height: 1.2; }
+  .priv__body { margin: 0; color: var(--ink-muted); }
+
+  /* Metals */
+  .tiers { margin-top: var(--sp-8); display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-6); }
+  .tier { border: 1px solid var(--line); background: linear-gradient(180deg, var(--bg-raised), var(--bg)); display: grid; grid-template-rows: auto 1fr; transition: border-color 600ms var(--ease-out); }
+  .tier:hover { border-color: var(--line-strong); }
+  .tier__art { overflow: hidden; border-bottom: 1px solid var(--line); }
+  .tier__art img { width: 100%; aspect-ratio: 5 / 4; object-fit: cover; transition: transform 1600ms var(--ease-out); }
+  .tier:hover .tier__art img { transform: scale(1.03); }
+  .tier__body { padding: clamp(1.5rem, 3vw, 2.5rem); display: grid; align-content: start; }
+  .tier__index { color: var(--gold); }
+  .tier__name { margin: var(--sp-3) 0 0; font-family: var(--font-display); font-weight: 400; font-size: var(--step-3); line-height: 1; }
+  .tier--onyx .tier__name { color: var(--parchment); }
+  .tier__line { margin: var(--sp-3) 0 0; color: var(--ink-muted); font-style: italic; }
+  .tier__foot { margin-top: var(--sp-6); display: flex; justify-content: space-between; align-items: center; gap: var(--sp-4); flex-wrap: wrap; }
+
+  /* Request */
+  .band--request { background: radial-gradient(60% 80% at 85% 50%, rgba(200,165,92,.07), transparent 70%), var(--bg-sunk); }
+  .request { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 7vw, 7rem); align-items: start; }
+  .form { display: grid; gap: var(--sp-5); }
+  .field { display: grid; gap: var(--sp-2); border: 0; padding: 0; margin: 0; }
+  .field input:not([type="radio"]) {
+    font: inherit; font-size: var(--step-1); color: var(--parchment);
+    background: transparent; border: 0; border-bottom: 1px solid var(--line-strong);
+    padding: var(--sp-2) 0; border-radius: 0; min-height: 44px;
+    transition: border-color 300ms var(--ease-out);
+  }
+  .field input:focus { outline: none; border-bottom-color: var(--gold); }
+  .field--radios { display: flex; flex-wrap: wrap; gap: var(--sp-3) var(--sp-6); }
+  .field--radios legend { width: 100%; margin-bottom: var(--sp-3); }
+  .radio { display: inline-flex; align-items: center; gap: var(--sp-3); cursor: pointer; min-height: 44px; }
+  .radio input { accent-color: var(--gold); width: 16px; height: 16px; }
+  .form__submit { justify-self: start; margin-top: var(--sp-3); }
+  .form__status { min-height: 1.6em; line-height: 1.9; letter-spacing: 0.16em; }
+  .form__status.is-shown { color: var(--gold); }
+
+  @media (max-width: 900px) {
+    .object, .request, .head--split { grid-template-columns: 1fr; }
+    .privs { grid-template-columns: 1fr 1fr; }
+    .priv, .priv + .priv { padding: var(--sp-5) var(--sp-4) var(--sp-6) 0; border-left: 0; }
+    .priv:nth-child(even) { padding-left: var(--sp-4); border-left: 1px solid var(--line); }
+    .tiers { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .privs { grid-template-columns: 1fr; }
+    .priv:nth-child(even) { padding-left: 0; border-left: 0; }
+    .object__plates { gap: var(--sp-3); }
+    .plate--1 { margin-top: var(--sp-7); }
+  }
+</style>
+
+<script>
+  import { site } from "../content/site";
+
+  // Sections rise into view once, as they arrive.
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); }
+  }, { rootMargin: "0px 0px -10% 0px" });
+  document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+  // There is no backend. Nothing is sent, and the form never pretends otherwise.
+  const form = document.querySelector<HTMLFormElement>("[data-no-backend]");
+  const status = form?.querySelector<HTMLElement>(".form__status");
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!status) return;
+    status.textContent = site.request.notConnected;
+    status.classList.add("is-shown");
+  });
+</script>

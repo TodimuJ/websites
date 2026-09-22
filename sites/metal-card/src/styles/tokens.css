@@ -1,0 +1,180 @@
+/**
+ * PYRITE — design tokens. Every component reads from here; nothing hardcodes a colour,
+ * a size or a radius.
+ *
+ * Black and premium gold, from the metal-card brief: a near-black void, one gold, one
+ * darker filament gold for the threads of light, and a warm parchment for type. Gold is
+ * never a fill for large areas — it is an edge, a hairline, a single word. The restraint
+ * is the pitch.
+ */
+
+:root {
+  /* Palette */
+  --void: #08070a;        /* page ground; the darkness the card is shot in */
+  --gold: #c8a55c;        /* the milled edge; the one accent */
+  --filament: #8a6a35;    /* the light threads; secondary gold */
+  --parchment: #ede7da;   /* primary type */
+  --aurum: #d9b76a;       /* the gold card itself, a touch brighter than --gold */
+
+  /* Derived surfaces — separated by hairlines, never by drop shadows */
+  --bg: var(--void);
+  --bg-raised: #0f0d10;
+  --bg-sunk: #050406;
+  --line: rgba(200, 165, 92, 0.16);
+  --line-strong: rgba(200, 165, 92, 0.38);
+
+  /* Ink */
+  --ink: var(--parchment);
+  --ink-muted: rgba(237, 231, 218, 0.66);
+  --ink-dim: rgba(237, 231, 218, 0.42);
+  --ink-on-gold: #0b0906;
+
+  --accent: var(--gold);
+  --accent-wash: rgba(200, 165, 92, 0.08);
+
+  /* Type — a high-contrast display serif (italic for metal names), a book serif for
+     body, and wide-tracked mono caps for every label and spec. Nothing else. */
+  --font-display: "Cormorant Garamond", "Cormorant", "Iowan Old Style", "Times New Roman", serif;
+  --font-body: "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+  --font-mono: "IBM Plex Mono", "SF Mono", ui-monospace, Menlo, monospace;
+
+  --step--2: clamp(0.62rem, 0.6rem + 0.08vw, 0.68rem);
+  --step--1: clamp(0.74rem, 0.72rem + 0.1vw, 0.8rem);
+  --step-0: clamp(1.06rem, 1rem + 0.3vw, 1.22rem);
+  --step-1: clamp(1.3rem, 1.15rem + 0.6vw, 1.7rem);
+  --step-2: clamp(1.7rem, 1.4rem + 1.3vw, 2.5rem);
+  --step-3: clamp(2.3rem, 1.7rem + 2.6vw, 3.9rem);
+  --step-4: clamp(2.9rem, 1.9rem + 4.4vw, 5.8rem);
+
+  --tracking-wordmark: 0.42em;
+  --tracking-label: 0.32em;
+  --tracking-display: -0.012em;
+
+  --leading-tight: 1.02;
+  --leading-snug: 1.2;
+  --leading-body: 1.62;
+
+  /* Space */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+  --sp-8: 4.5rem;
+  --sp-9: 7rem;
+
+  /* Radii — the card itself is the only rounded thing; controls are square-cut */
+  --r-none: 0;
+  --r-sm: 2px;
+  --r-card: 3.8%;           /* ISO/IEC 7810 ID-1 corner: 3.18mm on 85.6mm */
+
+  --wrap: 76rem;
+  --gutter: clamp(1rem, 4vw, 3rem);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 700ms;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { background: var(--bg); color-scheme: dark; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+::selection { background: var(--gold); color: var(--ink-on-gold); }
+
+:focus-visible { outline: 1px solid var(--gold); outline-offset: 4px; }
+
+.wrap { width: min(100% - 2 * var(--gutter), var(--wrap)); margin-inline: auto; }
+
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wordmark);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.eyebrow, .label {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin: 0;
+}
+.eyebrow { color: var(--gold); }
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--step-4);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-display);
+  margin: 0;
+}
+.h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--step-3);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-display);
+  margin: 0;
+}
+.metal { font-style: italic; color: var(--aurum); }
+
+.body { color: var(--ink-muted); max-width: 32rem; margin: 0; }
+
+/* Buttons — square-cut, hairline, mono caps. The primary is outlined in gold, not
+   filled: a filled gold slab would be the loudest thing on a page about quiet. */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-3);
+  min-height: 3rem;
+  padding: 0 var(--sp-6);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-none);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 300ms var(--ease-out), background 300ms var(--ease-out), color 300ms var(--ease-out);
+}
+.btn:hover { border-color: var(--gold); }
+.btn--primary { border-color: var(--gold); color: var(--parchment); }
+.btn--primary:hover { background: var(--gold); color: var(--ink-on-gold); }
+.btn--quiet { border-color: transparent; padding-inline: 0; color: var(--ink-muted); }
+.btn--quiet:hover { color: var(--gold); border-color: transparent; }
+
+.rule { border: 0; border-top: 1px solid var(--line); margin: 0; }
+
+.visually-hidden {
+  position: absolute !important; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* Layout constants used across components */
+:root {
+  --nav-h: 76px;
+  --measure: 34rem;
+}
+@media (max-width: 767px) { :root { --nav-h: 60px; } }
+
+[id] { scroll-margin-top: calc(var(--nav-h) + var(--sp-5)); }

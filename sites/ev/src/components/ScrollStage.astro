@@ -1,0 +1,245 @@
+---
+import Chapter from "./Chapter.astro";
+import { site } from "../content/site";
+import manifest from "../../public/frames/manifest.json";
+
+// Until footage lands the manifest carries count 0; the sequence is then never requested
+// and everyone gets the composed-still path, the same one reduced-motion visitors get.
+const hasSequence = manifest.desktop.count > 0 && manifest.mobile.count > 0;
+---
+
+<section
+  id="stage"
+  class="scroller"
+  class:list={{ "is-static": !hasSequence }}
+  aria-label="The HALCYN assembled from a single battery cell: the pack, the motor, a wheel corner, the body, the light and the cabin, then driving away across a salt flat"
+>
+  <div class="pin">
+    <canvas id="seq" aria-hidden="true"></canvas>
+    <div class="scrim" aria-hidden="true"></div>
+
+    <noscript>
+      <picture>
+        <source media="(max-width: 767px)" srcset={manifest.mobile.poster} />
+        <img class="poster-fallback" src={manifest.desktop.poster} alt="" />
+      </picture>
+    </noscript>
+
+    {site.chapters.map((c, i) => <Chapter {...c} level={i === 0 ? 1 : 2} />)}
+
+    <script type="application/json" id="seq-manifest" set:html={JSON.stringify(manifest)}></script>
+
+    <!-- The build rail: where you are in the car. Decorative; the chapters carry the words. -->
+    <div class="rail" aria-hidden="true">
+      <p class="rail__hint">{site.rail.blurHint}</p>
+      <ol class="rail__scenes">
+        {site.rail.scenes.map((s, i) => (
+          <li class="rail__scene" data-scene={i}><span class="rail__name">{s}</span></li>
+        ))}
+      </ol>
+      <span class="rail__track"><span class="rail__fill"></span></span>
+    </div>
+
+    <div class="cue" aria-hidden="true">
+      <span class="cue__label">{site.rail.cue}</span>
+      <span class="cue__line"></span>
+    </div>
+  </div>
+</section>
+
+<!-- Reduced motion, no-JS, load failure and the pre-footage state all land here: the
+     same story as readable copy in normal flow, with every action still reachable. -->
+<section class="story-static" aria-label="The HALCYN, built from the battery out">
+  <div class="wrap">
+    <picture>
+      <source media="(max-width: 767px)" srcset={manifest.mobile.still} width={manifest.mobile.width} height={manifest.mobile.height} />
+      <img class="story-static__poster" src={manifest.desktop.still} width={manifest.desktop.width} height={manifest.desktop.height} alt={site.staticAlt} />
+    </picture>
+    <div class="story-static__copy">
+      {site.chapters.map((c, i) => (
+        <div class="story-static__beat">
+          {(c.numeral || c.eyebrow) && <p class="eyebrow">{c.numeral ? `${c.numeral} — ` : ""}{c.eyebrow}</p>}
+          {i === 0
+            ? <h1 class="display">{c.heading} {c.headingEm && <em>{c.headingEm}</em>}</h1>
+            : <h2 class="h2">{c.heading} {c.headingEm && <em>{c.headingEm}</em>}</h2>}
+          {c.body && <p class="body">{c.body}</p>}
+          {c.cta && <a class="btn btn--primary" href={c.cta.href}>{c.cta.label}</a>}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .scroller { position: relative; height: 1300vh; } /* 12 viewports of active travel */
+  @media (max-width: 767px) { .scroller { height: 1000vh; } } /* 9 — thumbs travel less */
+
+  .pin { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--abyss); }
+  #seq { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .poster-fallback { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+  /* Legibility for the copy side, only while a chapter is showing. */
+  .scrim {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      linear-gradient(90deg, rgba(5,7,12,.9) 0%, rgba(5,7,12,.72) 30%, rgba(5,7,12,.35) 44%, rgba(5,7,12,0) 60%),
+      linear-gradient(180deg, rgba(5,7,12,.5) 0%, rgba(5,7,12,0) 18%, rgba(5,7,12,0) 80%, rgba(5,7,12,.7) 100%);
+    opacity: 0; transition: opacity 900ms var(--ease-out);
+  }
+  .pin.has-copy .scrim { opacity: 1; }
+  @media (max-width: 767px) {
+    .scrim { background:
+      linear-gradient(180deg, rgba(5,7,12,.86) 0%, rgba(5,7,12,.5) 24%, rgba(5,7,12,0) 42%),
+      linear-gradient(0deg, rgba(5,7,12,.7) 0%, rgba(5,7,12,0) 26%); }
+  }
+
+  /* ─── Build rail ─────────────────────────────────────────────────────────── */
+  .rail {
+    position: absolute; left: 50%; bottom: calc(var(--sp-5) + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    width: min(100% - 2 * var(--gutter), var(--wrap));
+    display: grid; gap: var(--sp-3);
+    opacity: 0; transition: opacity 700ms var(--ease-out);
+  }
+  .rail.is-on { opacity: 1; }
+  .rail__scenes {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+  .rail__scene {
+    display: flex; gap: var(--sp-2); align-items: baseline;
+    font-family: var(--font-mono); font-size: var(--step--2); letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--ink-dim);
+    transition: color 500ms var(--ease-out);
+  }
+  .rail__scene.is-past { color: var(--steel); }
+  .rail__scene.is-now { color: var(--platinum); }
+  .rail__scene.is-now::before {
+    content: ""; width: 5px; height: 5px; border-radius: 50%; align-self: center;
+    background: var(--halcyon); box-shadow: 0 0 8px var(--halcyon);
+  }
+  .rail__track { position: relative; height: 1px; background: var(--line); }
+  .rail__fill {
+    position: absolute; inset: 0 auto 0 0; width: 0;
+    background: linear-gradient(90deg, rgba(61,123,255,.2), var(--halcyon));
+    box-shadow: 0 0 10px var(--accent-glow);
+  }
+  .rail__fill::after {
+    content: ""; position: absolute; right: -2px; top: -2px; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--ice); box-shadow: 0 0 10px var(--halcyon);
+  }
+  .rail__hint {
+    margin: 0 0 var(--sp-3); justify-self: center;
+    font-family: var(--font-mono); font-size: var(--step--2); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--silver);
+    opacity: 0; transition: opacity 600ms var(--ease-out);
+  }
+  .rail__hint.is-on { opacity: 1; }
+
+  .cue {
+    position: absolute; left: 50%; bottom: calc(var(--sp-6) + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    display: grid; justify-items: center; gap: var(--sp-3);
+    transition: opacity 500ms var(--ease-out);
+  }
+  .cue.is-gone { opacity: 0; }
+  .cue__label { font-family: var(--font-mono); font-size: var(--step--2); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--ink-dim); }
+  .cue__line { width: 1px; height: 44px; background: linear-gradient(180deg, var(--halcyon), transparent); animation: cue 2.4s var(--ease-out) infinite; transform-origin: top; }
+  @keyframes cue { 0% { transform: scaleY(0); opacity: 1; } 70% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
+
+  @media (max-width: 767px) {
+    /* On a phone the rail keeps only the current scene's name; eight labels won't fit. */
+    .rail__scenes { grid-template-columns: 1fr; }
+    .rail__scene { display: none; justify-content: center; }
+    .rail__scene.is-now { display: flex; }
+    .rail__hint { text-align: center; max-width: 18rem; line-height: 1.8; }
+  }
+
+  /* ─── Static path ───────────────────────────────────────────────────────── */
+  .story-static { display: none; padding: calc(var(--nav-h) + var(--sp-7)) 0 var(--sp-8); }
+  .story-static__poster { width: 100%; height: auto; margin-bottom: var(--sp-8); border: 1px solid var(--line); }
+  .story-static__copy { display: grid; gap: var(--sp-8); }
+  .story-static__beat { display: grid; gap: var(--sp-4); justify-items: start; max-width: 40rem; }
+  .story-static__beat .body { margin: 0; }
+
+  .scroller.is-static { height: 0; }
+  .scroller.is-static .pin { display: none; }
+  .scroller.is-static ~ .story-static { display: block; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroller { height: 0; }
+    .pin { display: none; }
+    .story-static { display: block; }
+  }
+</style>
+
+<noscript>
+  <style>
+    .scroller { height: 0 !important; }
+    .pin { display: none !important; }
+    .story-static { display: block !important; }
+  </style>
+</noscript>
+
+<script>
+  import { ScrollEngine, type SequenceSpec } from "@sites/scroll-engine";
+  import { site } from "../content/site";
+
+  // Vite refuses to import from public/ in client code, so the manifest is serialised
+  // into the document above and read back here.
+  const manifest = JSON.parse(document.getElementById("seq-manifest")!.textContent!) as {
+    desktop: SequenceSpec; mobile: SequenceSpec;
+  };
+
+  const canvas = document.getElementById("seq") as HTMLCanvasElement | null;
+  const scroller = document.getElementById("stage") as HTMLElement | null;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const hasSequence = manifest.desktop.count > 0 && manifest.mobile.count > 0;
+
+  if (canvas && scroller && hasSequence && !reduced) {
+    const pin = scroller.querySelector<HTMLElement>(".pin")!;
+    const chapters = [...pin.querySelectorAll<HTMLElement>("[data-chapter]")];
+    const rail = pin.querySelector<HTMLElement>(".rail")!;
+    const fill = pin.querySelector<HTMLElement>(".rail__fill")!;
+    const scenes = [...pin.querySelectorAll<HTMLElement>(".rail__scene")];
+    const hint = pin.querySelector<HTMLElement>(".rail__hint")!;
+    const cue = pin.querySelector<HTMLElement>(".cue")!;
+    const { blur: BLUR, scenes: STARTS } = site.timing;
+
+    for (const el of chapters) el.inert = true;
+
+    new ScrollEngine({
+      canvas,
+      scroller,
+      landscape: manifest.desktop,
+      portrait: manifest.mobile,
+      beats: site.beats,
+      onProgress(p) {
+        let anyOn = false;
+        for (const el of chapters) {
+          const at = JSON.parse(el.dataset.at!) as [number, number];
+          const on = p >= at[0] && p <= at[1];
+          anyOn ||= on;
+          if (el.classList.contains("is-on") !== on) {
+            el.classList.toggle("is-on", on);
+            el.inert = !on;
+          }
+        }
+        pin.classList.toggle("has-copy", anyOn);
+
+        // The rail stays out of the way of the hero and the close.
+        rail.classList.toggle("is-on", p > 0.05 && p < 0.93);
+        fill.style.width = `${Math.max(0, Math.min(1, p)) * 100}%`;
+        let now = 0;
+        for (let i = 0; i < STARTS.length; i++) if (p >= STARTS[i]) now = i;
+        scenes.forEach((s, i) => {
+          s.classList.toggle("is-now", i === now);
+          s.classList.toggle("is-past", i < now);
+        });
+        hint.classList.toggle("is-on", p >= BLUR[0] && p <= BLUR[1]);
+
+        cue.classList.toggle("is-gone", p > 0.02);
+      },
+    });
+  }
+</script>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- HALCYN: an H whose crossbar is the headlight slit. Two raked uprights, like the
+       car's A-pillars seen head-on, joined by one hairline of light — the hidden-until-lit
+       signature the film ignites. Drawn by hand; never generated. -->
+  <defs>
+    <linearGradient id="lustre" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FBFCFE"/>
+      <stop offset="0.45" stop-color="#C9CFD8"/>
+      <stop offset="0.55" stop-color="#8F99A7"/>
+      <stop offset="1" stop-color="#EEF1F5"/>
+    </linearGradient>
+  </defs>
+  <path d="M17 8 H24 L19 56 H12 Z" fill="url(#lustre)"/>
+  <path d="M40 8 H47 L52 56 H45 Z" fill="url(#lustre)"/>
+  <rect x="14.5" y="30.6" width="35" height="2.4" rx="1.2" fill="#E8F3FF"/>
+</svg>

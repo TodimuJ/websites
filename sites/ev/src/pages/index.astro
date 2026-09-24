@@ -1,0 +1,397 @@
+---
+import Base from "../layouts/Base.astro";
+import ScrollStage from "../components/ScrollStage.astro";
+import { site, usd } from "../content/site";
+const { engineering, models, configure, ownership, reserve } = site;
+const base = models.trims[0];
+---
+
+<Base>
+  <ScrollStage />
+
+  <!-- Engineering: the four parts the film builds, as plates. -->
+  <section id="engineering" class="band">
+    <div class="wrap">
+      <div class="head head--split reveal">
+        <div>
+          <p class="eyebrow">{engineering.eyebrow}</p>
+          <h2 class="h2">{engineering.heading}</h2>
+        </div>
+        <p class="body">{engineering.body}</p>
+      </div>
+      <ol class="parts">
+        {engineering.parts.map((p) => (
+          <li class="part reveal">
+            <figure class="part__art">
+              <img src={p.image} alt={p.alt} width="1600" height="900" loading="lazy" decoding="async" />
+            </figure>
+            <div class="part__body">
+              <p class="part__head"><span class="numeral">{p.n}</span><span class="part__name">{p.name}</span></p>
+              <p class="part__fact"><span class="part__fig">{p.fact[0]}</span><span class="label">{p.fact[1]}</span></p>
+              <p class="part__copy">{p.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Models -->
+  <section id="models" class="band band--sunk">
+    <div class="wrap">
+      <div class="head head--split reveal">
+        <div>
+          <p class="eyebrow">{models.eyebrow}</p>
+          <h2 class="h2">{models.heading}</h2>
+        </div>
+        <p class="body">{models.body}</p>
+      </div>
+      <div class="trims">
+        {models.trims.map((t) => (
+          <article class="trim reveal">
+            <div class="trim__art">
+              <img src={t.image} alt={t.alt} width="1600" height="900" loading="lazy" decoding="async" />
+            </div>
+            <div class="trim__body">
+              <div class="trim__top">
+                <div>
+                  <h3 class="trim__name">{t.name}</h3>
+                  <p class="trim__line">{t.line}</p>
+                </div>
+                <p class="trim__price"><span class="label">From</span>{usd(t.price)}</p>
+              </div>
+              <dl class="spec">
+                {t.specs.map(([k, v, u]) => (
+                  <div><dt class="label">{k}</dt><dd>{v}{u && <small>{u}</small>}</dd></div>
+                ))}
+              </dl>
+              <div class="trim__foot">
+                <a class="btn btn--primary" href="#reserve" data-pick-trim={t.id}>Reserve {t.name}</a>
+                <a class="btn btn--quiet" href="#configure" data-pick-trim={t.id}>Configure →</a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+      <p class="label note reveal">{models.note}</p>
+    </div>
+  </section>
+
+  <!-- Configurator. Pure client state; the result travels to the reservation form. -->
+  <section id="configure" class="band">
+    <div class="wrap config">
+      <div class="config__visual reveal">
+        <img src={configure.image} alt={configure.imageAlt} width="1600" height="900" loading="lazy" decoding="async" />
+        <div class="config__glow" aria-hidden="true" data-glow></div>
+      </div>
+      <div class="config__panel reveal">
+        <p class="eyebrow">{configure.eyebrow}</p>
+        <h2 class="h2 config__h">{configure.heading}</h2>
+        <p class="body">{configure.body}</p>
+
+        <form class="config__form" data-config>
+          <fieldset class="group">
+            <legend class="label">Model</legend>
+            <div class="opts">
+              {models.trims.map((t, i) => (
+                <label class="opt">
+                  <input type="radio" name="trim" value={t.id} data-price={t.price} data-name={t.name} checked={i === 0} />
+                  <span class="opt__card">
+                    <span class="opt__name">{t.name}</span>
+                    <span class="opt__note">{usd(t.price)}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+          {configure.groups.map((g) => (
+            <fieldset class="group">
+              <legend class="label">{g.label}</legend>
+              <div class="opts">
+                {g.options.map((o, i) => (
+                  <label class="opt">
+                    <input type="radio" name={g.id} value={o.id} data-price={o.price} data-name={o.name} checked={i === 0} />
+                    <span class="opt__card">
+                      <span class="opt__swatch" style={`background:${o.swatch}`} aria-hidden="true"></span>
+                      <span class="opt__name">{o.name}</span>
+                      <span class="opt__note">{o.note}{o.price > 0 ? ` · +${usd(o.price)}` : " · Included"}</span>
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          ))}
+
+          <div class="total">
+            <div>
+              <p class="label">{configure.totalLabel}</p>
+              <p class="total__fig" data-total>{usd(base.price)}</p>
+              <p class="label total__tax">{configure.taxNote}</p>
+            </div>
+            <div class="total__due">
+              <p class="label">{configure.depositLabel}</p>
+              <p class="total__dep">{usd(reserve.deposit)}</p>
+            </div>
+          </div>
+          <button class="btn btn--primary" type="submit">{configure.action}</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ownership -->
+  <section id="ownership" class="band band--sunk">
+    <div class="wrap">
+      <div class="head reveal">
+        <p class="eyebrow">{ownership.eyebrow}</p>
+        <h2 class="h2">{ownership.heading}</h2>
+      </div>
+      <ol class="owns">
+        {ownership.items.map((o) => (
+          <li class="own reveal">
+            <span class="own__n">{o.n}</span>
+            <h3 class="own__title">{o.title}</h3>
+            <p class="own__body">{o.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Reserve. There is no backend: the form says so and never shows a confirmation. -->
+  <section id="reserve" class="band band--reserve">
+    <div class="wrap reserve">
+      <div class="reveal">
+        <p class="eyebrow">{reserve.eyebrow}</p>
+        <h2 class="h2">{reserve.heading}</h2>
+        <p class="body">{reserve.body}</p>
+        <p class="label reserve__fine">{reserve.fine}</p>
+      </div>
+      <form class="form reveal" data-no-backend novalidate>
+        <label class="field"><span class="label">{reserve.fields.name}</span><input name="name" autocomplete="name" required /></label>
+        <label class="field"><span class="label">{reserve.fields.email}</span><input name="email" type="email" autocomplete="email" required /></label>
+        <label class="field"><span class="label">{reserve.fields.zip}</span><input name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="10" required /></label>
+        <fieldset class="field field--radios">
+          <legend class="label">{reserve.fields.trim}</legend>
+          {models.trims.map((t, i) => (
+            <label class="radio"><input type="radio" name="trim" value={t.id} checked={i === 0} /><span>{t.name}</span></label>
+          ))}
+        </fieldset>
+        <label class="field">
+          <span class="label">{reserve.fields.config}</span>
+          <output class="form__config" data-config-summary>{reserve.configNone}</output>
+        </label>
+        <button class="btn btn--primary form__submit" type="submit">{reserve.action}</button>
+        <p class="form__status label" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .band { padding-block: clamp(5rem, 12vw, 10rem); position: relative; }
+  .band--sunk { background: var(--bg-sunk); border-block: 1px solid var(--line); }
+  .eyebrow { margin-bottom: var(--sp-5); }
+  .h2 { max-width: 22ch; text-wrap: balance; }
+  .body { margin-top: var(--sp-5); text-wrap: pretty; }
+  .note { margin-top: var(--sp-6); line-height: 2; }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 1100ms var(--ease-out), transform 1100ms var(--ease-out); }
+  .reveal.is-in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+  .head { max-width: 44rem; }
+  .head--split { max-width: none; display: grid; grid-template-columns: 1.1fr 1fr; gap: var(--sp-7); align-items: end; }
+  .head--split .body { margin-top: 0; }
+
+  /* Engineering plates */
+  .parts { list-style: none; margin: var(--sp-8) 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-6); }
+  .part { border: 1px solid var(--line); background: var(--bg-raised); display: grid; grid-template-rows: auto 1fr; transition: border-color 600ms var(--ease-out); }
+  .part:hover { border-color: var(--line-strong); }
+  .part__art { margin: 0; overflow: hidden; border-bottom: 1px solid var(--line); }
+  .part__art img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; transition: transform 1800ms var(--ease-out); }
+  .part:hover .part__art img { transform: scale(1.04); }
+  .part__body { padding: clamp(1.25rem, 2.5vw, 2rem); display: grid; grid-template-columns: 1fr auto; gap: var(--sp-3) var(--sp-5); align-items: baseline; }
+  .part__head { margin: 0; display: flex; gap: var(--sp-4); align-items: baseline; }
+  .part__name { font-family: var(--font-display); font-weight: 300; font-size: var(--step-2); letter-spacing: -0.02em; }
+  .part__fact { margin: 0; display: flex; gap: var(--sp-2); align-items: baseline; }
+  .part__fig { font-family: var(--font-display); font-weight: 200; font-size: var(--step-2); letter-spacing: -0.03em; color: var(--platinum); }
+  .part__copy { grid-column: 1 / -1; margin: 0; color: var(--ink-muted); max-width: 34rem; }
+
+  /* Models */
+  .trims { margin-top: var(--sp-8); display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-6); }
+  .trim { border: 1px solid var(--line); background: linear-gradient(180deg, var(--bg-raised), var(--bg)); display: grid; grid-template-rows: auto 1fr; transition: border-color 600ms var(--ease-out); }
+  .trim:hover { border-color: var(--line-strong); }
+  .trim__art { overflow: hidden; border-bottom: 1px solid var(--line); }
+  .trim__art img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; transition: transform 1800ms var(--ease-out); }
+  .trim:hover .trim__art img { transform: scale(1.03); }
+  .trim__body { padding: clamp(1.5rem, 3vw, 2.5rem); display: grid; gap: var(--sp-6); align-content: start; }
+  .trim__top { display: flex; justify-content: space-between; align-items: start; gap: var(--sp-5); flex-wrap: wrap; }
+  .trim__name { margin: 0; font-family: var(--font-display); font-weight: 200; font-size: var(--step-3); letter-spacing: -0.035em; line-height: 1; }
+  .trim__line { margin: var(--sp-3) 0 0; color: var(--ink-muted); }
+  .trim__price { margin: 0; display: flex; align-items: baseline; gap: var(--sp-3); font-family: var(--font-mono); font-size: var(--step-0); color: var(--silver); white-space: nowrap; }
+  .spec { margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .spec div { padding-top: var(--sp-4); }
+  .spec dd { margin: var(--sp-2) 0 0; font-family: var(--font-display); font-weight: 200; font-size: var(--step-2); letter-spacing: -0.03em; line-height: 1; white-space: nowrap; }
+  .spec dd small { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.04em; color: var(--ink-dim); margin-left: 0.35em; }
+  .trim__foot { display: flex; align-items: center; gap: var(--sp-4) var(--sp-6); flex-wrap: wrap; }
+
+  /* Configurator */
+  .config { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+  .config__visual { position: sticky; top: calc(var(--nav-h) + var(--sp-6)); border: 1px solid var(--line); overflow: hidden; background: var(--bg-raised); }
+  .config__visual img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; transition: filter 900ms var(--ease-out); }
+  .config__visual.is-satin img { filter: contrast(0.92) brightness(0.92) saturate(0.85); }
+  /* The chosen cabin light, as a thin line along the floor of the plate. */
+  .config__glow {
+    position: absolute; left: 12%; right: 12%; bottom: 9%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--glow, var(--halcyon)), transparent);
+    box-shadow: 0 0 18px var(--glow, var(--halcyon));
+    transition: background 600ms var(--ease-out), box-shadow 600ms var(--ease-out);
+  }
+  .config__h { font-size: var(--step-2); }
+  .config__form { margin-top: var(--sp-7); display: grid; gap: var(--sp-6); }
+  .group { border: 0; margin: 0; padding: 0; display: grid; gap: var(--sp-3); }
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+  .opt { position: relative; cursor: pointer; }
+  .opt input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .opt__card {
+    display: grid; grid-template-columns: auto 1fr; gap: var(--sp-1) var(--sp-3); align-items: center;
+    min-height: 64px; padding: var(--sp-3) var(--sp-4);
+    border: 1px solid var(--line); border-radius: var(--r-sm);
+    transition: border-color 300ms var(--ease-out), background 300ms var(--ease-out), box-shadow 300ms var(--ease-out);
+  }
+  .opt__swatch { grid-row: span 2; width: 28px; height: 28px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); }
+  .opt__name { font-size: var(--step-0); font-weight: 400; color: var(--platinum); line-height: 1.2; }
+  .opt__note { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.06em; color: var(--ink-dim); }
+  .opt:not(:has(.opt__swatch)) .opt__card { grid-template-columns: 1fr; }
+  .opt:hover .opt__card { border-color: var(--line-strong); }
+  .opt input:checked + .opt__card { border-color: var(--halcyon); background: var(--accent-wash); box-shadow: 0 0 0 1px var(--halcyon) inset; }
+  .opt input:focus-visible + .opt__card { outline: 1px solid var(--halcyon); outline-offset: 3px; }
+
+  .total { display: flex; justify-content: space-between; align-items: end; gap: var(--sp-5); padding-top: var(--sp-5); border-top: 1px solid var(--line); flex-wrap: wrap; }
+  .total p { margin: 0; }
+  .total__fig { font-family: var(--font-display); font-weight: 200; font-size: var(--step-3); letter-spacing: -0.035em; line-height: 1.1; color: var(--platinum); font-variant-numeric: tabular-nums; }
+  .total__tax { margin-top: var(--sp-2) !important; }
+  .total__due { text-align: right; }
+  .total__dep { font-family: var(--font-mono); font-size: var(--step-1); color: var(--silver); }
+
+  /* Ownership */
+  .owns { list-style: none; margin: var(--sp-8) 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .own { padding: var(--sp-6) var(--sp-5) var(--sp-7) 0; display: grid; gap: var(--sp-3); align-content: start; }
+  .own + .own { padding-left: var(--sp-5); border-left: 1px solid var(--line); }
+  .own__n { font-family: var(--font-display); font-weight: 200; font-size: var(--step-2); letter-spacing: -0.03em; color: var(--platinum); }
+  .own__title { margin: 0; font-family: var(--font-mono); font-weight: 400; font-size: var(--step--2); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--halcyon); }
+  .own__body { margin: 0; color: var(--ink-muted); }
+
+  /* Reserve */
+  .band--reserve { background: radial-gradient(60% 80% at 85% 40%, rgba(61,123,255,.08), transparent 70%), var(--bg); }
+  .reserve { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 7vw, 7rem); align-items: start; }
+  .reserve__fine { margin-top: var(--sp-6); line-height: 2; }
+  .form { display: grid; gap: var(--sp-5); }
+  .field { display: grid; gap: var(--sp-2); border: 0; padding: 0; margin: 0; }
+  .field input:not([type="radio"]) {
+    font: inherit; font-size: var(--step-1); font-weight: 300; color: var(--platinum);
+    background: transparent; border: 0; border-bottom: 1px solid var(--line-strong);
+    padding: var(--sp-2) 0; border-radius: 0; min-height: 44px;
+    transition: border-color 300ms var(--ease-out);
+  }
+  .field input:focus { outline: none; border-bottom-color: var(--halcyon); }
+  .field--radios { display: flex; flex-wrap: wrap; gap: var(--sp-3) var(--sp-6); }
+  .field--radios legend { width: 100%; margin-bottom: var(--sp-3); }
+  .radio { display: inline-flex; align-items: center; gap: var(--sp-3); cursor: pointer; min-height: 44px; }
+  .radio input { accent-color: var(--halcyon); width: 16px; height: 16px; }
+  .form__config { font-size: var(--step-0); color: var(--silver); padding: var(--sp-2) 0; border-bottom: 1px solid var(--line); }
+  .form__submit { justify-self: start; margin-top: var(--sp-3); }
+  .form__status { min-height: 1.6em; line-height: 1.9; letter-spacing: 0.14em; }
+  .form__status.is-shown { color: var(--silver); border-left: 1px solid var(--halcyon); padding-left: var(--sp-4); }
+
+  @media (max-width: 1000px) {
+    .owns { grid-template-columns: 1fr 1fr; }
+    .own:nth-child(3) { padding-left: 0; border-left: 0; }
+    .own:nth-child(n + 3) { border-top: 1px solid var(--line); }
+  }
+  @media (max-width: 900px) {
+    .head--split, .reserve, .config { grid-template-columns: 1fr; }
+    .parts, .trims { grid-template-columns: 1fr; }
+    .config__visual { position: relative; top: 0; }
+  }
+  @media (max-width: 560px) {
+    .owns { grid-template-columns: 1fr; }
+    .own, .own + .own { padding: var(--sp-5) 0; border-left: 0; }
+    .own + .own { border-top: 1px solid var(--line); }
+    .opts { grid-template-columns: 1fr; }
+    .spec { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .spec div:nth-child(n + 3) { padding-top: var(--sp-5); }
+    .part__body { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  import { site, usd } from "../content/site";
+
+  // Sections rise into view once, as they arrive.
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); }
+  }, { rootMargin: "0px 0px -10% 0px" });
+  document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+  // ─── Configurator ────────────────────────────────────────────────────────
+  const config = document.querySelector<HTMLFormElement>("[data-config]");
+  const total = config?.querySelector<HTMLElement>("[data-total]");
+  const visual = document.querySelector<HTMLElement>(".config__visual");
+  const glow = document.querySelector<HTMLElement>("[data-glow]");
+  const summary = document.querySelector<HTMLOutputElement>("[data-config-summary]");
+  const reserveForm = document.querySelector<HTMLFormElement>("[data-no-backend]");
+
+  const picked = () =>
+    [...(config?.querySelectorAll<HTMLInputElement>("input:checked") ?? [])];
+
+  function update() {
+    if (!config || !total) return;
+    const sel = picked();
+    total.textContent = usd(sel.reduce((n, i) => n + Number(i.dataset.price || 0), 0));
+    const val = (name: string) => config.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`)?.value;
+    visual?.classList.toggle("is-satin", val("finish") === "eclipse");
+    glow?.style.setProperty("--glow", val("light") === "ice" ? "#e8f3ff" : "#3d7bff");
+  }
+  config?.addEventListener("change", update);
+  // Browsers restore radio state on reload and back/forward; the total must follow it.
+  update();
+  window.addEventListener("pageshow", update);
+
+  // "Reserve this configuration" carries the choices to the reservation form. It does
+  // not submit anything anywhere.
+  config?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const sel = picked();
+    const trim = sel.find((i) => i.name === "trim")?.value;
+    if (summary) summary.textContent = sel.map((i) => i.dataset.name).join(" · ") + ` — ${total?.textContent}`;
+    const r = reserveForm?.querySelector<HTMLInputElement>(`input[name="trim"][value="${trim}"]`);
+    if (r) r.checked = true;
+    document.getElementById("reserve")?.scrollIntoView({ behavior: "smooth" });
+    reserveForm?.querySelector<HTMLInputElement>("input[name='name']")?.focus({ preventScroll: true });
+  });
+
+  // Trim buttons elsewhere on the page preselect that trim in both forms.
+  document.querySelectorAll<HTMLElement>("[data-pick-trim]").forEach((a) =>
+    a.addEventListener("click", () => {
+      const id = a.dataset.pickTrim;
+      for (const f of [config, reserveForm]) {
+        const r = f?.querySelector<HTMLInputElement>(`input[name="trim"][value="${id}"]`);
+        if (r) r.checked = true;
+      }
+      update();
+    }),
+  );
+
+  // ─── Reservation ─────────────────────────────────────────────────────────
+  // There is no backend. Nothing is sent, nothing is charged, and the form never
+  // pretends otherwise.
+  const status = reserveForm?.querySelector<HTMLElement>(".form__status");
+  reserveForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!status) return;
+    status.textContent = site.reserve.notConnected;
+    status.classList.add("is-shown");
+  });
+</script>

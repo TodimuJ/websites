@@ -1,0 +1,96 @@
+---
+import "@fontsource/outfit/200.css";
+import "@fontsource/outfit/300.css";
+import "@fontsource/outfit/400.css";
+import "@fontsource/outfit/500.css";
+import "@fontsource/michroma/400.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/500.css";
+import "../styles/tokens.css";
+import Nav from "../components/Nav.astro";
+import { site } from "../content/site";
+
+interface Props { title?: string; description?: string; }
+const { title = site.meta.title, description = site.meta.description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="theme-color" content="#05070c" />
+  <link rel="icon" href="/logo-symbol.svg" type="image/svg+xml" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/posters/still-desktop.webp" />
+  <meta name="twitter:card" content="summary_large_image" />
+</head>
+<body id="top">
+  <a class="skip" href={site.skip.href}>{site.skip.label}</a>
+  <Nav />
+  <main id="main">
+    <slot />
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">
+      <div class="foot__grid">
+        <div class="foot__brand">
+          <img class="foot__symbol" src={site.brand.symbol} alt="" width="34" height="34" />
+          <p class="wordmark foot__word">{site.brand.name}</p>
+          <p class="foot__tag">{site.brand.tagline}</p>
+          <p class="label foot__addr">{site.footer.address}</p>
+        </div>
+        {site.footer.columns.map((col) => (
+          <div>
+            <p class="label">{col.title}</p>
+            <ul class="foot__list">
+              {col.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <p class="label foot__legal">{site.footer.legal}</p>
+    </div>
+  </footer>
+</body>
+</html>
+
+<style>
+  .skip {
+    position: absolute; left: -9999px; top: 0; z-index: 100;
+    background: var(--platinum); color: var(--ink-on-silver);
+    padding: var(--sp-3) var(--sp-4);
+    font-family: var(--font-mono); font-size: var(--step--1);
+  }
+  .skip:focus { left: 0; }
+
+  .foot {
+    border-top: 1px solid var(--line);
+    background: var(--bg-sunk);
+    padding-block: var(--sp-9) var(--sp-6);
+    padding-bottom: calc(var(--sp-6) + env(safe-area-inset-bottom));
+  }
+  .foot__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+    gap: var(--sp-7);
+  }
+  .foot__symbol { width: 34px; height: 34px; }
+  .foot__word { font-size: var(--step-1); margin-top: var(--sp-4); color: var(--platinum); }
+  .foot__tag { margin: var(--sp-2) 0 0; color: var(--ink-muted); }
+  .foot__addr { margin-top: var(--sp-5); line-height: 2; }
+  .foot__list { list-style: none; margin: var(--sp-4) 0 0; padding: 0; display: grid; gap: var(--sp-3); }
+  .foot__list a { color: var(--ink-muted); text-decoration: none; transition: color 300ms var(--ease-out); }
+  .foot__list a:hover { color: var(--platinum); }
+  .foot__legal { margin-top: var(--sp-8); padding-top: var(--sp-5); border-top: 1px solid var(--line); line-height: 2; }
+
+  @media (max-width: 767px) {
+    .foot__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-6); }
+    .foot__brand { grid-column: 1 / -1; }
+  }
+</style>

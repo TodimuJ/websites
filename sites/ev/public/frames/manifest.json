@@ -1,0 +1,22 @@
+{
+  "desktop": {
+    "pattern": "/frames/desktop/frame-%04d.webp",
+    "count": 618,
+    "width": 1440,
+    "height": 810,
+    "fps": 12,
+    "poster": "/posters/desktop.webp",
+    "still": "/posters/still-desktop.webp",
+    "bytes": 17561568
+  },
+  "mobile": {
+    "pattern": "/frames/mobile/frame-%04d.webp",
+    "count": 489,
+    "width": 720,
+    "height": 1280,
+    "fps": 10,
+    "poster": "/posters/mobile.webp",
+    "still": "/posters/still-mobile.webp",
+    "bytes": 11385106
+  }
+}

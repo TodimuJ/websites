@@ -1,0 +1,225 @@
+/**
+ * HALCYN — design tokens. Every component reads from here; nothing hardcodes a colour,
+ * a size or a radius.
+ *
+ * Midnight and lustrous silver, with one blue. The car is blacked out, so the page does
+ * the colour work: a near-black navy void, silver type that carries a metallic sheen, and
+ * a single electric blue taken from the cabin's light threads. Blue is never a large
+ * fill — it is a hairline, a glow, a live state. Ice white is reserved for the headlight
+ * slit and nothing else.
+ */
+
+:root {
+  /* Palette */
+  --abyss: #05070c;       /* page ground; the void the car is built in */
+  --midnight: #0b1426;    /* raised surfaces, the blue-hour sky at its darkest */
+  --silver: #c9cfd8;      /* lustrous silver; primary type */
+  --platinum: #eef1f5;    /* the brightest highlight on the lacquer */
+  --steel: #7d8796;       /* muted silver; secondary type */
+  --halcyon: #3d7bff;     /* the one blue: cabin light threads, focus, live states */
+  --ice: #e8f3ff;         /* the headlight slit; used once */
+
+  /* Derived surfaces — separated by hairlines, never by drop shadows */
+  --bg: var(--abyss);
+  --bg-raised: #0a0f1a;
+  --bg-sunk: #03050a;
+  --line: rgba(201, 207, 216, 0.12);
+  --line-strong: rgba(201, 207, 216, 0.32);
+  --line-blue: rgba(61, 123, 255, 0.45);
+
+  /* Ink */
+  --ink: var(--platinum);
+  --ink-muted: rgba(201, 207, 216, 0.72);
+  --ink-dim: rgba(201, 207, 216, 0.46);
+  --ink-on-silver: #070a10;
+
+  --accent: var(--halcyon);
+  --accent-glow: rgba(61, 123, 255, 0.35);
+  --accent-wash: rgba(61, 123, 255, 0.08);
+
+  /* The lustre. A vertical silver ramp with a bright horizon band, like chrome reflecting
+     a sky. Applied to display type with background-clip:text, and to hairline edges. */
+  --lustre: linear-gradient(
+    180deg,
+    #fbfcfe 0%,
+    #d9dee5 38%,
+    #8f99a7 52%,
+    #cfd5dd 64%,
+    #f3f5f8 100%
+  );
+  --lustre-edge: linear-gradient(90deg, transparent, rgba(238, 241, 245, 0.7), transparent);
+
+  /* Type — tight geometric sans throughout (light weights, large sizes), a wide extended
+     face for the wordmark and chapter numerals only, and mono for every spec. No serif
+     anywhere (brief). */
+  --font-display: "Outfit", "Avenir Next", "Futura", system-ui, sans-serif;
+  --font-body: "Outfit", "Avenir Next", system-ui, sans-serif;
+  --font-wide: "Michroma", "Eurostile", "Outfit", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, monospace;
+
+  --step--2: clamp(0.62rem, 0.6rem + 0.08vw, 0.68rem);
+  --step--1: clamp(0.76rem, 0.73rem + 0.12vw, 0.84rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.12rem);
+  --step-1: clamp(1.25rem, 1.12rem + 0.55vw, 1.6rem);
+  --step-2: clamp(1.6rem, 1.35rem + 1.2vw, 2.4rem);
+  --step-3: clamp(2.2rem, 1.6rem + 2.6vw, 3.8rem);
+  --step-4: clamp(2.8rem, 1.8rem + 4.6vw, 6rem);
+
+  --tracking-wordmark: 0.5em;
+  --tracking-label: 0.28em;
+  --tracking-display: -0.035em;
+
+  --leading-tight: 0.98;
+  --leading-snug: 1.12;
+  --leading-body: 1.6;
+
+  /* Space */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+  --sp-8: 4.5rem;
+  --sp-9: 7rem;
+
+  /* Radii — machined, not soft. Controls get a 2px break-edge, like a chamfer. */
+  --r-none: 0;
+  --r-sm: 2px;
+  --r-md: 4px;
+
+  --wrap: 78rem;
+  --gutter: clamp(1rem, 4vw, 3rem);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 700ms;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { background: var(--bg); color-scheme: dark; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+::selection { background: var(--halcyon); color: var(--platinum); }
+
+:focus-visible { outline: 1px solid var(--halcyon); outline-offset: 4px; }
+
+.wrap { width: min(100% - 2 * var(--gutter), var(--wrap)); margin-inline: auto; }
+
+.wordmark {
+  font-family: var(--font-wide);
+  font-weight: 400;
+  letter-spacing: var(--tracking-wordmark);
+  text-transform: uppercase;
+  margin: 0;
+  /* optical correction: trailing tracking would push the word off-centre */
+  margin-right: calc(-1 * var(--tracking-wordmark));
+}
+
+.eyebrow, .label {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  font-weight: 400;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin: 0;
+}
+.eyebrow { color: var(--silver); }
+.eyebrow::before {
+  content: "";
+  display: inline-block;
+  width: 1.6em; height: 1px;
+  margin-right: 0.9em;
+  vertical-align: 0.3em;
+  background: var(--halcyon);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.display, .h2 {
+  font-family: var(--font-display);
+  font-weight: 200;
+  letter-spacing: var(--tracking-display);
+  margin: 0;
+  color: var(--platinum);
+}
+/* The lustre only where the browser can clip it; plain platinum otherwise. */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .display, .h2 {
+    background: var(--lustre);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+.display { font-size: var(--step-4); line-height: var(--leading-tight); }
+.h2 { font-size: var(--step-3); line-height: var(--leading-snug); }
+.display em, .h2 em { font-style: normal; font-weight: 500; }
+
+.numeral {
+  font-family: var(--font-wide);
+  font-size: var(--step--1);
+  letter-spacing: 0.2em;
+  color: var(--halcyon);
+}
+
+.body { color: var(--ink-muted); max-width: 32rem; margin: 0; }
+
+/* Buttons — machined: hairline silver, square with a 2px break-edge, mono caps. The
+   primary is a silver slab with a blue under-glow on hover; the secondary is outline. */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-3);
+  min-height: 3rem;
+  padding: 0 var(--sp-6);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 300ms var(--ease-out), background 300ms var(--ease-out),
+    color 300ms var(--ease-out), box-shadow 300ms var(--ease-out);
+}
+.btn:hover { border-color: var(--silver); }
+.btn--primary {
+  border-color: transparent;
+  background: linear-gradient(180deg, #f4f6f9 0%, #c3cad3 55%, #e3e7ec 100%);
+  color: var(--ink-on-silver);
+}
+.btn--primary:hover { box-shadow: 0 0 0 1px var(--halcyon), 0 8px 28px var(--accent-glow); }
+.btn--quiet { border-color: transparent; padding-inline: 0; color: var(--ink-muted); }
+.btn--quiet:hover { color: var(--platinum); border-color: transparent; }
+
+.rule { border: 0; height: 1px; margin: 0; background: var(--lustre-edge); opacity: 0.5; }
+
+.visually-hidden {
+  position: absolute !important; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* Layout constants used across components */
+:root {
+  --nav-h: 76px;
+  --measure: 34rem;
+}
+@media (max-width: 767px) { :root { --nav-h: 60px; } }
+
+[id] { scroll-margin-top: calc(var(--nav-h) + var(--sp-5)); }

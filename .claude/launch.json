@@ -55,6 +55,17 @@
         "sites/metal-card"
       ],
       "port": 4326
+    },
+    {
+      "name": "ev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--workspace",
+        "sites/ev"
+      ],
+      "port": 4327
     }
   ]
 }
